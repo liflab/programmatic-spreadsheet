@@ -63,13 +63,7 @@ import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
  *
  */
 public class Union extends SpreadsheetFunction
-{
-	/**
-	 * A flag that determines if the first row of each spreadsheet should be
-	 * interpreted as column labels, and not a normal row of data.
-	 */
-	protected boolean m_excludeFirst;
-	
+{	
 	/**
 	 * An array that keeps track of the number of rows in each spreadsheet passed
 	 * to the function the last time it was called.
@@ -110,28 +104,16 @@ public class Union extends SpreadsheetFunction
 		this(2);
 	}
 	
-	/**
-	 * Sets whether the first row of each spreadsheet should be interpreted as
-	 * column labels, and not a normal row of data.
-	 * @param b Set to {@code true} to handle first row as headers, {@code false}
-	 * otherwise.
-	 * @return This function
-	 */
-	/*@ non_null @*/ public Union excludeFirst(boolean b)
+	@Override
+	public Union excludeFirst(boolean b)
 	{
-		m_excludeFirst = b;
-		return this;
+		return (Union) super.excludeFirst(b);
 	}
 	
-	/**
-	 * Sets the function so that the first row of each spreadsheet is be
-	 * interpreted as column labels, and not a normal row of data. This is
-	 * equivalent to the call {@code excludeFirst(true)}.
-	 * @return This function
-	 */
-	/*@ non_null @*/ public Union excludeFirst()
+	@Override
+	public Union excludeFirst()
 	{
-		return excludeFirst(true);
+		return (Union) super.excludeFirst();
 	}
 	
 	@Override

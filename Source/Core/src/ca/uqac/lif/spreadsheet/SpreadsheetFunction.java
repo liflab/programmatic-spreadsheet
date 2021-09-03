@@ -38,6 +38,12 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 public abstract class SpreadsheetFunction extends AtomicFunction
 {
 	/**
+	 * A flag that determines if the first row of each spreadsheet should be
+	 * interpreted as column labels, and not a normal row of data.
+	 */
+	protected boolean m_excludeFirst;
+
+	/**
 	 * A mapping keeping the correspondence between cells of the input
 	 * spreadsheet(s) and cells of the output spreadsheet. This array is used to
 	 * answer provenance queries.
@@ -47,6 +53,30 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 	public SpreadsheetFunction(int in_arity)
 	{
 		super(in_arity, 1);
+	}
+	
+	/**
+	 * Sets whether the first row of each spreadsheet should be interpreted as
+	 * column labels, and not a normal row of data.
+	 * @param b Set to {@code true} to handle first row as headers, {@code false}
+	 * otherwise.
+	 * @return This function
+	 */
+	/*@ non_null @*/ public SpreadsheetFunction excludeFirst(boolean b)
+	{
+		m_excludeFirst = b;
+		return this;
+	}
+	
+	/**
+	 * Sets the function so that the first row of each spreadsheet is be
+	 * interpreted as column labels, and not a normal row of data. This is
+	 * equivalent to the call {@code excludeFirst(true)}.
+	 * @return This function
+	 */
+	/*@ non_null @*/ public SpreadsheetFunction excludeFirst()
+	{
+		return excludeFirst(true);
 	}
 	
 	@Override
