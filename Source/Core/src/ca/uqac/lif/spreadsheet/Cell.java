@@ -27,12 +27,12 @@ import ca.uqac.lif.petitpoucet.Part;
 public class Cell implements Part
 {
 	/**
-	 * The row corresponding to the cell
+	 * The row corresponding to the cell.
 	 */
 	protected final int m_column;
 	
 	/**
-	 * The column corresponding to the cell
+	 * The column corresponding to the cell.
 	 */
 	protected final int m_row;
 	
@@ -84,7 +84,7 @@ public class Cell implements Part
 	}
 
 	@Override
-	public Part head()
+	public Cell head()
 	{
 		return this;
 	}

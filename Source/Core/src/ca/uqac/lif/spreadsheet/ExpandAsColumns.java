@@ -58,7 +58,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 
 	public ExpandAsColumns(int header, int value)
 	{
-		super();
+		super(1);
 		m_headerColumn = header;
 		m_valueColumn = value;
 	}
@@ -79,7 +79,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			{
 				if (i != m_headerColumn && i != m_valueColumn)
 				{
-					new_headers.add(new TrackedCell(first_row[i], Cell.get(i, 0)));
+					new_headers.add(new TrackedCell(first_row[i], InputCell.get(i, 0)));
 				}
 			}
 		}
@@ -91,11 +91,11 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			Object key = original_row[m_headerColumn];
 			if (!containsHeader(new_headers, key))
 			{
-				new_headers.add(new TrackedCell(key, Cell.get(m_headerColumn, row_index)));
+				new_headers.add(new TrackedCell(key, InputCell.get(m_headerColumn, row_index)));
 			}
 			Row r = findRow(original_row, row_index, new_rows);
 			r.add(original_row[m_headerColumn],
-					new TrackedCell(original_row[m_valueColumn], Cell.get(m_valueColumn, row_index)));
+					new TrackedCell(original_row[m_valueColumn], InputCell.get(m_valueColumn, row_index)));
 		}
 		return new Object[] {fillSpreadsheet(s, new_rows, new_headers)};
 	}
@@ -133,11 +133,11 @@ public class ExpandAsColumns extends SpreadsheetFunction
 	protected Spreadsheet fillSpreadsheet(Spreadsheet original, List<Row> new_rows, List<TrackedCell> new_headers)
 	{
 		Spreadsheet out = new Spreadsheet(new_headers.size(), new_rows.size() + 1);
-		m_mapping = new Cell[new_rows.size() + 1][new_headers.size()][];
+		m_mapping = new InputCell[new_rows.size() + 1][new_headers.size()][];
 		for (int col = 0; col < new_headers.size(); col++)
 		{
 			out.set(col, 0, new_headers.get(col).getValue());
-			m_mapping[0][col] = new Cell[] {new_headers.get(col).getOrigin()};
+			m_mapping[0][col] = new InputCell[] {new_headers.get(col).getOrigin()};
 		}
 		for (int row = 0; row < new_rows.size(); row++)
 		{
@@ -145,7 +145,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			for (int col = 0; col < r.m_staticColumns.length; col++)
 			{
 				out.set(col, row + 1, r.m_staticColumns[col].getValue());
-				m_mapping[row + 1][col] = new Cell[] {r.m_staticColumns[col].getOrigin()};
+				m_mapping[row + 1][col] = new InputCell[] {r.m_staticColumns[col].getOrigin()};
 			}
 			for (int col = r.m_staticColumns.length; col < new_headers.size(); col++)
 			{
@@ -154,7 +154,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 				if (tc != null)
 				{
 					out.set(col, row + 1, tc.getValue());
-					m_mapping[row + 1][col] = new Cell[] {tc.getOrigin(), Cell.get(m_headerColumn, tc.getOrigin().getRow())};
+					m_mapping[row + 1][col] = new InputCell[] {tc.getOrigin(), InputCell.get(m_headerColumn, tc.getOrigin().getRow())};
 				}
 			}
 		}
@@ -176,7 +176,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			{
 				if (i != m_headerColumn && i != m_valueColumn)
 				{
-					m_staticColumns[index++] = new TrackedCell(row[i], Cell.get(i, row_index));
+					m_staticColumns[index++] = new TrackedCell(row[i], InputCell.get(i, row_index));
 				}
 			}
 			m_otherValues = new HashMap<Object,TrackedCell>();

@@ -42,7 +42,7 @@ public class Sort extends SpreadsheetFunction
 	
 	public Sort()
 	{
-		super();
+		super(1);
 		m_conditions = new ArrayList<SortingCondition>();
 	}
 	
@@ -110,13 +110,13 @@ public class Sort extends SpreadsheetFunction
 		}
 		Collections.sort(sorted_rows);
 		Spreadsheet out = new Spreadsheet(width, height);
-		m_mapping = new Cell[height][width][];
+		m_mapping = new InputCell[height][width][];
 		if (first_index == 1)
 		{
 			for (int col = 0; col < width; col++)
 			{
 				out.set(col, 0, s.get(col, 0));
-				m_mapping[0][col] = new Cell[] {Cell.get(col, 0)};
+				m_mapping[0][col] = new InputCell[] {InputCell.get(col, 0)};
 			}
 		}
 		for (int i = first_index; i < height; i++)
@@ -127,7 +127,7 @@ public class Sort extends SpreadsheetFunction
 			for (int col = 0; col < width; col++)
 			{
 				out.set(col, i, contents[col]);
-				m_mapping[i][col] = new Cell[] {Cell.get(col, original_row_index)};
+				m_mapping[i][col] = new InputCell[] {InputCell.get(col, original_row_index)};
 			}
 		}
 		return new Object[] {out};

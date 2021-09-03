@@ -19,14 +19,16 @@ package ca.uqac.lif.spreadsheet;
 
 import ca.uqac.lif.dag.LabelledNode;
 import ca.uqac.lif.petitpoucet.AndNode;
+import ca.uqac.lif.petitpoucet.ComposedPart;
 import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
+import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 
 /**
- * A 1:1 atomic function that turns a spreadsheet into another one, and for
+ * A n:1 atomic function that turns a spreadsheet into another one, and for
  * which there exists a one-to-many correspondence between cells of the input
  * and the output. This correspondence is stored in an internal array, which is
  * used to answer provenance queries.
@@ -36,15 +38,15 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 public abstract class SpreadsheetFunction extends AtomicFunction
 {
 	/**
-	 * A mapping keeping the correspondence between cells of the input table
-	 * and cells of the output table. This array is used to answer provenance
-	 * queries.
+	 * A mapping keeping the correspondence between cells of the input
+	 * spreadsheet(s) and cells of the output spreadsheet. This array is used to
+	 * answer provenance queries.
 	 */
-	/*@ null @*/ protected Cell[][][] m_mapping;
+	/*@ null @*/ protected InputCell[][][] m_mapping;
 	
-	public SpreadsheetFunction()
+	public SpreadsheetFunction(int in_arity)
 	{
-		super(1, 1);
+		super(in_arity, 1);
 	}
 	
 	@Override
@@ -67,7 +69,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		int row = c.getRow(), col = c.getColumn();
 		if (m_mapping != null && row >= 0 && row < m_mapping.length && col >= 0 && col < m_mapping[0].length)
 		{
-			Cell[] new_cells = m_mapping[row][col];
+			InputCell[] new_cells = m_mapping[row][col];
 			if (new_cells != null)
 			{
 				LabelledNode and = root;
@@ -77,10 +79,9 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 					root.addChild(an);
 					and = an;
 				}
-				for (Cell new_cell : new_cells)
+				for (InputCell new_cell : new_cells)
 				{
-					Part new_part = NthOutput.replaceOutByIn(Cell.replaceCellBy(part, new_cell), 0);
-					PartNode child = factory.getPartNode(new_part, this);
+					PartNode child = factory.getPartNode(new_cell.getPart(), this);
 					and.addChild(child);		
 				}
 			}
@@ -102,7 +103,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		/**
 		 * The cell of the original spreadsheet this value derives from.
 		 */
-		/*@ non_null @*/ protected final Cell m_origin;
+		/*@ non_null @*/ protected final InputCell m_origin;
 		
 		/**
 		 * Creates a new tracked cell.
@@ -110,7 +111,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * @param origin The cell of the original spreadsheet this value derives
 		 * from
 		 */
-		public TrackedCell(/*@ null @*/ Object value, /*@ non_null @*/ Cell origin)
+		public TrackedCell(/*@ null @*/ Object value, /*@ non_null @*/ InputCell origin)
 		{
 			super();
 			m_value = value;
@@ -121,7 +122,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * Gets the cell of the original table this value derives from.
 		 * @return The cell
 		 */
-		/*@ pure non_null @*/ public Cell getOrigin()
+		/*@ pure non_null @*/ public InputCell getOrigin()
 		{
 			return m_origin;
 		}
@@ -143,6 +144,82 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 				return "null";
 			}
 			return m_value.toString();
+		}
+	}
+	
+	/**
+	 * A {@link Cell} carrying the index of the input spreadsheet it refers to.
+	 */
+	protected static class InputCell extends Cell
+	{
+		/**
+		 * The index of the input argument this cell points to.
+		 */
+		protected int m_index;
+		
+		/**
+		 * Creates a new input cell.
+		 * @param col The column corresponding to the cell
+		 * @param row The row corresponding to the cell
+		 * @param index The index of the input argument this cell points to
+		 */
+		/*@ non_null @*/ public static InputCell get(int col, int row, int index)
+		{
+			return new InputCell(col, row, index);
+		}
+		
+		/**
+		 * Creates a new input cell referring to input at index 0.
+		 * @param col The column corresponding to the cell
+		 * @param row The row corresponding to the cell
+		 */
+		/*@ non_null @*/ public static InputCell get(int col, int row)
+		{
+			return get(col, row, 0);
+		}
+
+		/**
+		 * Creates a new input cell.
+		 * @param col The column corresponding to the cell
+		 * @param row The row corresponding to the cell
+		 * @param index The index of the input argument this cell points to
+		 */
+		public InputCell(int col, int row, int index)
+		{
+			super(col, row);
+			m_index = index;
+		}
+		
+		/**
+		 * Gets the composed part designated by this input cell.
+		 * @return The part
+		 */
+		/*@ non_null @*/ public Part getPart()
+		{
+			return ComposedPart.compose(Cell.get(m_column, m_row), new NthInput(m_index));
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return m_column + m_row + m_index;
+		}
+		
+		@Override
+		public boolean equals(Object o)
+		{
+			if (o == null || !(o instanceof InputCell))
+			{
+				return false;
+			}
+			InputCell c = (InputCell) o;
+			return m_column == c.m_column && m_row == c.m_row && m_index == c.m_index;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "Cell " + m_column + ":" + m_row + " of input " + m_index;
 		}
 	}
 }

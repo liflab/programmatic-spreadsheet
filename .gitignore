@@ -9,6 +9,7 @@
 *.bak
 *.old
 \#*
+*.log
 
 # MacOS !#@$ files
 .DS_Store
