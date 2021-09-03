@@ -46,16 +46,30 @@
       whether the detection/download of dependencies works. Delete this in
       a real-world project.
       -->
-      <name>Test Dep</name>
-      <classname>ca.uqac.lif.NonExistentClass</classname>
+      <name>Petit Poucet Core</name>
+      <classname>ca.uqac.lif.petitpoucet.Part</classname>
       <files>
         <!-- You typically need only one of these two for each dependency -->
-        <jar>http://sylvainhalle.github.io/AntRun/placeholders/dummy-jar.jar</jar>
-        <zip>http://sylvainhalle.github.io/AntRun/placeholders/dummy-zip.zip</zip>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.0/petitpoucet-core.jar</jar>
       </files>
       <!-- The following parameter is mandatory. Set it to false if you don't
            want this library to be bundled into the compiled JAR. -->
-      <bundle>true</bundle>
+      <bundle>false</bundle>
+    </dependency>
+    <dependency>
+      <!-- This entry points to a nonexistent class on purpose, to test
+      whether the detection/download of dependencies works. Delete this in
+      a real-world project.
+      -->
+      <name>Petit Poucet Functions</name>
+      <classname>ca.uqac.lif.petitpoucet.functions.Function</classname>
+      <files>
+        <!-- You typically need only one of these two for each dependency -->
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.0/petitpoucet-functions.jar</jar>
+      </files>
+      <!-- The following parameter is mandatory. Set it to false if you don't
+           want this library to be bundled into the compiled JAR. -->
+      <bundle>false</bundle>
     </dependency>
   </dependencies>
 </build>
