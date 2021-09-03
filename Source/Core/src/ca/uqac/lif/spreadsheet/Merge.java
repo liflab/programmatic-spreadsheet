@@ -58,7 +58,35 @@ import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
  * <p>
  * In relational terms, this operation can be seen as the union
  * of the outer left and the outer right join of <i>S</i><sub>1</sub>
- * and <i>S</i><sub>2</sub>.
+ * and <i>S</i><sub>2</sub>. This means that rows in either spreadsheet
+ * with values not present in the other still appear in the result.
+ * In the previous example, if we replace <i>S</i><sub>1</sub> by:
+ * <p>
+ *<table border="1">
+ * <tr><th>A</th><th>B</th><th>C</th></tr>
+ * <tr><td>1</td><td>5</td><td>9</td></tr>
+ * <tr><td>2</td><td>6</td><td>5</td></tr>
+ * </table>
+ * <p>
+ * and <i>S</i><sub>2</sub> by:
+ * <p>
+ * <table border="1">
+ * <tr><th>A</th><th>D</th><th>E</th></tr>
+ * <tr><td>3</td><td>2</td><td>7</td></tr>
+ * <tr><td>1</td><td>1</td><td>8</td></tr>
+ * </table>
+ * <p>
+ * the result becomes:
+ * <p>
+ * <table border="1">
+ * <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
+ * <tr><td>1</td><td>5</td><td>9</td><td>1</td><td>8</td></tr>
+ * <tr><td>2</td><td>6</td><td>5</td><td></td><td></td></tr>
+ * <tr><td>3</td><td></td><td></td><td>2</td><td>7</td></tr>
+ * </table>
+ * <p>
+ * Note how the ordering of the rows is affected, as the row with
+ * A=3 is now only encountered when reading <i>S</i><sub>2</sub>.
  * 
  * @author Sylvain Hallé
  */
