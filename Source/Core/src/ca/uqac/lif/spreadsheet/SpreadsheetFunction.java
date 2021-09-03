@@ -17,6 +17,10 @@
  */
 package ca.uqac.lif.spreadsheet;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import ca.uqac.lif.dag.LabelledNode;
 import ca.uqac.lif.petitpoucet.AndNode;
 import ca.uqac.lif.petitpoucet.ComposedPart;
@@ -49,12 +53,12 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 	 * answer provenance queries.
 	 */
 	/*@ null @*/ protected InputCell[][][] m_mapping;
-	
+
 	public SpreadsheetFunction(int in_arity)
 	{
 		super(in_arity, 1);
 	}
-	
+
 	/**
 	 * Sets whether the first row of each spreadsheet should be interpreted as
 	 * column labels, and not a normal row of data.
@@ -67,7 +71,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		m_excludeFirst = b;
 		return this;
 	}
-	
+
 	/**
 	 * Sets the function so that the first row of each spreadsheet is be
 	 * interpreted as column labels, and not a normal row of data. This is
@@ -78,14 +82,14 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 	{
 		return excludeFirst(true);
 	}
-	
+
 	@Override
 	public void reset()
 	{
 		super.reset();
 		m_mapping = null;
 	}
-	
+
 	@Override
 	public PartNode getExplanation(Part part, NodeFactory factory)
 	{
@@ -119,7 +123,51 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		return root;
 	}
 	
-	
+	/*@ non_null @*/ protected Row findRow(Object[] row_contents, int row_index, List<Row> new_rows)
+	{
+		for (Row r : new_rows)
+		{
+			if (r.matches(row_contents))
+			{
+				return r;
+			}
+		}
+		Row r = new Row(row_contents, row_index);
+		new_rows.add(r);
+		return r;
+	}
+
+	protected Spreadsheet fillSpreadsheet(List<Row> new_rows, List<TrackedCell> new_headers)
+	{
+		Spreadsheet out = new Spreadsheet(new_headers.size(), new_rows.size() + 1);
+		m_mapping = new InputCell[new_rows.size() + 1][new_headers.size()][];
+		for (int col = 0; col < new_headers.size(); col++)
+		{
+			out.set(col, 0, new_headers.get(col).getValue());
+			m_mapping[0][col] = new InputCell[] {new_headers.get(col).getOrigin()};
+		}
+		for (int row = 0; row < new_rows.size(); row++)
+		{
+			Row r = new_rows.get(row);
+			for (int col = 0; col < r.m_staticColumns.length; col++)
+			{
+				out.set(col, row + 1, r.m_staticColumns[col].getValue());
+				m_mapping[row + 1][col] = new InputCell[] {r.m_staticColumns[col].getOrigin()};
+			}
+			for (int col = r.m_staticColumns.length; col < new_headers.size(); col++)
+			{
+				Object key = new_headers.get(col).getValue();
+				TrackedCell tc = r.m_otherValues.get(key);
+				if (tc != null)
+				{
+					out.set(col, row + 1, tc.getValue());
+					m_mapping[row + 1][col] = new InputCell[] {tc.getOrigin()};
+				}
+			}
+		}
+		return out;
+	}
+
 	/**
 	 * A mapping between a value and a cell of the original input spreadsheet. 
 	 */
@@ -129,12 +177,12 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * The value of the cell.
 		 */
 		/*@ null @*/ protected final Object m_value;
-		
+
 		/**
 		 * The cell of the original spreadsheet this value derives from.
 		 */
 		/*@ non_null @*/ protected final InputCell m_origin;
-		
+
 		/**
 		 * Creates a new tracked cell.
 		 * @param value The value of the cell
@@ -147,7 +195,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 			m_value = value;
 			m_origin = origin;
 		}
-		
+
 		/**
 		 * Gets the cell of the original table this value derives from.
 		 * @return The cell
@@ -156,7 +204,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		{
 			return m_origin;
 		}
-		
+
 		/**
 		 * Gets the value of the cell.
 		 * @return The value
@@ -165,7 +213,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		{
 			return m_value;
 		}
-		
+
 		@Override
 		public String toString()
 		{
@@ -176,7 +224,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 			return m_value.toString();
 		}
 	}
-	
+
 	/**
 	 * A {@link Cell} carrying the index of the input spreadsheet it refers to.
 	 */
@@ -186,7 +234,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * The index of the input argument this cell points to.
 		 */
 		protected int m_index;
-		
+
 		/**
 		 * Creates a new input cell.
 		 * @param col The column corresponding to the cell
@@ -197,7 +245,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		{
 			return new InputCell(col, row, index);
 		}
-		
+
 		/**
 		 * Creates a new input cell referring to input at index 0.
 		 * @param col The column corresponding to the cell
@@ -219,7 +267,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 			super(col, row);
 			m_index = index;
 		}
-		
+
 		/**
 		 * Gets the composed part designated by this input cell.
 		 * @return The part
@@ -228,13 +276,13 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		{
 			return ComposedPart.compose(Cell.get(m_column, m_row), new NthInput(m_index));
 		}
-		
+
 		@Override
 		public int hashCode()
 		{
 			return m_column + m_row + m_index;
 		}
-		
+
 		@Override
 		public boolean equals(Object o)
 		{
@@ -245,11 +293,70 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 			InputCell c = (InputCell) o;
 			return m_column == c.m_column && m_row == c.m_row && m_index == c.m_index;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "Cell " + m_column + ":" + m_row + " of input " + m_index;
 		}
+	}
+
+	protected class Row
+	{
+		/*@ non_null @*/ protected TrackedCell[] m_staticColumns;
+
+		/*@ non_null @*/ protected Map<Object,TrackedCell> m_otherValues;
+		
+		protected Row()
+		{
+			super();
+		}
+		
+		public Row(/*@ non_null @*/ Object[] row, int row_index)
+		{
+			super();
+			m_staticColumns = new TrackedCell[row.length - 2];
+			int index = 0;
+			for (int i = 0; i < m_staticColumns.length; i++)
+			{
+				m_staticColumns[index++] = new TrackedCell(row[i], InputCell.get(i, row_index));
+			}
+			m_otherValues = new HashMap<Object,TrackedCell>();
+		}
+
+		public void add(Object key, TrackedCell value)
+		{
+			m_otherValues.put(key, value);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int c = 0;
+			for (Object o : m_staticColumns)
+			{
+				if (o != null)
+				{
+					c += o.hashCode();
+				}
+			}
+			return c;
+		}
+
+		public boolean matches(Object[] row)
+		{
+			int index = 0;
+			for (int i = 0; i < m_staticColumns.length; i++)
+			{
+				Object tv = m_staticColumns[index].getValue();
+				if (((tv == null) != (row[i] == null)) ||
+						(tv != null && !tv.equals(row[i])))
+				{
+					return false;
+				}
+				index++;
+			}
+			return true;
+		}		
 	}
 }

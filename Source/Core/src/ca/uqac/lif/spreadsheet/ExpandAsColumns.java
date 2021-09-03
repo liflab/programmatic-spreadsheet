@@ -20,7 +20,6 @@ package ca.uqac.lif.spreadsheet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
@@ -93,7 +92,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			{
 				new_headers.add(new TrackedCell(key, InputCell.get(m_headerColumn, row_index)));
 			}
-			Row r = findRow(original_row, row_index, new_rows);
+			ExpandedRow r = findExpandedRow(original_row, row_index, new_rows);
 			r.add(original_row[m_headerColumn],
 					new TrackedCell(original_row[m_valueColumn], InputCell.get(m_valueColumn, row_index)));
 		}
@@ -116,20 +115,20 @@ public class ExpandAsColumns extends SpreadsheetFunction
 		return false;
 	}
 
-	/*@ non_null @*/ protected Row findRow(Object[] row_contents, int row_index, List<Row> new_rows)
+	/*@ non_null @*/ protected ExpandedRow findExpandedRow(Object[] row_contents, int row_index, List<Row> new_rows)
 	{
 		for (Row r : new_rows)
 		{
 			if (r.matches(row_contents))
 			{
-				return r;
+				return (ExpandedRow) r;
 			}
 		}
-		Row r = new Row(row_contents, row_index);
+		ExpandedRow r = new ExpandedRow(row_contents, row_index);
 		new_rows.add(r);
 		return r;
 	}
-
+	
 	protected Spreadsheet fillSpreadsheet(Spreadsheet original, List<Row> new_rows, List<TrackedCell> new_headers)
 	{
 		Spreadsheet out = new Spreadsheet(new_headers.size(), new_rows.size() + 1);
@@ -160,14 +159,10 @@ public class ExpandAsColumns extends SpreadsheetFunction
 		}
 		return out;
 	}
-
-	protected class Row
+	
+	protected class ExpandedRow extends Row
 	{
-		/*@ non_null @*/ protected TrackedCell[] m_staticColumns;
-
-		/*@ non_null @*/ protected Map<Object,TrackedCell> m_otherValues;
-
-		public Row(/*@ non_null @*/ Object[] row, int row_index)
+		public ExpandedRow(/*@ non_null @*/ Object[] row, int row_index)
 		{
 			super();
 			m_staticColumns = new TrackedCell[row.length - 2];
@@ -181,26 +176,8 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			}
 			m_otherValues = new HashMap<Object,TrackedCell>();
 		}
-
-		public void add(Object key, TrackedCell value)
-		{
-			m_otherValues.put(key, value);
-		}
-
+		
 		@Override
-		public int hashCode()
-		{
-			int c = 0;
-			for (Object o : m_staticColumns)
-			{
-				if (o != null)
-				{
-					c += o.hashCode();
-				}
-			}
-			return c;
-		}
-
 		public boolean matches(Object[] row)
 		{
 			int index = 0;

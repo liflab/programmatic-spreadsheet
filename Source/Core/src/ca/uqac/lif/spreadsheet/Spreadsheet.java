@@ -34,9 +34,8 @@ import ca.uqac.lif.util.Duplicable;
  * 
  * @author Sylvain Hallé
  */
-public class Spreadsheet implements Duplicable
+public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 {
-
 	/**
 	 * A spreadsheet printer used by the method {@link #toString()}.
 	 */
@@ -295,5 +294,42 @@ public class Spreadsheet implements Duplicable
 		PrintStream ps = new PrintStream(baos);
 		s_printer.print(this, ps);
 		return baos.toString();
+	}
+
+	@Override
+	public int compareTo(Spreadsheet s)
+	{
+		if (s == null)
+		{
+			return 1;
+		}
+		int h1 = getHeight(), h2 = s.getHeight();
+		for (int row = 0; row < Math.max(h1, h2); row++)
+		{
+			Object[] r1 = row < h1 ? getRow(row) : null;
+			Object[] r2 = row < h2 ? s.getRow(row) : null;
+			int comparison = compareRows(r1, r2);
+			if (comparison != 0)
+			{
+				return comparison;
+			}
+		}
+		return 0;
+	}
+	
+	protected static int compareRows(Object[] r1, Object[] r2)
+	{
+		int l1 = r1.length, l2 = r2.length;
+		for (int col = 0; col < Math.max(l1, l2); col++)
+		{
+			Object o1 = col < l1 ? r1[col] : null;
+			Object o2 = col < l2 ? r2[col] : null;
+			int comparison = compare(o1, o2);
+			if (comparison != 0)
+			{
+				return comparison;
+			}
+		}
+		return 0;
 	}
 }
