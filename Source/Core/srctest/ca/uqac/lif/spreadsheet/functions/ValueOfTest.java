@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.spreadsheet;
+package ca.uqac.lif.spreadsheet.functions;
 
 import static org.junit.Assert.*;
 
@@ -29,7 +29,7 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.petitpoucet.function.strings.Range;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.ValueOf;
+import ca.uqac.lif.spreadsheet.functions.ValueOf;
 
 public class ValueOfTest
 {

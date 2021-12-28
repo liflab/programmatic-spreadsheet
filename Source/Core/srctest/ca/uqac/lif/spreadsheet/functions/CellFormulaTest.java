@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.spreadsheet;
+package ca.uqac.lif.spreadsheet.functions;
 
 import static org.junit.Assert.*;
 
@@ -26,6 +26,10 @@ import ca.uqac.lif.petitpoucet.function.Circuit;
 import ca.uqac.lif.petitpoucet.function.Constant;
 import ca.uqac.lif.petitpoucet.function.Fork;
 import ca.uqac.lif.petitpoucet.function.number.Addition;
+import ca.uqac.lif.spreadsheet.Cell;
+import ca.uqac.lif.spreadsheet.Spreadsheet;
+import ca.uqac.lif.spreadsheet.functions.CellFormula;
+import ca.uqac.lif.spreadsheet.functions.ValueOf;
 
 public class CellFormulaTest
 {

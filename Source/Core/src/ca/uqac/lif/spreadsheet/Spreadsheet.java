@@ -156,6 +156,49 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 		checkRow(row);
 		return m_entries[row];
 	}
+	
+	/**
+	 * Gets a column of the spreadsheet.
+	 * @param column The column index
+	 * @return The contents of the corresponding column
+	 * @throws SpreadsheetOutOfBoundsException If the column index is
+	 * outside the bounds of the spreadsheet
+	 */
+	/*@ non_null @*/ public Object[] getColumn(int column) throws SpreadsheetOutOfBoundsException
+	{
+		checkColumn(column);
+		Object[] out = new Object[getHeight()];
+		for (int i = 0; i < out.length; i++)
+		{
+			out[i] = get(column, i);
+		}
+		return out;
+	}
+	
+	/**
+	 * Gets the values of the first row of the spreadsheet, cast as character
+	 * strings.
+	 * @return The contents of the corresponding row
+	 * @throws SpreadsheetOutOfBoundsException If the row 0 is
+	 * outside the bounds of the spreadsheet
+	 */
+	/*@ non_null @*/ public String[] getColumnNames() throws SpreadsheetOutOfBoundsException
+	{
+		Object[] o_row = getRow(0);
+		String[] s_row = new String[o_row.length];
+		for (int i = 0; i < o_row.length; i++)
+		{
+			if (o_row[i] == null)
+			{
+				s_row[i] = "null";
+			}
+			else
+			{
+				s_row[i] = o_row[i].toString();
+			}
+		}
+		return s_row;
+	}
 
 	/**
 	 * Sets the content of a cell in the spreadsheet.

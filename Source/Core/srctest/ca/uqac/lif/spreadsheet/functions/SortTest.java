@@ -15,8 +15,9 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.spreadsheet;
+package ca.uqac.lif.spreadsheet.functions;
 
+import static ca.uqac.lif.spreadsheet.functions.SpreadsheetFunctionTest.assertExplains;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -24,8 +25,9 @@ import org.junit.Test;
 import ca.uqac.lif.petitpoucet.ComposedPart;
 import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
-
-import static ca.uqac.lif.spreadsheet.SpreadsheetFunctionTest.assertExplains;
+import ca.uqac.lif.spreadsheet.Cell;
+import ca.uqac.lif.spreadsheet.Spreadsheet;
+import ca.uqac.lif.spreadsheet.functions.Sort;
 
 public class SortTest
 {
