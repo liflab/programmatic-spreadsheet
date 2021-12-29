@@ -28,14 +28,14 @@ import ca.uqac.lif.spreadsheet.plot.PlotFormat;
  * Gnuplot implementation of a boxplot.
  * @author Sylvain Hallé
  */
-public class GnuBoxPlot extends GnuPlot implements BoxPlot
+public class GnuplotBoxPlot extends Gnuplot implements BoxPlot
 {
 	/**
 	 * Optional names given to the data series
 	 */
 	protected String[] m_seriesNames;
 	
-	public GnuBoxPlot(String ... series_names)
+	public GnuplotBoxPlot(String ... series_names)
 	{
 		super();
 		m_seriesNames = series_names;
@@ -96,16 +96,16 @@ public class GnuBoxPlot extends GnuPlot implements BoxPlot
 		return m_seriesNames[index];
 	}
 
-	protected void copyInto(GnuBoxPlot sp)
+	protected void copyInto(GnuplotBoxPlot sp)
 	{
 		super.copyInto(sp);
 		sp.m_seriesNames = m_seriesNames;
 	}
 
 	@Override
-	public GnuBoxPlot duplicate()
+	public GnuplotBoxPlot duplicate()
 	{
-		GnuBoxPlot sp = new GnuBoxPlot();
+		GnuplotBoxPlot sp = new GnuplotBoxPlot();
 		copyInto(sp);
 		return sp;
 	}

@@ -81,13 +81,25 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	 */
 	public Spreadsheet(int width, int height)
 	{
+		this(width, height, null);
+	}
+	
+	/**
+	 * Creates an spreadsheet with a given number of rows and columns, and
+	 * fills its cells with a given value.
+	 * @param width The number of columns
+	 * @param height The number of rows
+	 * @param o The value to fill each cell with
+	 */
+	public Spreadsheet(int width, int height, Object o)
+	{
 		super();
 		m_entries = new Object[height][width];
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
 			{
-				m_entries[i][j] = null;
+				m_entries[i][j] = o;
 			}
 		}
 	}
@@ -151,10 +163,62 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	 * @throws SpreadsheetOutOfBoundsException If the row index is
 	 * outside the bounds of the spreadsheet
 	 */
-	/*@ non_null @*/ public Object[] getRow(int row) throws SpreadsheetOutOfBoundsException
+	/*@ pure non_null @*/ public Object[] getRow(int row) throws SpreadsheetOutOfBoundsException
 	{
 		checkRow(row);
 		return m_entries[row];
+	}
+	
+	/**
+	 * Gets a row of the spreadsheet, and attempts to turn its elements into
+	 * numbers.
+	 * @param row The row index
+	 * @return The numerical contents of the corresponding row
+	 * @throws SpreadsheetOutOfBoundsException If the row index is
+	 * outside the bounds of the spreadsheet
+	 */
+	/*@ pure non_null @*/ public Double[] getRowNumerical(int row) throws SpreadsheetOutOfBoundsException
+	{
+		Object[] objs = getRow(row);
+		Double[] nums = new Double[objs.length];
+		for (int i = 0; i < objs.length; i++)
+		{
+			if (objs[i] instanceof Number)
+			{
+				nums[i] = ((Number) objs[i]).doubleValue();
+			}
+			else
+			{
+				nums[i] = null;
+			}
+		}
+		return nums;
+	}
+	
+	/**
+	 * Gets a column of the spreadsheet, and attempts to turn its elements into
+	 * numbers.
+	 * @param col The column index
+	 * @return The numerical contents of the corresponding column
+	 * @throws SpreadsheetOutOfBoundsException If the column index is
+	 * outside the bounds of the spreadsheet
+	 */
+	/*@ pure non_null @*/ public Double[] getColumnNumerical(int col) throws SpreadsheetOutOfBoundsException
+	{
+		Object[] objs = getColumn(col);
+		Double[] nums = new Double[objs.length];
+		for (int i = 0; i < objs.length; i++)
+		{
+			if (objs[i] instanceof Number)
+			{
+				nums[i] = ((Number) objs[i]).doubleValue();
+			}
+			else
+			{
+				nums[i] = null;
+			}
+		}
+		return nums;
 	}
 	
 	/**
@@ -290,12 +354,23 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	 */
 	public static boolean same(Object o1, Object o2)
 	{
-		// If only one of the two is null, they are different
 		if ((o1 == null) != (o2 == null))
 		{
+			// If only one of the two is null, they are different
 			return false;
 		}
-		return o1 == o2 || o1 == null || o1.equals(o2);
+		if (o1 == o2)
+		{
+			// If both are equal, they are equal
+			return true;
+		}
+		if (o1 instanceof Number && o2 instanceof Number)
+		{
+			// If both are numbers, compare their value
+			return ((Number) o1).doubleValue() == ((Number) o2).doubleValue();
+		}
+		// Otherwise, rely on method equals
+		return o1.equals(o2);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

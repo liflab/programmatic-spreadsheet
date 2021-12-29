@@ -23,7 +23,7 @@ package ca.uqac.lif.spreadsheet.plot;
  * @author Sylvain Hallé
  *
  */
-public interface Scatterplot extends AbstractPlot
+public interface Scatterplot extends Plot
 {
 	/**
 	 * Tells whether to draw each data series with a mark for each

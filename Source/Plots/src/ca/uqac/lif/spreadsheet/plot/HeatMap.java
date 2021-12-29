@@ -15,11 +15,9 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * A collection of interfaces defining common types of plots that can be drawn
- * from the contents of spreadsheets.
- * 
- * @author Sylvain Hallé
- */
 package ca.uqac.lif.spreadsheet.plot;
+
+public interface HeatMap extends Plot
+{
+
+}

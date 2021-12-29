@@ -4,7 +4,7 @@ package ca.uqac.lif.spreadsheet.plot;
  * Exception indicating that a plot is asked to be rendered in a format that it
  * does not support.
  */
-public class UnsupportedPlotFormatException extends Exception
+public class UnsupportedPlotFormatException extends RuntimeException
 {
 	/**
 	 * Dummy UID.

@@ -124,6 +124,21 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		}
 		return root;
 	}
+
+	/**
+	 * Gets an array of input cells associated to a given output cell.
+	 * @param col The column of the output cell
+	 * @param row The row of the output cell
+	 * @return The array of associated input cells
+	 */
+	public InputCell[] trackToInput(int col, int row)
+	{
+		if (m_mapping == null)
+		{
+			return new InputCell[0];
+		}
+		return m_mapping[row][col];
+	}
 	
 	/*@ non_null @*/ protected Row findRow(Object[] row_contents, int row_index, List<Row> new_rows)
 	{

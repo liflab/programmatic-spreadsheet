@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.plot.PlotFormat;
+import ca.uqac.lif.spreadsheet.plot.Scatterplot;
 
 /**
  * Scatterplot with default settings. Given a table, this class will draw
@@ -32,7 +33,7 @@ import ca.uqac.lif.spreadsheet.plot.PlotFormat;
  *   
  * @author Sylvain Hallé
  */
-public class Scatterplot extends GnuPlot implements ca.uqac.lif.spreadsheet.plot.Scatterplot
+public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 {
 	/**
 	 * Whether to draw each data series with lines between each data point
@@ -47,34 +48,41 @@ public class Scatterplot extends GnuPlot implements ca.uqac.lif.spreadsheet.plot
 	/**
 	 * Creates an empty scatterplot
 	 */
-	public Scatterplot()
+	public GnuplotScatterplot()
 	{
 		super();
 	}
 	
 	@Override
-	public Scatterplot withLines()
+	public GnuplotScatterplot withLines()
 	{
 		return withLines(true);
 	}
 	
 	@Override
-	public Scatterplot withPoints()
+	public GnuplotScatterplot withPoints()
 	{
 		return withPoints(true);
 	}
 	
 	@Override
-	public Scatterplot withLines(boolean b)
+	public GnuplotScatterplot withLines(boolean b)
 	{
 		m_withLines = b;
 		return this;
 	}
 	
 	@Override
-	public Scatterplot withPoints(boolean b)
+	public GnuplotScatterplot withPoints(boolean b)
 	{
 		m_withPoints = b;
+		return this;
+	}
+	
+	@Override
+	public GnuplotScatterplot setTitle(String title)
+	{
+		super.setTitle(title);
 		return this;
 	}
 
@@ -143,7 +151,7 @@ public class Scatterplot extends GnuPlot implements ca.uqac.lif.spreadsheet.plot
 		}
 	}
 	
-	protected void copyInto(Scatterplot sp)
+	protected void copyInto(GnuplotScatterplot sp)
 	{
 		super.copyInto(sp);
 		sp.m_withLines = m_withLines;
@@ -151,9 +159,9 @@ public class Scatterplot extends GnuPlot implements ca.uqac.lif.spreadsheet.plot
 	}
 
 	@Override
-	public Scatterplot duplicate()
+	public GnuplotScatterplot duplicate()
 	{
-		Scatterplot sp = new Scatterplot();
+		GnuplotScatterplot sp = new GnuplotScatterplot();
 		copyInto(sp);
 		return sp;
 	}

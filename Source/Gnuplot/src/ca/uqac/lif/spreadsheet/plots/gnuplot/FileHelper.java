@@ -40,10 +40,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * A number of helpful utilities to read, write and manage files
+ * A number of helpful utilities to read, write and manage files.
  * @author Sylvain Hallé
  */
-public class FileHelper
+/* package */ class FileHelper
 {
 	/**
 	 * The system-dependent carriage return symbol

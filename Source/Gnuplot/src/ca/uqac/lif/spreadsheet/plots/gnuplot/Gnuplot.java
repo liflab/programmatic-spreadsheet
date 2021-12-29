@@ -27,19 +27,19 @@ import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.ExplanationQueryable;
-import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.AnsiSpreadsheetPrinter;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.plot.AbstractPlot;
+import ca.uqac.lif.spreadsheet.plot.Plot;
 import ca.uqac.lif.spreadsheet.plot.Palette;
 import ca.uqac.lif.spreadsheet.plot.PlotFormat;
+import ca.uqac.lif.spreadsheet.plot.UnsupportedPlotFormatException;
 import ca.uqac.lif.spreadsheet.plot.UnsupportedSettingException;
 
 /**
  * Top-level class for plots drawn using the GnuPlot software.
  * @author Sylvain Hallé
  */
-public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
+public abstract class Gnuplot implements Plot, ExplanationQueryable
 {
 	/**
 	 * The "dumb" plot format supported by GnuPlot.
@@ -84,13 +84,13 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	 * The bytes of a blank PNG image, used as a placeholder when no plot can
 	 * be drawn
 	 */
-	protected static final transient byte[] s_blankImagePng = FileHelper.internalFileToBytes(GnuPlot.class, "blank.png");
+	protected static final transient byte[] s_blankImagePng = FileHelper.internalFileToBytes(Gnuplot.class, "blank.png");
 
 	/**
 	 * The bytes of a blank PDF image, used as a placeholder when no plot can
 	 * be drawn
 	 */
-	protected static final transient byte[] s_blankImagePdf = FileHelper.internalFileToBytes(GnuPlot.class, "blank.pdf");
+	protected static final transient byte[] s_blankImagePdf = FileHelper.internalFileToBytes(Gnuplot.class, "blank.pdf");
 	
 	/**
 	 * The fill style used to draw the graph
@@ -159,6 +159,11 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	 * method.
 	 */
 	protected Spreadsheet m_lastSpreadsheet = null;
+	
+	/**
+	 * The format used to render the plot.
+	 */
+	protected PlotFormat m_format = PlotFormat.PNG;
 
 	/**
 	 * The time to wait before polling GnuPlot's result
@@ -168,7 +173,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	/**
 	 * Creates an empty GnuPlot
 	 */
-	public GnuPlot()
+	public Gnuplot()
 	{
 		super();
 	}
@@ -180,7 +185,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	 * syntax
 	 * @return This plot
 	 */
-	public GnuPlot setBorder(String border)
+	public Gnuplot setBorder(String border)
 	{
 		m_border = border;
 		return this;
@@ -193,7 +198,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	 * @param s The parameter string
 	 * @return This plot
 	 */
-	public GnuPlot setCustomHeader(String s)
+	public Gnuplot setCustomHeader(String s)
 	{
 		m_customParameters = s;
 		return this;
@@ -227,7 +232,13 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	}
 	
 	@Override
-	public final GnuPlot render(OutputStream os, Spreadsheet table, PlotFormat term, boolean with_caption) throws IOException
+	public final Gnuplot render(OutputStream os, Spreadsheet table) throws IOException
+	{
+		return render(os, table, m_format, true);
+	}
+	
+	@Override
+	public final Gnuplot render(OutputStream os, Spreadsheet table, PlotFormat term, boolean with_caption) throws IOException
 	{
 		m_lastSpreadsheet = table;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -339,7 +350,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	}
 	
 	@Override
-	public AbstractPlot set(Object... objects)
+	public Plot set(Object... objects)
 			throws UnsupportedSettingException, IllegalArgumentException
 	{
 		if (objects[0] instanceof String)
@@ -350,7 +361,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	}
 	
 	@Override
-	public GnuPlot setTitle(String title)
+	public Gnuplot setTitle(String title)
 	{
 		m_title = title;
 		return this;
@@ -363,7 +374,27 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	}
 	
 	@Override
-	public GnuPlot setCaption(Axis a, String caption)
+	public Gnuplot setFormat(PlotFormat f)
+	{
+		if (!(f.equals(PlotFormat.GIF) || f.equals(PlotFormat.JPEG) 
+				|| f.equals(PlotFormat.PDF) || f.equals(PlotFormat.PDF) 
+				|| f.equals(PlotFormat.PNG) || f.equals(PlotFormat.SVG) 
+				|| f.equals(DUMB)))
+		{
+			throw new UnsupportedPlotFormatException("Unsupported format " + f);
+		}
+		m_format = f;
+		return this;
+	}
+	
+	@Override
+	public PlotFormat getFormat()
+	{
+		return m_format;
+	}
+	
+	@Override
+	public Gnuplot setCaption(Axis a, String caption)
 	{
 		switch (a)
 		{
@@ -395,7 +426,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	}
 	
 	@Override
-	public GnuPlot setLogscale(Axis axis)
+	public Gnuplot setLogscale(Axis axis)
 	{
 		if (axis == Axis.X)
 		{
@@ -409,7 +440,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	}
 	
 	@Override
-	public GnuPlot setKey(boolean b)
+	public Gnuplot setKey(boolean b)
 	{
 		m_hasKey = b;
 		return this;
@@ -425,7 +456,7 @@ public abstract class GnuPlot implements AbstractPlot, ExplanationQueryable
 	 * Copies the state of the current plot into another plot.
 	 * @param p The other plot
 	 */
-	protected void copyInto(GnuPlot p)
+	protected void copyInto(Gnuplot p)
 	{
 		p.m_border = m_border;
 		p.m_captionX = m_captionX;

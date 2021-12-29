@@ -53,7 +53,7 @@ package ca.uqac.lif.spreadsheet.plot;
  * @author Sylvain Hallé
  *
  */
-public interface BoxPlot extends AbstractPlot
+public interface BoxPlot extends Plot
 {
 	// Empty interface
 }

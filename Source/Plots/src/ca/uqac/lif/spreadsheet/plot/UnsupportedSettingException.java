@@ -4,7 +4,7 @@ package ca.uqac.lif.spreadsheet.plot;
  * Exception indicating that a plot has been given a setting that it does not
  * support.
  */
-public class UnsupportedSettingException extends Exception
+public class UnsupportedSettingException extends RuntimeException
 {
 	/**
 	 * Dummy UID.
