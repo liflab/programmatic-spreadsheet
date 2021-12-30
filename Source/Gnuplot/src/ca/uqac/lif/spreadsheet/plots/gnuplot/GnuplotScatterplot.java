@@ -19,11 +19,24 @@ package ca.uqac.lif.spreadsheet.plots.gnuplot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
+import ca.uqac.lif.dag.LabelledNode;
+import ca.uqac.lif.petitpoucet.AndNode;
+import ca.uqac.lif.petitpoucet.ComposedPart;
+import ca.uqac.lif.petitpoucet.NodeFactory;
+import ca.uqac.lif.petitpoucet.OrNode;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.plot.PlotFormat;
 import ca.uqac.lif.spreadsheet.plot.Scatterplot;
+import ca.uqac.lif.spreadsheet.plot.part.PlotAxis;
+import ca.uqac.lif.spreadsheet.plot.part.PlotPart.Caption;
+import ca.uqac.lif.spreadsheet.plot.part.PointAt;
 
 /**
  * Scatterplot with default settings. Given a table, this class will draw
@@ -39,12 +52,12 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * Whether to draw each data series with lines between each data point
 	 */
 	protected boolean m_withLines = true;
-	
+
 	/**
 	 * Whether to draw each data series with marks for each data point
 	 */
 	protected boolean m_withPoints = true;
-	
+
 	/**
 	 * Creates an empty scatterplot
 	 */
@@ -52,44 +65,51 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	{
 		super();
 	}
-	
+
 	@Override
 	public GnuplotScatterplot withLines()
 	{
 		return withLines(true);
 	}
-	
+
 	@Override
 	public GnuplotScatterplot withPoints()
 	{
 		return withPoints(true);
 	}
-	
+
 	@Override
 	public GnuplotScatterplot withLines(boolean b)
 	{
 		m_withLines = b;
 		return this;
 	}
-	
+
 	@Override
 	public GnuplotScatterplot withPoints(boolean b)
 	{
 		m_withPoints = b;
 		return this;
 	}
-	
+
 	@Override
 	public GnuplotScatterplot setTitle(String title)
 	{
 		super.setTitle(title);
 		return this;
 	}
-	
+
 	@Override
 	public GnuplotScatterplot setCaption(Axis a, String caption)
 	{
 		super.setCaption(a, caption);
+		return this;
+	}
+
+	@Override
+	public GnuplotScatterplot setFormat(PlotFormat f)
+	{
+		super.setFormat(f);
 		return this;
 	}
 
@@ -157,7 +177,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 			out.append(csv_values).append("end\n");
 		}
 	}
-	
+
 	protected void copyInto(GnuplotScatterplot sp)
 	{
 		super.copyInto(sp);
@@ -171,5 +191,123 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 		GnuplotScatterplot sp = new GnuplotScatterplot();
 		copyInto(sp);
 		return sp;
+	}
+
+	@Override
+	protected void explainPlotPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	{
+		Part head = to_explain.head();
+		if (head instanceof PlotAxis)
+		{
+			explainAxis((PlotAxis) head, to_explain.tail(), suffix, root, f);
+		}
+		else if (head instanceof PointAt)
+		{
+			explainPointAt((PointAt) head, to_explain.tail(), suffix, root, f);
+		}
+		else
+		{
+			root.addChild(f.getUnknownNode());
+		}
+	}
+
+	protected void explainPointAt(PointAt p, Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	{
+		double x = p.getX(), y = p.getY();
+		List<Cell[]> pairs = new ArrayList<Cell[]>();
+		int width = m_lastSpreadsheet.getWidth();
+		boolean found_x = false;
+		for (int i = 1; i < m_lastSpreadsheet.getHeight() && !found_x; i++)
+		{
+			Object s_x = m_lastSpreadsheet.get(0, i);
+			if (!(s_x instanceof Number) || ((Number) s_x).doubleValue() != x)
+			{
+				continue;
+			}
+			found_x = true;
+			for (int j = 1; j < width; j++)
+			{
+				Object s_y = m_lastSpreadsheet.get(j, i);
+				if (!(s_y instanceof Number) || ((Number) s_y).doubleValue() != y)
+				{
+					continue;
+				}
+				// Found a candidate
+				pairs.add(new Cell[] {Cell.get(0, i), Cell.get(j, i)});
+			}
+		}
+		if (pairs.isEmpty())
+		{
+			root.addChild(f.getPartNode(Part.nothing, m_lastSpreadsheet));
+		}
+		else
+		{
+			LabelledNode to_add = root;
+			if (pairs.size() > 1)
+			{
+				OrNode on = f.getOrNode();
+				to_add.addChild(on);
+				to_add = on;
+			}
+			for (Cell[] pair : pairs)
+			{
+				AndNode and = f.getAndNode();
+				and.addChild(f.getPartNode(ComposedPart.compose(pair[0], Part.self), m_lastSpreadsheet));
+				and.addChild(f.getPartNode(ComposedPart.compose(pair[1], Part.self), m_lastSpreadsheet));
+				to_add.addChild(and);
+			}
+		}
+	}
+
+	protected void explainAxis(PlotAxis pa, Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	{
+		Axis a = pa.getAxis();
+		if (a == Axis.Z)
+		{
+			// There is no z-axis in a 2D plot
+			root.addChild(f.getUnknownNode());
+			return;
+		}
+		if (to_explain == null)
+		{
+			if (a == Axis.X)
+			{
+				// Explain the whole x-axis: first column of input spreadsheet
+				int height = m_lastSpreadsheet.getHeight();
+				if (height == 2)
+				{
+					PartNode child = f.getPartNode(ComposedPart.compose(suffix, Cell.get(0, 1), Part.self), m_lastSpreadsheet);
+					root.addChild(child);
+				}
+				else
+				{
+					AndNode and = f.getAndNode();
+					for (int i = 1; i < height; i++)
+					{
+						PartNode child = f.getPartNode(ComposedPart.compose(suffix, Cell.get(0, i), Part.self), m_lastSpreadsheet);
+						and.addChild(child);
+					}
+					root.addChild(and);
+				}
+			}
+			else
+			{
+				// Explain the whole y-axis: all cells except first column
+			}
+		}
+		else if (to_explain.head() instanceof Caption)
+		{
+			if (a == Axis.X)
+			{
+				// Explain caption of the x-axis: top-left cell of the spreadsheet
+				PartNode child = f.getPartNode(ComposedPart.compose(suffix, Cell.get(0, 0), Part.self), m_lastSpreadsheet);
+				root.addChild(child);
+			}
+		}
+		else
+		{
+			// Input part does not correspond to something we can explain for an axis
+			root.addChild(f.getUnknownNode());
+		}
 	}
 }

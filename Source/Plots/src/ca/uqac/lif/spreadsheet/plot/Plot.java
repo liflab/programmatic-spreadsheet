@@ -100,7 +100,9 @@ public interface Plot
 	
 	/**
 	 * Renders (i.e. draws) a plot into an output stream, using the default format.
-	 * @param out The output stream where the plot is to be rendered
+	 * @param out The output stream where the plot is to be rendered. It may be
+	 * null; in such a case, the plot may change its internal state based on the
+	 * spreadsheet it receives but does not produce any output.
 	 * @param s The spreadsheet data to render
 	 * @return This plot
 	 * @throws IOException If the rendering could not be done due to an I/O issue
@@ -113,7 +115,9 @@ public interface Plot
 	
 	/**
 	 * Renders (i.e. draws) a plot into an output stream.
-	 * @param out The output stream where the plot is to be rendered
+	 * @param out The output stream where the plot is to be rendered.  It may be
+	 * null; in such a case, the plot may change its internal state based on the
+	 * spreadsheet it receives but does not produce any output.
 	 * @param s The spreadsheet data to render
 	 * @param f The plot format to render
 	 * @param with_title Whether to render the plot with its title

@@ -1,19 +1,19 @@
 /*
-  MTNP: Manipulate Tables N'Plots
-  Copyright (C) 2017-2020 Sylvain Hallé
+    A provenance-aware spreadsheet library
+    Copyright (C) 2021 Sylvain Hallé
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.uqac.lif.spreadsheet.plots.gnuplot;
 
@@ -21,8 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Calendar;
 
+import ca.uqac.lif.petitpoucet.ComposedPart;
 import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
@@ -45,23 +45,23 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	 * The "dumb" plot format supported by GnuPlot.
 	 */
 	public static final transient PlotFormat DUMB = new PlotFormat("dumb");
-	
+
 	/**
 	 * The symbol used to separate data values in a file
 	 */
 	public static final transient String s_datafileSeparator = ",";
-	
+
 	/**
 	 * The symbol used to represent missing values in a file
 	 */
 	public static final transient String s_datafileMissing = "null";
-	
+
 	/**
 	 * A printer to generate the values from a spreadsheet in the CSV format
 	 * expected by Gnuplot.
 	 */
 	protected static final transient AnsiSpreadsheetPrinter s_printer;
-	
+
 	static
 	{
 		s_printer = new AnsiSpreadsheetPrinter();
@@ -69,17 +69,17 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		s_printer.setGroupCells(false);
 		s_printer.setHeaders(false);
 	}
-	
+
 	/**
 	 * The path to launch GnuPlot
 	 */
 	protected static transient String s_path = "gnuplot";
-	
+
 	/**
 	 * The version string obtained when checking if Gnuplot is present
 	 */
 	protected static transient String s_gnuplotVersionString = checkGnuplot();
-	
+
 	/**
 	 * The bytes of a blank PNG image, used as a placeholder when no plot can
 	 * be drawn
@@ -91,75 +91,75 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	 * be drawn
 	 */
 	protected static final transient byte[] s_blankImagePdf = FileHelper.internalFileToBytes(Gnuplot.class, "blank.pdf");
-	
+
 	/**
 	 * The fill style used to draw the graph
 	 */
 	protected transient FillStyle m_fillStyle = FillStyle.SOLID;
-	
+
 	/**
 	 * The fill style used for the plot
 	 */
 	public static enum FillStyle {SOLID, NONE, PATTERN};
-	
+
 	/**
 	 * The plot's title.
 	 */
 	protected String m_title = "";
-	
+
 	/**
 	 * The palette used to render the plot.
 	 */
 	protected Palette m_palette;
-	
+
 	/**
 	 * A string defining the plot's borders.
 	 */
 	protected String m_border = "";
-	
+
 	/**
 	 * An optional string containing custom parameters that will be put in
 	 * the plot's header
 	 */
 	protected String m_customParameters = "";
-	
+
 	/**
 	 * The caption for the x-axis of the plot.
 	 */
 	protected String m_captionX = "";
-	
+
 	/**
 	 * The caption for the y-axis of the plot.
 	 */
 	protected String m_captionY = "";
-	
+
 	/**
 	 * The caption for the z-axis of the plot.
 	 */
 	protected String m_captionZ = "";
-	
+
 	/**
 	 * Whether to use a logarithmic scale for the X axis
 	 */
 	protected boolean m_logScaleX = false;
-	
+
 	/**
 	 * Whether to use a logarithmic scale for the Y axis
 	 */
 	protected boolean m_logScaleY = false;
-	
+
 	/**
 	 * Whether the plot shows a key
 	 */
 	protected boolean m_hasKey = true;
-	
+
 	/**
 	 * The last spreadsheet given to the plot's
 	 * {@link #render(OutputStream, Spreadsheet, PlotFormat, boolean) render}
 	 * method.
 	 */
 	protected Spreadsheet m_lastSpreadsheet = null;
-	
+
 	/**
 	 * The format used to render the plot.
 	 */
@@ -169,7 +169,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	 * The time to wait before polling GnuPlot's result
 	 */
 	protected static transient long s_waitInterval = 100;
-	
+
 	/**
 	 * Creates an empty GnuPlot
 	 */
@@ -177,7 +177,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		super();
 	}
-	
+
 	/**
 	 * Sets the border settings for the plot.
 	 * @param border A parameter string defining the border for the plot,
@@ -190,7 +190,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		m_border = border;
 		return this;
 	}
-	
+
 	/**
 	 * Sets custom parameters to be added to the plot's header. This method can
 	 * be used to define settings that are not directly handled through object
@@ -216,7 +216,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	 *   rendering
 	 */
 	public abstract void toGnuplot(PrintStream out, Spreadsheet table, PlotFormat term, String lab_title, boolean with_caption);
-	
+
 	/**
 	 * Generates a stand-alone Gnuplot file for this plot, and prints it to a
 	 * print stream.
@@ -230,17 +230,22 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		toGnuplot(out, table, term, "", with_caption);
 	}
-	
+
 	@Override
 	public final Gnuplot render(OutputStream os, Spreadsheet table) throws IOException
 	{
 		return render(os, table, m_format, true);
 	}
-	
+
 	@Override
 	public final Gnuplot render(OutputStream os, Spreadsheet table, PlotFormat term, boolean with_caption) throws IOException
 	{
 		m_lastSpreadsheet = table;
+		if (os == null)
+		{
+			// Dry run: don't do anything
+			return this;
+		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrintStream p_baos = new PrintStream(baos);
 		toGnuplot(p_baos, table, term, with_caption);
@@ -295,7 +300,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		return s_gnuplotVersionString.endsWith("exit code 0");
 	}
-	
+
 	/**
 	 * Gets a GnuPlot terminal name from an image type
 	 * @param t The image type
@@ -305,7 +310,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		return t.toString().toLowerCase();
 	}
-	
+
 	/**
 	 * Produces a header that is common to all plots generated by the
 	 * application
@@ -319,7 +324,6 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		out.println("# ----------------------------------------------------------------");
 		out.println("# " + comment_line);
-		out.println("# Date:     " +  String.format("%1$te-%1$tm-%1$tY", Calendar.getInstance()));
 		out.println("# ----------------------------------------------------------------");
 		if (with_caption)
 		{
@@ -348,7 +352,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 			out.println(m_customParameters);
 		}
 	}
-	
+
 	@Override
 	public Plot set(Object... objects)
 			throws UnsupportedSettingException, IllegalArgumentException
@@ -359,20 +363,20 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		}
 		return this;
 	}
-	
+
 	@Override
 	public Gnuplot setTitle(String title)
 	{
 		m_title = title;
 		return this;
 	}
-	
+
 	@Override
 	public String getTitle()
 	{
 		return m_title;
 	}
-	
+
 	@Override
 	public Gnuplot setFormat(PlotFormat f)
 	{
@@ -386,13 +390,13 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		m_format = f;
 		return this;
 	}
-	
+
 	@Override
 	public PlotFormat getFormat()
 	{
 		return m_format;
 	}
-	
+
 	@Override
 	public Gnuplot setCaption(Axis a, String caption)
 	{
@@ -410,7 +414,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		}
 		return this;
 	}
-	
+
 	@Override
 	public String getCaption(Axis a)
 	{
@@ -424,7 +428,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 			return m_captionZ;
 		}
 	}
-	
+
 	@Override
 	public Gnuplot setLogscale(Axis axis)
 	{
@@ -438,7 +442,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		}
 		return this;
 	}
-	
+
 	@Override
 	public Gnuplot setKey(boolean b)
 	{
@@ -451,7 +455,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		return m_hasKey;
 	}
-	
+
 	/**
 	 * Copies the state of the current plot into another plot.
 	 * @param p The other plot
@@ -470,7 +474,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		p.m_palette = m_palette;
 		p.m_title = m_title;
 	}
-	
+
 	/**
 	 * Gets the fill color associated with a number, based on the palette
 	 * defined for this plot.
@@ -486,7 +490,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		}
 		return "fillcolor rgb \"" + m_palette.getHexColor(color_nb) + "\"";
 	}
-	
+
 	/**
 	 * Gets the version string obtained when checking if Gnuplot is present 
 	 * @return The version string
@@ -495,7 +499,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	{
 		return s_gnuplotVersionString;
 	}
-	
+
 	/**
 	 * Checks if Gnuplot is present on the system
 	 * @return A string with the version and exit code obtained when 
@@ -507,7 +511,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		runner.run();
 		return runner.getString().trim() + ", exit code " + runner.getErrorCode();
 	}
-	
+
 	@Override
 	public PartNode getExplanation(Part part)
 	{
@@ -515,14 +519,57 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	}
 
 	@Override
-	public PartNode getExplanation(Part part, NodeFactory f)
+	public PartNode getExplanation(Part d, NodeFactory f)
 	{
-		PartNode root = f.getPartNode(part, this);
-		if (!(part instanceof Part.All))
+		PartNode root = f.getPartNode(d, this);
+		if (d instanceof Part.Self)
 		{
+			root.addChild(f.getPartNode(d, m_lastSpreadsheet));
 			return root;
 		}
-		root.addChild(f.getPartNode(part, m_lastSpreadsheet));
+		if (!(d instanceof ComposedPart))
+		{
+			root.addChild(f.getUnknownNode());
+			return root;
+		}
+		ComposedPart cp = (ComposedPart) d;
+		Part p1 = cp.get(cp.size() - 1);
+		if (!(p1 instanceof Part.Self))
+		{
+			root.addChild(f.getUnknownNode());
+			return root;
+		}
+		if (cp.size() == 1)
+		{
+			root.addChild(f.getPartNode(d, m_lastSpreadsheet));
+			return root;
+		}
+		// Isolate the elements of d that apply to the plot
+		Part to_explain = Part.self;
+		int i = cp.size() - 2;
+		for (; i >= 0; i--)
+		{
+			Part p = cp.get(i);
+			if (p.appliesTo(this))
+			{
+				to_explain = ComposedPart.compose(p, to_explain); 
+			}
+			else
+			{
+				break;
+			}
+		}
+		Part suffix = null;
+		if (i >= 0)
+		{
+			suffix = cp.subPart(0, i + 1);
+		}
+		explainPlotPart(to_explain.tail(), suffix, root, f);
 		return root;
+	}
+
+	protected void explainPlotPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	{
+		root.addChild(f.getUnknownNode());
 	}
 }
