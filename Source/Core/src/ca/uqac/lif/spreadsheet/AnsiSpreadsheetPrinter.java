@@ -195,7 +195,16 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	{
 		if (content == null)
 		{
-			return "";
+			return "null";
+		}
+		if (content instanceof Number)
+		{
+			Number n = (Number) content;
+			if (n.intValue() == n.doubleValue())
+			{
+				return n.intValue() + "";
+			}
+			return n.toString();
 		}
 		return content.toString();
 	}

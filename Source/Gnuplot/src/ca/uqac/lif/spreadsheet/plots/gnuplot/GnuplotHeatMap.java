@@ -30,6 +30,11 @@ import ca.uqac.lif.spreadsheet.plot.PlotFormat;
 public class GnuplotHeatMap extends Gnuplot implements HeatMap
 {
 	/**
+	 * The caption given to the color scale in the plot.
+	 */
+	protected String m_scaleCaption = "";
+	
+	/**
 	 * Creates a new heat map associated to no table
 	 */
 	public GnuplotHeatMap()
@@ -45,12 +50,13 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 		//out.append("set xrange [").append(ft.getMinX() - ft.getXWidth() / 2).append(":").append(ft.getMaxX() - ft.getXWidth() / 2).append("]\n");
 		//out.append("set yrange [").append(ft.getMinY() - ft.getYWidth() / 2).append(":").append(ft.getMaxY() - ft.getYWidth() / 2).append("]\n");
 		out.println("set tic scale 0");
+		out.println("set cblabel \"" + m_scaleCaption + "\"");
 		out.println("unset cbtics");
 		out.println("$map1 << EOD");
 		//double[][] values = ft.getArray();
 		Double[] scale_x = table.getRowNumerical(0);
 		Double[] scale_y = table.getColumnNumerical(0);
-		for (int j = 0; j < scale_x.length; j++)
+		for (int j = 1; j < scale_x.length; j++)
 		{
 			out.print("," + scale_x[j]);
 		}
@@ -69,6 +75,26 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 		out.println("set view map");
 		out.println("plot '$map1' matrix rowheaders columnheaders using 1:2:3 with image");
 	}
+	
+	@Override
+	public GnuplotHeatMap setTitle(String title)
+	{
+		super.setTitle(title);
+		return this;
+	}
+	
+	@Override
+	public GnuplotHeatMap setCaption(Axis a, String caption)
+	{
+		super.setCaption(a, caption);
+		return this;
+	}
+	
+	protected void copyInto(GnuplotHeatMap hm)
+	{
+		super.copyInto(hm);
+		hm.m_scaleCaption = m_scaleCaption;
+	}
 
 	@Override
 	public GnuplotHeatMap duplicate()
@@ -76,5 +102,12 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 		GnuplotHeatMap hm = new GnuplotHeatMap();
 		copyInto(hm);
 		return hm;
+	}
+
+	@Override
+	public GnuplotHeatMap setScaleCaption(String caption)
+	{
+		m_scaleCaption = caption;
+		return this;
 	}
 }

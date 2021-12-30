@@ -19,10 +19,33 @@ package ca.uqac.lif.spreadsheet;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 import org.junit.Test;
 
+import ca.uqac.lif.petitpoucet.ComposedPart;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.function.NthInput;
+import ca.uqac.lif.petitpoucet.function.strings.Position;
+import ca.uqac.lif.petitpoucet.function.strings.PositionRange;
+
+/**
+ * Unit tests for {@link Spreadsheet}.
+ */
 public class SpreadsheetTest
 {
+	/**
+	 * The OS-dependent line separator.
+	 */
+	public static final String CRLF = System.lineSeparator();
+	
+	/**
+	 * The length of CRLF.
+	 */
+	public static final int CRLF_S = CRLF.length();
+	
 	@Test
 	public void testSetGet1()
 	{
@@ -96,5 +119,26 @@ public class SpreadsheetTest
 		assertTrue(s1.equals(s1));
 		assertTrue(s2.equals(s2));
 		assertFalse(s1.equals(s2));
+	}
+	
+	@Test
+	public void testRead1()
+	{
+		Map<Cell,Part> mapping = new HashMap<Cell,Part>();
+		Scanner scanner = new Scanner(
+				"a  b   foo" + CRLF + 
+				"0  1   true" + CRLF +
+				" # Commented line to be ignored   " + CRLF +
+				"  2  3.5 null" + CRLF);
+		Spreadsheet out = Spreadsheet.read(scanner, "#", "\\s+", mapping);
+		assertNotNull(out);
+		assertEquals(Spreadsheet.read(3, 3,
+				"a", "b", "foo",
+				0, 1, true,
+				2, 3.5, null), out);
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(0, 0), new Position(0, 0)), NthInput.FIRST), mapping.get(Cell.get(0, 0)));
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(0, 7), new Position(0, 9)), NthInput.FIRST), mapping.get(Cell.get(2, 0)));
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(3, 2), new Position(3, 2)), NthInput.FIRST), mapping.get(Cell.get(0, 2)));
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(3, 9), new Position(3, 12)), NthInput.FIRST), mapping.get(Cell.get(2, 2)));
 	}
 }

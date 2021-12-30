@@ -19,5 +19,5 @@ package ca.uqac.lif.spreadsheet.plot;
 
 public interface HeatMap extends Plot
 {
-
+	public HeatMap setScaleCaption(String caption);
 }

@@ -19,7 +19,18 @@ package ca.uqac.lif.spreadsheet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import ca.uqac.lif.petitpoucet.ComposedPart;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.function.NthInput;
+import ca.uqac.lif.petitpoucet.function.strings.Position;
+import ca.uqac.lif.petitpoucet.function.strings.PositionRange;
 import ca.uqac.lif.util.Duplicable;
 
 /**
@@ -47,7 +58,7 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	/*@ non_null @*/ protected final Object[][] m_entries;
 	
 	/**
-	 * 
+	 * Creates a spreadsheet out of an enumeration of its cell values.
 	 * @param width The number of columns
 	 * @param height The number of rows
 	 * @param entries A list of values to insert into the spreadsheet
@@ -71,6 +82,151 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 			}
 		}
 		return s;
+	}
+	
+	/**
+	 * Creates a spreadsheet out of a scanner. The scanner must point to the
+	 * start of a text source following these formatting conventions:
+	 * <ul>
+	 * <li>Each line corresponds to a row of the spreadsheet</li>
+	 * <li>Lines made of only whitespace, and lines starting with
+	 * <tt>comment_marker</tt> are ignored</li>
+	 * <li>Cells in a line are separated by <tt>separator</tt>, and each
+	 * chunk is converted into an object following the rules of
+	 * {@link #readValue(String)}</li>
+	 * </ul>
+	 * @param scanner A scanner pointing to the start of a text source
+	 * @param comment_marker The string used to denote a comment line
+	 * @param separator The separator used to split a line into cells
+	 * @param mapping An optional empty map. If not set to null, this map
+	 * will be filled with associations between cells of the spreadsheet and
+	 * the character ranges in the input they have been derived from.
+	 * @return The resulting spreadsheet
+	 * @see {@link #readValue(String)}
+	 */
+	/*@ non_null @*/ public static Spreadsheet read(/*@ non_null @*/ Scanner scanner, /*@ non_null @*/ String comment_marker, /*@ non_null @*/ String separator, /*@ null @*/ Map<Cell,Part> mapping)
+	{
+		int cols = 0, in_line_nb = -1, out_line_nb = -1;
+		List<List<Object>> rows = new ArrayList<List<Object>>();
+		Pattern pat = Pattern.compile(separator);
+		while (scanner.hasNextLine())
+		{
+			String original_line = scanner.nextLine();
+			String line = original_line.stripLeading();
+			int spaces = original_line.length() - line.length();
+			line = line.stripTrailing();
+			in_line_nb++;
+			if (line.isEmpty() || line.startsWith(comment_marker))
+			{
+				continue;
+			}
+			out_line_nb++;
+			Matcher mat = pat.matcher(line);
+			List<Object> objs = new ArrayList<Object>();
+			int current_col = -1, last_pos = 0;
+			while (mat.find())
+			{
+				current_col++;
+				objs.add(readValue(line.substring(last_pos, mat.start())));
+				if (mapping != null)
+				{
+					mapping.put(Cell.get(current_col, out_line_nb), ComposedPart.compose(new PositionRange(new Position(in_line_nb, last_pos + spaces), new Position(in_line_nb, last_pos + spaces + mat.start() - 1)), NthInput.FIRST));
+				}
+				last_pos = mat.end();
+			}
+			if (last_pos < line.length())
+			{
+				current_col++;
+				objs.add(readValue(line.substring(last_pos)));
+				if (mapping != null)
+				{
+					mapping.put(Cell.get(current_col, out_line_nb), ComposedPart.compose(new PositionRange(new Position(in_line_nb, last_pos + spaces), new Position(in_line_nb, spaces + line.length() - 1)), NthInput.FIRST));
+				}
+			}
+			cols = Math.max(cols, current_col + 1);
+			rows.add(objs);
+		}
+		Spreadsheet out = new Spreadsheet(cols, rows.size());
+		for (int x = 0; x < rows.size(); x++)
+		{
+			List<Object> objs = rows.get(x);
+			for (int y = 0; y < cols; y++)
+			{
+				if (y < objs.size())
+				{
+					out.set(y, x, objs.get(y));
+				}
+				else
+				{
+					out.set(y, x, null);
+				}
+			}
+		}
+		return out;
+	}
+	
+	/**
+	 * Creates a spreadsheet out of a scanner, using "#" as the comment marker
+	 * and any number of whitespace characters as the cell separator.
+	 * @param scanner A scanner pointing to the start of a text source
+	 * @return The resulting spreadsheet
+	 * @see {@link #read(Scanner, String, String)
+	 */
+	/*@ non_null @*/ public static Spreadsheet read(Scanner scanner)
+	{
+		return read(scanner, "#", "\\s+", null);
+	}
+	
+	/**
+	 * Creates a primitive value out of a character string. The rules are as
+	 * follows:
+	 * <ul>
+	 * <li>The string "null" is interpreted as the <tt>null</tt> value
+	 * (insensitive to case)</li>
+	 * <li>The strings "true" and "false" return their corresponding Boolean
+	 * value (insensitive to case)</li>
+	 * <li>A string that parses as an integer returns the corresponding
+	 * integer</li>
+	 * <li>A string that parses as a double returns the corresponding
+	 * double</li>
+	 * <li>Any other string is returned as is</li> 
+	 * </ul>
+	 * @param o The character string
+	 * @return The object
+	 */
+	protected static Object readValue(String o)
+	{
+		if (o.compareToIgnoreCase("null") == 0)
+		{
+			return null;
+		}
+		if (o.compareToIgnoreCase("true") == 0)
+		{
+			return true;
+		}
+		if (o.compareToIgnoreCase("false") == 0)
+		{
+			return false;
+		}
+		try
+		{
+			int x = Integer.parseInt(o);
+			return x;
+		}
+		catch (NumberFormatException e)
+		{
+			// Do nothing
+		}
+		try
+		{
+			double x = Double.parseDouble(o);
+			return x;
+		}
+		catch (NumberFormatException e)
+		{
+			// Do nothing
+		}
+		return o;
 	}
 	
 	/**

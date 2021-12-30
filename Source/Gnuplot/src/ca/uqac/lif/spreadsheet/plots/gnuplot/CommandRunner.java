@@ -1,4 +1,3 @@
-package ca.uqac.lif.spreadsheet.plots.gnuplot;
 /*
   LabPal, a versatile environment for running experiments on a computer
   Copyright (C) 2015-2017 Sylvain Hallé
@@ -16,7 +15,7 @@ package ca.uqac.lif.spreadsheet.plots.gnuplot;
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+package ca.uqac.lif.spreadsheet.plots.gnuplot;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,7 @@ import java.util.Vector;
  * Facilitates the execution of an external command and the collection of
  * its output.
  */
-/* package */ class CommandRunner extends Thread
+public class CommandRunner extends Thread
 {
 	protected String[] m_command;
 	protected String m_stdin;

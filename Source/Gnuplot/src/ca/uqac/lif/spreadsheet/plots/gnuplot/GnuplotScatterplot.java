@@ -85,6 +85,13 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 		super.setTitle(title);
 		return this;
 	}
+	
+	@Override
+	public GnuplotScatterplot setCaption(Axis a, String caption)
+	{
+		super.setCaption(a, caption);
+		return this;
+	}
 
 	@Override
 	public void toGnuplot(PrintStream out, Spreadsheet table, PlotFormat term, String lab_title, boolean with_caption)

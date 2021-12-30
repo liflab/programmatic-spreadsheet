@@ -17,33 +17,32 @@
  */
 package examples.gnuplot;
 
-import java.io.IOException;
+import static ca.uqac.lif.spreadsheet.functions.GetFrequencies.createPair;
+
+import java.util.Arrays;
+import java.util.List;
 
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.plot.Plot.Axis;
-import ca.uqac.lif.spreadsheet.plot.Scatterplot;
-import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotScatterplot;
+import ca.uqac.lif.spreadsheet.functions.GetFrequencies;
+import ca.uqac.lif.spreadsheet.plot.HeatMap;
+import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotHeatMap;
 import examples.util.GraphViewer.BitmapJFrame;
 
-public class ScatterplotSimple
+public class HeatmapSimple
 {
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args)
 	{
-		Spreadsheet s = Spreadsheet.read(3, 11, 
-				"x", "Apples", "Oranges",
-				0,   0,        3, 
-				1,   1,        1,
-				2,   2,        4,
-				3,   3,        1,
-				4,   4,        5,
-				5,   5,        9,
-				6,   6,        2,
-				7,   7,        6,
-				8,   8,        5,
-				9,   9,        3);
-		Scatterplot plot = new GnuplotScatterplot()
-				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
+		GetFrequencies f = new GetFrequencies(0, 12, 4, 0, 6, 3);
+		List<Double[]> list = Arrays.asList(
+				createPair(1, 1),
+				createPair(3, 5),
+				createPair(2, 1),
+				createPair(7, 3)
+				);
+		Spreadsheet s = (Spreadsheet) f.evaluate(list)[0];
+		HeatMap plot = new GnuplotHeatMap().setTitle("A simple heat map").setScaleCaption("Score");
 		BitmapJFrame window = new BitmapJFrame(plot, s);
 		window.setVisible(true);
 	}
+
 }

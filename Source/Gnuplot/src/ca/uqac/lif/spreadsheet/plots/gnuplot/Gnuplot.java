@@ -105,7 +105,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	/**
 	 * The plot's title.
 	 */
-	protected String m_title;
+	protected String m_title = "";
 	
 	/**
 	 * The palette used to render the plot.
