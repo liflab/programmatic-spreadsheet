@@ -17,7 +17,33 @@
  */
 package ca.uqac.lif.spreadsheet.plot.part;
 
-public class PlotKey extends PlotPart
-{
+import ca.uqac.lif.petitpoucet.function.vector.NthElement;
+import ca.uqac.lif.spreadsheet.plot.Plot;
 
+/**
+ * Designates a plot element by its position in some ordering.
+ */
+public class NumberedElement extends NthElement
+{
+	/**
+	 * Creates a new numbered element part.
+	 * @param index The index of the element
+	 */
+	public NumberedElement(int index)
+	{
+		super(index);
+	}
+	
+	@Override
+	public boolean appliesTo(Object o)
+	{
+		return super.appliesTo(o) || o instanceof Plot;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Element #" + getIndex();
+	}
+	
 }

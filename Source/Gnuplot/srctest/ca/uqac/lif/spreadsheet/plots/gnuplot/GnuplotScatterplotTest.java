@@ -28,10 +28,14 @@ import ca.uqac.lif.petitpoucet.ComposedPart;
 import ca.uqac.lif.petitpoucet.OrNode;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.UnknownNode;
 import ca.uqac.lif.petitpoucet.function.strings.Range;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.plot.UnsupportedPlotFormatException;
+import ca.uqac.lif.spreadsheet.plot.part.Coordinate;
+import ca.uqac.lif.spreadsheet.plot.part.NamedElement;
+import ca.uqac.lif.spreadsheet.plot.part.NumberedElement;
 import ca.uqac.lif.spreadsheet.plot.part.PlotAxis;
 import ca.uqac.lif.spreadsheet.plot.part.PlotPart;
 import ca.uqac.lif.spreadsheet.plot.part.PointAt;
@@ -202,5 +206,178 @@ public class GnuplotScatterplotTest
 				assertEquals(s, child.getSubject());
 			}
 		}
+	}
+
+	@Test
+	public void testExplanation7() throws IllegalArgumentException, UnsupportedPlotFormatException, IOException
+	{
+		Spreadsheet s = Spreadsheet.read(3, 11, 
+				"Something", "Apples", "Oranges",
+				0,   0,        3, 
+				1,   1,        1,
+				2,   2,        4,
+				3,   3,        1,
+				4,   4,        5,
+				5,   5,        9,
+				6,   6,        2,
+				7,   7,        6,
+				8,   8,        5,
+				9,   9,        3);
+		GnuplotScatterplot plot = new GnuplotScatterplot()
+				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
+		plot.render(null, s);
+		// The explanation of the 2nd element of the legend is made of cell 2,0
+		{
+			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(1), PlotPart.legend, Part.self));
+			assertEquals(1, root.getOutputLinks(0).size());
+			PartNode child = (PartNode) root.getOutputLinks(0).get(0).getNode();
+			assertEquals(ComposedPart.compose(Cell.get(2, 0), Part.self), child.getPart());
+			assertEquals(s, child.getSubject());
+		}
+		// The explanation of the 3nd element of the legend is unknown
+		{
+			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(3), PlotPart.legend, Part.self));
+			assertEquals(1, root.getOutputLinks(0).size());
+			assertTrue(root.getOutputLinks(0).get(0).getNode() instanceof UnknownNode);
+		}
+	}
+
+	@Test
+	public void testExplanation8() throws IllegalArgumentException, UnsupportedPlotFormatException, IOException
+	{
+		Spreadsheet s = Spreadsheet.read(3, 11, 
+				"Something", "Apples", "Oranges",
+				0,   0,        3, 
+				1,   1,        1,
+				2,   2,        4,
+				3,   3,        1,
+				4,   4,        5,
+				5,   5,        9,
+				6,   6,        2,
+				7,   7,        6,
+				8,   8,        5,
+				9,   9,        3);
+		GnuplotScatterplot plot = new GnuplotScatterplot()
+				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
+		plot.render(null, s);
+		// The explanation of the whole legend is made of cells 1,0 and 2,0
+		{
+			PartNode root = plot.getExplanation(ComposedPart.compose(PlotPart.legend, Part.self));
+			assertEquals(1, root.getOutputLinks(0).size());
+			AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
+			assertEquals(2, and.getOutputLinks(0).size());
+			{
+				PartNode child = (PartNode) and.getOutputLinks(0).get(0).getNode();
+				assertEquals(ComposedPart.compose(Cell.get(1, 0), Part.self), child.getPart());
+				assertEquals(s, child.getSubject());
+			}
+			{
+				PartNode child = (PartNode) and.getOutputLinks(0).get(1).getNode();
+				assertEquals(ComposedPart.compose(Cell.get(2, 0), Part.self), child.getPart());
+				assertEquals(s, child.getSubject());
+			}
+		}
+		// The explanation of the 3nd element of the legend is unknown
+		{
+			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(3), PlotPart.legend, Part.self));
+			assertEquals(1, root.getOutputLinks(0).size());
+			assertTrue(root.getOutputLinks(0).get(0).getNode() instanceof UnknownNode);
+		}
+	}
+
+	@Test
+	public void testExplanation9() throws IllegalArgumentException, UnsupportedPlotFormatException, IOException
+	{
+		Spreadsheet s = Spreadsheet.read(3, 11, 
+				"Something", "Apples", "Oranges",
+				0,   0,        3, 
+				1,   1,        null,
+				null,2,        4,
+				3,   3,        1,
+				4,   4,        5,
+				5,   5,        9,
+				6,   6,        2,
+				7,   7,        6,
+				8,   8,        5,
+				9,   9,        3);
+		GnuplotScatterplot plot = new GnuplotScatterplot()
+				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
+		plot.render(null, s);
+		// The explanation of the 5th point of the second data series is the pair of cells 0,7-2,7
+		PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(4), new NumberedElement(1), PlotPart.dataSeries, Part.self));
+		assertEquals(1, root.getOutputLinks(0).size());
+		AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
+		assertEquals(2, and.getOutputLinks(0).size());
+		{
+			PartNode child = (PartNode) and.getOutputLinks(0).get(0).getNode();
+			assertEquals(ComposedPart.compose(Cell.get(0, 7), Part.self), child.getPart());
+			assertEquals(s, child.getSubject());
+		}
+		{
+			PartNode child = (PartNode) and.getOutputLinks(0).get(1).getNode();
+			assertEquals(ComposedPart.compose(Cell.get(2, 7), Part.self), child.getPart());
+			assertEquals(s, child.getSubject());
+		}
+	}
+
+	@Test
+	public void testExplanation10() throws IllegalArgumentException, UnsupportedPlotFormatException, IOException
+	{
+		Spreadsheet s = Spreadsheet.read(3, 11, 
+				"Something", "Apples", "Oranges",
+				0,   0,        3, 
+				1,   1,        null,
+				null,2,        4,
+				3,   3,        1,
+				4,   4,        5,
+				5,   5,        9,
+				6,   6,        2,
+				7,   7,        6,
+				8,   8,        5,
+				9,   9,        3);
+		GnuplotScatterplot plot = new GnuplotScatterplot()
+				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
+		plot.render(null, s);
+		// The explanation of the 5th point of the data series "Oranges" is the pair of cells 0,7-2,7
+		PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(4), new NamedElement("Oranges"), PlotPart.dataSeries, Part.self));
+		assertEquals(1, root.getOutputLinks(0).size());
+		AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
+		assertEquals(2, and.getOutputLinks(0).size());
+		{
+			PartNode child = (PartNode) and.getOutputLinks(0).get(0).getNode();
+			assertEquals(ComposedPart.compose(Cell.get(0, 7), Part.self), child.getPart());
+			assertEquals(s, child.getSubject());
+		}
+		{
+			PartNode child = (PartNode) and.getOutputLinks(0).get(1).getNode();
+			assertEquals(ComposedPart.compose(Cell.get(2, 7), Part.self), child.getPart());
+			assertEquals(s, child.getSubject());
+		}
+	}
+
+	@Test
+	public void testExplanation11() throws IllegalArgumentException, UnsupportedPlotFormatException, IOException
+	{
+		Spreadsheet s = Spreadsheet.read(3, 11, 
+				"Something", "Apples", "Oranges",
+				0,   0,        3, 
+				1,   1,        null,
+				null,2,        4,
+				3,   3,        1,
+				4,   4,        5,
+				5,   5,        9,
+				6,   6,        2,
+				7,   7,        6,
+				8,   8,        5,
+				9,   9,        3);
+		GnuplotScatterplot plot = new GnuplotScatterplot()
+				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
+		plot.render(null, s);
+		// The explanation of the x-coordinate of the 5th point of the data series "Apples" is the single cell 0,6
+		PartNode root = plot.getExplanation(ComposedPart.compose(new Coordinate(Axis.X), new NumberedElement(4), new NamedElement("Apples"), PlotPart.dataSeries, Part.self));
+		assertEquals(1, root.getOutputLinks(0).size());
+		PartNode child = (PartNode) root.getOutputLinks(0).get(0).getNode();
+		assertEquals(ComposedPart.compose(Cell.get(0, 6), Part.self), child.getPart());
+		assertEquals(s, child.getSubject());
 	}
 }

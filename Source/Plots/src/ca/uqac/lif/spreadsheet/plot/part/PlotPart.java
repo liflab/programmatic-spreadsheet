@@ -31,6 +31,16 @@ public abstract class PlotPart implements Part
 	 */
 	public static final Caption caption = new Caption();
 	
+	/**
+	 * A single visible instance of the {@link Legend} part.
+	 */
+	public static final Legend legend = new Legend();
+	
+	/**
+	 * A single visible instance of the {@link DataSeries} part.
+	 */
+	public static final DataSeries dataSeries = new DataSeries();
+	
 	@Override
 	public boolean appliesTo(Object o)
 	{
@@ -66,6 +76,46 @@ public abstract class PlotPart implements Part
 		public String toString()
 		{
 			return "Caption";
+		}
+	}
+	
+	/**
+	 * Part referring to the listing of the data series in a plot.
+	 */
+	public static class Legend extends PlotPart
+	{
+		/**
+		 * Creates a new instance of the legend part.
+		 */
+		protected Legend()
+		{
+			super();
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "Legend";
+		}
+	}
+	
+	/**
+	 * Part referring to the data series in a plot.
+	 */
+	public static class DataSeries extends PlotPart
+	{
+		/**
+		 * Creates a new instance of the data series part.
+		 */
+		protected DataSeries()
+		{
+			super();
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "Data series";
 		}
 	}
 }
