@@ -611,4 +611,10 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 			root.addChild(f.getUnknownNode());
 		}
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Scatterplot";
+	}
 }

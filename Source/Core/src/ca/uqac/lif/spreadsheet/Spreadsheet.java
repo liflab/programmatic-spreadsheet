@@ -352,6 +352,25 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	}
 	
 	/**
+	 * Gets a cell of the spreadsheet, and attempts to turn it into a number.
+	 * @param col The column index
+	 * @param row The row index
+	 * @return A number, or <tt>null</tt> if the value in the cell is not a
+	 * number 
+	 * @throws SpreadsheetOutOfBoundsException If the location is
+	 * outside the bounds of the spreadsheet
+	 */
+	/*@ pure null @*/public Double getNumerical(int col, int row)
+	{
+		Object o = get(col, row);
+		if (o instanceof Number)
+		{
+			return ((Number) o).doubleValue();
+		}
+		return null;
+	}
+	
+	/**
 	 * Gets a column of the spreadsheet, and attempts to turn its elements into
 	 * numbers.
 	 * @param col The column index

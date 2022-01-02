@@ -29,6 +29,7 @@ public class ScatterplotSimple
 {
 	public static void main(String[] args) throws IOException
 	{
+		/* Create a spreadsheet from hard-coded values using the read method.*/
 		Spreadsheet s = Spreadsheet.read(3, 11, 
 				"x", "Apples", "Oranges",
 				0,   0,        3, 
@@ -41,9 +42,12 @@ public class ScatterplotSimple
 				7,   7,        6,
 				8,   8,        5,
 				9,   9,        3);
+		
+		/* Create a scatterplot with a title and a caption for the y -axis. */
 		Scatterplot plot = new GnuplotScatterplot()
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
-		BitmapJFrame window = new BitmapJFrame(plot, s);
-		window.setVisible(true);
+		
+		/* Display the scatterplot in a window. */
+		new BitmapJFrame(plot, s).display();
 	}
 }

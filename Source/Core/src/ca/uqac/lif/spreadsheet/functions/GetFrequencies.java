@@ -17,11 +17,22 @@
  */
 package ca.uqac.lif.spreadsheet.functions;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import ca.uqac.lif.dag.LabelledNode;
+import ca.uqac.lif.petitpoucet.AndNode;
+import ca.uqac.lif.petitpoucet.ComposedPart;
+import ca.uqac.lif.petitpoucet.NodeFactory;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
+import ca.uqac.lif.petitpoucet.function.NthInput;
+import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.petitpoucet.function.vector.NthElement;
+import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.DataFormatter;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
@@ -103,6 +114,12 @@ public class GetFrequencies extends AtomicFunction
 	protected double m_widthY;
 	
 	/**
+	 * An array associating each cell of the table with the number pairs that
+	 * correspond to it.
+	 */
+	protected List<Integer>[][] m_pairs;
+	
+	/**
 	 * Creates a new instance of the function.
 	 * @param min_x  The preconfigured minimum value of the generated frequency table
 	 * along the x axis
@@ -153,7 +170,58 @@ public class GetFrequencies extends AtomicFunction
 	{
 		this(min_x, max_x, b_x, min_y, max_y, b_y, 1d);
 	}
+	
+	@Override
+	public PartNode getExplanation(Part d, NodeFactory f)
+	{
+		PartNode root = f.getPartNode(d, this);
+		int mentioned_output = NthOutput.mentionedOutput(d);
+		if (mentioned_output != 0)
+		{
+			root.addChild(f.getUnknownNode());
+			return root;
+		}
+		Part d_tail = d.tail();
+		if (d_tail.head() instanceof Cell)
+		{
+			Cell c = (Cell) d_tail.head();
+			int row = c.getRow(), col = c.getColumn();
+			if (row < 0 || row > m_numBucketsY || col < 0 || col > m_numBucketsX)
+			{
+				// Unknown cell
+				root.addChild(f.getUnknownNode());
+			}
+			else
+			{
+				List<Integer> indices = m_pairs[row - 1][col - 1];
+				if (indices == null)
+				{
+					root.addChild(f.getPartNode(ComposedPart.compose(Part.nothing, NthInput.FIRST), this));	
+				}
+				else
+				{
+					LabelledNode to_add = root;
+					if (indices.size() > 1)
+					{
+						AndNode and = f.getAndNode();
+						to_add.addChild(and);
+						to_add = and;
+					}
+					for (int index : indices)
+					{
+						to_add.addChild(f.getPartNode(ComposedPart.compose(new NthElement(index), NthInput.FIRST), this));
+					}
+				}
+			}
+		}
+		else
+		{
+			root.addChild(f.getUnknownNode());
+		}
+		return root;
+	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Object[] getValue(Object... inputs) throws InvalidNumberOfArgumentsException
 	{
@@ -162,9 +230,9 @@ public class GetFrequencies extends AtomicFunction
 			throw new InvalidArgumentTypeException("Argument is not a list");	
 		}
 		List<?> entries = (List<?>) inputs[0];
-		// Step 1: create table // TODO: do a spreadsheet instead
 		Spreadsheet table = new Spreadsheet(m_numBucketsX + 1, m_numBucketsY + 1, 0);
 		table.set(0, 0, null);
+		m_pairs = new List[m_numBucketsY][m_numBucketsX];
 		for (int i = 0; i < m_numBucketsX; i++)
 		{
 			table.set(i + 1, 0, m_widthX * i);
@@ -173,14 +241,15 @@ public class GetFrequencies extends AtomicFunction
 		{
 			table.set(0, i + 1, m_widthY * i);
 		}
-		for (Object o : entries)
+		for (int index = 0; index < entries.size(); index++)
 		{
+			Object o = entries.get(index);
 			double[] pair = getPair(o);
 			if (pair == null)
 			{
 				throw new InvalidArgumentTypeException("A pair of numbers could not be made out of one of the elements of the list.");
 			}
-			add(pair[0], pair[1], table, m_defaultIncrement);
+			add(pair[0], pair[1], table, m_defaultIncrement, index);
 		}
 		return new Object[] {table};
 	}
@@ -191,8 +260,9 @@ public class GetFrequencies extends AtomicFunction
 	 * @param y The y position
 	 * @param table The table
 	 * @param v The value to add in the corresponding cell
+	 * @param index The index of the pair in the function's input list
 	 */
-	protected void add(double x, double y, Spreadsheet table, double v)
+	protected void add(double x, double y, Spreadsheet table, double v, int index)
 	{
 		int bin_x = (int) Math.floor(((x - m_minX) / (m_maxX - m_minX)) * (double) m_numBucketsX);
 		int bin_y = (int) Math.floor(((y - m_minY) / (m_maxY - m_minY)) * (double) m_numBucketsY);
@@ -203,6 +273,24 @@ public class GetFrequencies extends AtomicFunction
 		}
 		Double d = ((Number) table.get(bin_x + 1, bin_y + 1)).doubleValue();
 		table.set(bin_x + 1, bin_y + 1, d + v);
+		 
+		if (m_pairs[bin_y][bin_x] == null)
+		{
+			List<Integer> indices = new ArrayList<Integer>();
+			indices.add(index);
+			m_pairs[bin_y][bin_x] = indices;
+		}
+		else
+		{
+			List<Integer> indices = m_pairs[bin_y][bin_x];
+			indices.add(index);
+		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Get frequencies";
 	}
 	
 	/**

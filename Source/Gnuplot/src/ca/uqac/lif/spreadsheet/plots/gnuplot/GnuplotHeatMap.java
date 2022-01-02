@@ -19,9 +19,16 @@ package ca.uqac.lif.spreadsheet.plots.gnuplot;
 
 import java.io.PrintStream;
 
+import ca.uqac.lif.petitpoucet.ComposedPart;
+import ca.uqac.lif.petitpoucet.NodeFactory;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.plot.HeatMap;
 import ca.uqac.lif.spreadsheet.plot.PlotFormat;
+import ca.uqac.lif.spreadsheet.plot.part.GridCell.CardinalGridCell;
+import ca.uqac.lif.spreadsheet.plot.part.GridCell.OrdinalGridCell;
 
 /**
  * Generates a Gnuplot file from a 2D heatmap.
@@ -77,6 +84,99 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	}
 	
 	@Override
+	protected void explainPlotPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	{
+		Part head = to_explain.head();
+		if (head instanceof OrdinalGridCell)
+		{
+			OrdinalGridCell ogc = (OrdinalGridCell) head;
+			explainOrdinalGridCell((int) ogc.getX(), (int) ogc.getY(), suffix, root, f);
+		}
+		else if (head instanceof CardinalGridCell)
+		{
+			CardinalGridCell ogc = (CardinalGridCell) head;
+			explainCardinalGridCell(ogc.getX(), ogc.getY(), suffix, root, f);
+		}
+		else
+		{
+			root.addChild(f.getUnknownNode());
+		}
+	}
+	
+	/**
+	 * Calculates the explanation of a heatmap cell expressed as an ordinal
+	 * location.
+	 * @param left The position of the cell, counting from the left of the
+	 * heatmap
+	 * @param bottom The position of the cell, counting from the bottom of the
+	 * heatmap
+	 * @param suffix The part suffix to add to the leaf nodes
+	 * @param root The root to which nodes are to be added
+	 * @param f A factory to get node instances
+	 */
+	protected void explainOrdinalGridCell(int left, int bottom, Part suffix, PartNode root, NodeFactory f)
+	{
+		Part new_p = ComposedPart.compose(suffix, Cell.get(left + 1, bottom + 1), Part.self);
+		root.addChild(f.getPartNode(new_p, m_lastSpreadsheet));
+	}
+	
+	/**
+	 * Calculates the explanation of a heatmap cell expressed as an cardinal
+	 * location.
+	 * @param left The x value of the cell
+	 * @param bottom The y value of the cell
+	 * @param suffix The part suffix to add to the leaf nodes
+	 * @param root The root to which nodes are to be added
+	 * @param f A factory to get node instances
+	 */
+	protected void explainCardinalGridCell(double x, double y, Part suffix, PartNode root, NodeFactory f)
+	{
+		int left, top;
+		Double last = null;
+		for (left = 1; left < m_lastSpreadsheet.getWidth() - 1; left++)
+		{
+			Double d = m_lastSpreadsheet.getNumerical(left, 0);
+			if (d == null)
+			{
+				continue;
+			}
+			if (last == null && x < d)
+			{
+				// This value is not contained in any cell
+				left = -1;
+				break;
+			}
+			if (x < d && (last == null || x >= last))
+			{
+				break;
+			}
+			last = d;
+		}
+		last = null;
+		for (top = 1; left < m_lastSpreadsheet.getHeight() - 1; top++)
+		{
+			Double d = m_lastSpreadsheet.getNumerical(0, top);
+			if (d == null)
+			{
+				continue;
+			}
+			if (last == null && x < d)
+			{
+				// This value is not contained in any cell
+				left = -1;
+				break;
+			}
+			if (x < d && (last == null || x >= last))
+			{
+				break;
+			}
+			last = d;
+		}
+		int bottom = m_lastSpreadsheet.getHeight() - top;
+		explainOrdinalGridCell(left, bottom, suffix, root, f);
+	}
+	
+	@Override
 	public GnuplotHeatMap setTitle(String title)
 	{
 		super.setTitle(title);
@@ -109,5 +209,11 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	{
 		m_scaleCaption = caption;
 		return this;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Heatmap";
 	}
 }

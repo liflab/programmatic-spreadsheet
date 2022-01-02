@@ -20,6 +20,7 @@ package ca.uqac.lif.spreadsheet.plot;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import ca.uqac.lif.petitpoucet.function.ExplanationQueryable;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
@@ -27,7 +28,7 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
  * a spreadsheet.
  * @author Sylvain Hallé
  */
-public interface Plot
+public interface Plot extends ExplanationQueryable
 {
 	/**
 	 * The three possible axes of a plot.

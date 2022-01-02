@@ -246,6 +246,10 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 			// Dry run: don't do anything
 			return this;
 		}
+		if (term == null)
+		{
+			term = m_format;
+		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrintStream p_baos = new PrintStream(baos);
 		toGnuplot(p_baos, table, term, with_caption);

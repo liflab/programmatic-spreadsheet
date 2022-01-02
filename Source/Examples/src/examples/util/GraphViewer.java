@@ -32,6 +32,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ca.uqac.lif.dag.Node;
+import ca.uqac.lif.petitpoucet.GraphUtilities;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.Part.All;
 import ca.uqac.lif.petitpoucet.function.LineageDotRenderer;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.plot.Plot;
@@ -126,7 +130,7 @@ public class GraphViewer
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(baos);
-		LineageDotRenderer renderer = new LineageDotRenderer(roots);
+		SpreadsheetLineageDotRenderer renderer = new SpreadsheetLineageDotRenderer(roots);
 		renderer.setNoCaptions(no_captions);
 		renderer.render(ps);
 		return baos.toString();
@@ -180,6 +184,12 @@ public class GraphViewer
 			this(getBytes(p, s));
 		}
 		
+		public BitmapJFrame display()
+		{
+			super.setVisible(true);
+			return this;
+		}
+		
 		/**
 		 * Gets the frame associated to the object
 		 * @return The frame
@@ -203,6 +213,70 @@ public class GraphViewer
 				e.printStackTrace();
 			}
 			return new byte[0];
+		}
+	}
+	
+	/**
+	 * A specialized {@link LineageDotRenderer} with special handling of
+	 * spreadsheets.
+	 */
+	protected static class SpreadsheetLineageDotRenderer extends LineageDotRenderer
+	{
+		public SpreadsheetLineageDotRenderer(List<Node> roots)
+		{
+			super(roots);
+		}
+		
+		public SpreadsheetLineageDotRenderer(Node inner_start, String new_prefix, int nesting_level, boolean captions)
+		{
+			super(inner_start, new_prefix, nesting_level, captions);
+		}
+
+		@Override
+		protected void renderPartNode(PrintStream ps, PartNode current, String n_id)
+		{
+			Object o = current.getSubject();
+			if (!(o instanceof Spreadsheet))
+			{
+				super.renderPartNode(ps, current, n_id);
+				return;
+			}
+			Spreadsheet sheet = (Spreadsheet) o;
+			Part d = current.getPart();
+			String color = getPartNodeColor(d);
+			if (m_noCaptions && ((!GraphUtilities.isLeaf(current) && !m_roots.contains(current)) || m_nestingLevel > 0))
+			{
+				ps.println(m_indent + n_id + " [height=0.25,shape=\"circle\",label=\"\",fillcolor=\"" + color + "\"];");
+			}
+			else
+			{
+				String message;
+				if (d instanceof All)
+				{
+					message = renderSpreadsheet(sheet);
+				}
+				else
+				{
+					message = d.toString() + " of " + renderSpreadsheet(sheet);
+				}
+				ps.println(m_indent + n_id + " [height=0.25,label=<" + message + ">,fillcolor=\"" + color + "\"];");
+			}
+		}
+		
+		@Override
+		protected LineageDotRenderer getSubRenderer(Node inner_start, String new_prefix, int nesting_level, boolean captions)
+		{
+			return new SpreadsheetLineageDotRenderer(inner_start, new_prefix, nesting_level, captions);
+		}
+		
+		protected static String renderSpreadsheet(Spreadsheet s)
+		{
+			String out = s.toString();
+			if (out.length() > 10)
+			{
+				out = out.substring(0, 10) + "&hellip;";
+			}
+			return out;
 		}
 	}
 }
