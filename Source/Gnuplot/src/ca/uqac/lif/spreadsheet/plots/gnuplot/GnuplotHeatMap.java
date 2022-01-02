@@ -133,7 +133,7 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	{
 		int left, top;
 		Double last = null;
-		for (left = 1; left < m_lastSpreadsheet.getWidth() - 1; left++)
+		for (left = 1; left < m_lastSpreadsheet.getWidth(); left++)
 		{
 			Double d = m_lastSpreadsheet.getNumerical(left, 0);
 			if (d == null)
@@ -152,8 +152,9 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 			}
 			last = d;
 		}
+		left--;
 		last = null;
-		for (top = 1; left < m_lastSpreadsheet.getHeight() - 1; top++)
+		for (top = 1; top < m_lastSpreadsheet.getHeight(); top++)
 		{
 			Double d = m_lastSpreadsheet.getNumerical(0, top);
 			if (d == null)
@@ -163,17 +164,18 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 			if (last == null && x < d)
 			{
 				// This value is not contained in any cell
-				left = -1;
+				top = -1;
 				break;
 			}
-			if (x < d && (last == null || x >= last))
+			if (y < d && (last == null || y >= last))
 			{
 				break;
 			}
 			last = d;
 		}
-		int bottom = m_lastSpreadsheet.getHeight() - top;
-		explainOrdinalGridCell(left, bottom, suffix, root, f);
+		top--;
+		//int bottom = m_lastSpreadsheet.getHeight() - top;
+		explainOrdinalGridCell(left - 1, top - 1, suffix, root, f);
 	}
 	
 	@Override

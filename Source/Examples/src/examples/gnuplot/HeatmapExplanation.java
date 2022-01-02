@@ -31,7 +31,7 @@ import ca.uqac.lif.petitpoucet.function.Circuit;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.functions.GetFrequencies;
 import ca.uqac.lif.spreadsheet.plot.DrawPlot;
-import ca.uqac.lif.spreadsheet.plot.part.GridCell.OrdinalGridCell;
+import ca.uqac.lif.spreadsheet.plot.part.GridCell.*;
 import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotHeatMap;
 import examples.util.GraphViewer;
 import examples.util.GraphViewer.BitmapJFrame;
@@ -68,7 +68,7 @@ public class HeatmapExplanation
 		new BitmapJFrame(picture).display();
 		
 		/* Ask the provenance of a part of the plot and display it. */
-		Part part = ComposedPart.compose(new OrdinalGridCell(0, 0), NthOutput.FIRST);
+		Part part = ComposedPart.compose(new CardinalGridCell(6, 2), NthOutput.FIRST);
 		PartNode graph = c.getExplanation(part);
 		GraphViewer.display(graph);
 	}
