@@ -44,7 +44,13 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	/**
 	 * The "dumb" plot format supported by GnuPlot.
 	 */
-	public static final transient PlotFormat DUMB = new PlotFormat("dumb");
+	public static final transient PlotFormat DUMB = new PlotFormat("dumb", "txt");
+	
+	/**
+	 * The "GP" plot format. This simply outputs the Gnuplot text file that
+	 * Gnuplot uses to render a plot.
+	 */
+	public static final transient PlotFormat GP = new PlotFormat("Gnuplot", "gp");
 
 	/**
 	 * The symbol used to separate data values in a file
@@ -84,13 +90,13 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 	 * The bytes of a blank PNG image, used as a placeholder when no plot can
 	 * be drawn
 	 */
-	protected static final transient byte[] s_blankImagePng = FileHelper.internalFileToBytes(Gnuplot.class, "blank.png");
+	public static final transient byte[] s_blankImagePng = FileHelper.internalFileToBytes(Gnuplot.class, "blank.png");
 
 	/**
 	 * The bytes of a blank PDF image, used as a placeholder when no plot can
 	 * be drawn
 	 */
-	protected static final transient byte[] s_blankImagePdf = FileHelper.internalFileToBytes(Gnuplot.class, "blank.pdf");
+	public static final transient byte[] s_blankImagePdf = FileHelper.internalFileToBytes(Gnuplot.class, "blank.pdf");
 
 	/**
 	 * The fill style used to draw the graph
@@ -203,7 +209,7 @@ public abstract class Gnuplot implements Plot, ExplanationQueryable
 		m_customParameters = s;
 		return this;
 	}
-
+	
 	/**
 	 * Generates a stand-alone Gnuplot file for this plot, and prints it to a
 	 * print stream.

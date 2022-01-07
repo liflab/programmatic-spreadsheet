@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2022 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -30,27 +30,27 @@ public final class PlotFormat
 	/**
 	 * An instance of the plot format "PNG".
 	 */
-	public static final transient PlotFormat PNG = new PlotFormat("PNG");
+	public static final transient PlotFormat PNG = new PlotFormat("PNG", "png");
 	
 	/**
 	 * An instance of the plot format "JPEG".
 	 */
-	public static final transient PlotFormat JPEG = new PlotFormat("JPEG");
+	public static final transient PlotFormat JPEG = new PlotFormat("JPEG", "jpg");
 	
 	/**
 	 * An instance of the plot format "SVG".
 	 */
-	public static final transient PlotFormat SVG = new PlotFormat("SVG");
+	public static final transient PlotFormat SVG = new PlotFormat("SVG", "svg");
 	
 	/**
 	 * An instance of the plot format "GIF".
 	 */
-	public static final transient PlotFormat GIF = new PlotFormat("GIF");
+	public static final transient PlotFormat GIF = new PlotFormat("GIF", "gif");
 	
 	/**
 	 * An instance of the plot format "PDF".
 	 */
-	public static final transient PlotFormat PDF = new PlotFormat("PDF");
+	public static final transient PlotFormat PDF = new PlotFormat("PDF", "pdf");
 	
 	/**
 	 * The name of this plot format.
@@ -58,13 +58,29 @@ public final class PlotFormat
 	private final String m_name;
 	
 	/**
+	 * The file extension associated to this plot format.
+	 */
+	private final String m_extension;
+	
+	/**
 	 * Creates a new plot format of a given name.
 	 * @param name The name of the plot format
+	 * @param extension The file extension associated to this plot format
 	 */
-	public PlotFormat(String name)
+	public PlotFormat(String name, String extension)
 	{
 		super();
 		m_name = name;
+		m_extension = extension;
+	}
+	
+	/**
+	 * Returns the file extension associated to this plot format.
+	 * @return The extension
+	 */
+	/*@ pure @*/ public String getExtension()
+	{
+		return m_extension;
 	}
 	
 	@Override

@@ -55,12 +55,23 @@ public class ExpandAsColumns extends SpreadsheetFunction
 	protected int m_headerColumn;
 
 	protected int m_valueColumn;
+	
+	protected String m_headerCaption;
+	
+	protected String m_valueCaption;
 
 	public ExpandAsColumns(int header, int value)
 	{
 		super(1);
 		m_headerColumn = header;
 		m_valueColumn = value;
+	}
+	
+	public ExpandAsColumns(String header, String value)
+	{
+		super(1);
+		m_headerCaption = header;
+		m_valueCaption = value;
 	}
 
 	@Override
@@ -71,6 +82,14 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			throw new InvalidArgumentTypeException("Argument is not a spreadsheet");
 		}
 		Spreadsheet s = (Spreadsheet) inputs[0];
+		if (m_headerCaption != null)
+		{
+			m_headerColumn = s.getColumnIndex(m_headerCaption);
+		}
+		if (m_valueCaption != null)
+		{
+			m_valueColumn = s.getColumnIndex(m_valueCaption);
+		}
 		// Create first line of output spreadsheet with column names of original
 		List<TrackedCell> new_headers = new ArrayList<TrackedCell>();
 		{

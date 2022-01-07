@@ -521,6 +521,24 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	}
 	
 	/**
+	 * Gets the index of the column whose first row contains a given object.
+	 * @param o The object
+	 * @return The column index, or -1 if the object is not found on the first
+	 * row
+	 */
+	public int getColumnIndex(Object o)
+	{
+		for (int i = 0; i < getWidth(); i++)
+		{
+			if (same(o, get(i, 0)))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	/**
 	 * Determines if two objects are the same.
 	 * @param o1 The first object
 	 * @param o2 The second object
