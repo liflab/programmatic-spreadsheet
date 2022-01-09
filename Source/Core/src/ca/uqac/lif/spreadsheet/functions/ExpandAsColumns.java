@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2022 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -114,7 +114,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			}
 			ExpandedRow r = findExpandedRow(original_row, row_index, new_rows);
 			r.add(original_row[m_headerColumn],
-					new TrackedCell(original_row[m_valueColumn], InputCell.get(m_valueColumn, row_index)));
+					new TrackedCell(original_row[m_valueColumn], InputCell.get(m_headerColumn, row_index), InputCell.get(m_valueColumn, row_index)));
 		}
 		return new Object[] {fillSpreadsheet(s, new_rows, new_headers)};
 	}
@@ -156,7 +156,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 		for (int col = 0; col < new_headers.size(); col++)
 		{
 			out.set(col, 0, new_headers.get(col).getValue());
-			m_mapping[0][col] = new InputCell[] {new_headers.get(col).getOrigin()};
+			m_mapping[0][col] = new_headers.get(col).getOrigin();
 		}
 		for (int row = 0; row < new_rows.size(); row++)
 		{
@@ -164,7 +164,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			for (int col = 0; col < r.m_staticColumns.length; col++)
 			{
 				out.set(col, row + 1, r.m_staticColumns[col].getValue());
-				m_mapping[row + 1][col] = new InputCell[] {r.m_staticColumns[col].getOrigin()};
+				m_mapping[row + 1][col] = r.m_staticColumns[col].getOrigin();
 			}
 			for (int col = r.m_staticColumns.length; col < new_headers.size(); col++)
 			{
@@ -173,7 +173,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 				if (tc != null)
 				{
 					out.set(col, row + 1, tc.getValue());
-					m_mapping[row + 1][col] = new InputCell[] {tc.getOrigin(), InputCell.get(m_headerColumn, tc.getOrigin().getRow())};
+					m_mapping[row + 1][col] = tc.getOrigin();
 				}
 			}
 		}
@@ -187,7 +187,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			super();
 			m_staticColumns = new TrackedCell[row.length - 2];
 			int index = 0;
-			for (int i = 0; i < m_staticColumns.length; i++)
+			for (int i = 0; i < row.length; i++)
 			{
 				if (i != m_headerColumn && i != m_valueColumn)
 				{
@@ -201,13 +201,12 @@ public class ExpandAsColumns extends SpreadsheetFunction
 		public boolean matches(Object[] row)
 		{
 			int index = 0;
-			for (int i = 0; i < m_staticColumns.length; i++)
+			for (int i = 0; i < row.length; i++)
 			{
 				if (i != m_headerColumn && i != m_valueColumn)
 				{
-					Object tv = m_staticColumns[index].getValue();
-					if (((tv == null) != (row[i] == null)) ||
-							(tv != null && !tv.equals(row[i])))
+					Object tv = m_staticColumns[index++].getValue();
+					if (!Spreadsheet.same(tv, row[i]))
 					{
 						return false;
 					}
@@ -216,5 +215,15 @@ public class ExpandAsColumns extends SpreadsheetFunction
 			}
 			return true;
 		}		
+	}
+	
+	@Override
+	public String toString()
+	{
+		if (m_headerCaption != null && m_valueCaption != null)
+		{
+			return "Expand " + m_headerCaption + " as " + m_valueCaption;
+		}
+		return "Expand " + m_headerColumn + " as " + m_valueColumn;
 	}
 }

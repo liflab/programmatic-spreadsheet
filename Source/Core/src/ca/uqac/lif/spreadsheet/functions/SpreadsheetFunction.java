@@ -161,7 +161,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		for (int col = 0; col < new_headers.size(); col++)
 		{
 			out.set(col, 0, new_headers.get(col).getValue());
-			m_mapping[0][col] = new InputCell[] {new_headers.get(col).getOrigin()};
+			m_mapping[0][col] = new_headers.get(col).getOrigin();
 		}
 		for (int row = 0; row < new_rows.size(); row++)
 		{
@@ -169,7 +169,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 			for (int col = 0; col < r.m_staticColumns.length; col++)
 			{
 				out.set(col, row + 1, r.m_staticColumns[col].getValue());
-				m_mapping[row + 1][col] = new InputCell[] {r.m_staticColumns[col].getOrigin()};
+				m_mapping[row + 1][col] = r.m_staticColumns[col].getOrigin();
 			}
 			for (int col = r.m_staticColumns.length; col < new_headers.size(); col++)
 			{
@@ -178,7 +178,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 				if (tc != null)
 				{
 					out.set(col, row + 1, tc.getValue());
-					m_mapping[row + 1][col] = new InputCell[] {tc.getOrigin()};
+					m_mapping[row + 1][col] = tc.getOrigin();
 				}
 			}
 		}
@@ -198,7 +198,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		/**
 		 * The cell of the original spreadsheet this value derives from.
 		 */
-		/*@ non_null @*/ protected final InputCell m_origin;
+		/*@ non_null @*/ protected final InputCell[] m_origin;
 
 		/**
 		 * Creates a new tracked cell.
@@ -206,7 +206,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * @param origin The cell of the original spreadsheet this value derives
 		 * from
 		 */
-		public TrackedCell(/*@ null @*/ Object value, /*@ non_null @*/ InputCell origin)
+		public TrackedCell(/*@ null @*/ Object value, /*@ non_null @*/ InputCell ... origin)
 		{
 			super();
 			m_value = value;
@@ -217,7 +217,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * Gets the cell of the original table this value derives from.
 		 * @return The cell
 		 */
-		/*@ pure non_null @*/ public InputCell getOrigin()
+		/*@ pure non_null @*/ public InputCell[] getOrigin()
 		{
 			return m_origin;
 		}

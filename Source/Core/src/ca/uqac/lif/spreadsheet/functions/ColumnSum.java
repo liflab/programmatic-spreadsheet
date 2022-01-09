@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021-2022 Sylvain Hallé
+    Copyright (C) 2021 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -22,26 +22,14 @@ import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
- * Function that renames the first cell of a column.
+ * Computes the sum of each column.
  * @author Sylvain Hallé
  */
-public class RenameColumn extends SpreadsheetFunction
+public class ColumnSum extends SpreadsheetFunction
 {
-	/**
-	 * The original column name.
-	 */
-	protected final String m_from;
-	
-	/**
-	 * The new column name.
-	 */
-	protected final String m_to;
-	
-	public RenameColumn(String from, String to)
+	public ColumnSum()
 	{
 		super(1);
-		m_from = from;
-		m_to = to;
 	}
 
 	@Override
@@ -52,13 +40,31 @@ public class RenameColumn extends SpreadsheetFunction
 			throw new InvalidArgumentTypeException("Argument is not a spreadsheet");
 		}
 		Spreadsheet s = (Spreadsheet) inputs[0];
-		int index = s.getColumnIndex(m_from);
-		if (index < 0)
+		Spreadsheet out = new Spreadsheet(s.getWidth(), 2);
+		double[] totals = new double[s.getWidth()];
+		m_mapping = new InputCell[2][s.getWidth()][];
+		for (int col = 0; col < totals.length; col++)
 		{
-			return new Object[] {s};
+			out.set(col, 0, s.get(col, 0));
+			m_mapping[0][col] = new InputCell[] {InputCell.get(col, 0)};
+			m_mapping[1][col] = new InputCell[s.getHeight() - 1];
 		}
-		Spreadsheet new_s = s.duplicate(true);
-		new_s.set(index, 0, m_to);
-		return new Object[] {new_s};
+		for (int row = 1; row < s.getHeight(); row++)
+		{
+			for (int col = 0; col < totals.length; col++)
+			{
+				Double n = s.getNumerical(col, row);
+				if (n != null)
+				{
+					totals[col] += n;
+				}
+				m_mapping[1][col][row - 1] = InputCell.get(col, row);
+			}
+		}
+		for (int col = 0; col < totals.length; col++)
+		{
+			out.set(col, 1, totals[col]);
+		}
+		return new Object[] {out};
 	}
 }

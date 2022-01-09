@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2022 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -29,6 +29,7 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.functions.ExpandAsColumns;
+import ca.uqac.lif.spreadsheet.functions.SpreadsheetFunction.InputCell;
 
 public class ExpandAsColumnsTest
 {
@@ -55,9 +56,9 @@ public class ExpandAsColumnsTest
 			AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
 			assertEquals(2, and.getOutputLinks(0).size());
 			PartNode child1 = (PartNode) and.getOutputLinks(0).get(0).getNode();
-			assertEquals(ComposedPart.compose(Cell.get(2, 1), NthInput.FIRST), child1.getPart());
+			assertEquals(ComposedPart.compose(Cell.get(1, 1), NthInput.FIRST), child1.getPart());
 			PartNode child2 = (PartNode) and.getOutputLinks(0).get(1).getNode();
-			assertEquals(ComposedPart.compose(Cell.get(1, 1), NthInput.FIRST), child2.getPart());
+			assertEquals(ComposedPart.compose(Cell.get(2, 1), NthInput.FIRST), child2.getPart());
 		}
 	}
 	
@@ -90,5 +91,53 @@ public class ExpandAsColumnsTest
 		assertEquals(10, out.get(0, 2));
 		assertEquals(55, out.get(1, 2));
 		assertNull(out.get(2, 2));
+	}
+	
+	@Test
+	public void testExplain1()
+	{
+		Spreadsheet s = Spreadsheet.read(3, 6,
+				"Size", "Method", "Time",
+				1,      "A",      10,
+				2,      "A",      20,
+				3,      "A",      30,
+				1,      "B",      5,
+				2,      "B",      7
+				);
+		ExpandAsColumns f = new ExpandAsColumns("Method", "Time");
+		Spreadsheet out = (Spreadsheet) f.evaluate(s)[0];
+		assertEquals(Spreadsheet.read(3, 4,
+				"Size", "A", "B",
+				1,      10,  5,
+				2,      20,  7,
+				3,      30,  null), out);
+		InputCell[] cells = f.trackToInput(1, 2);
+		assertEquals(2, cells.length);
+		assertEquals(InputCell.get(1, 2), cells[0]);
+		assertEquals(InputCell.get(2, 2), cells[1]);
+	}
+	
+	@Test
+	public void testExplain2()
+	{
+		Spreadsheet s = Spreadsheet.read(3, 6,
+				"Method", "Size", "Time",
+				"A",      1,      10,
+				"A",      2,      20,
+				"A",      3,      30,
+				"B",      1,      5,
+				"B",      2,      7
+				);
+		ExpandAsColumns f = new ExpandAsColumns("Method", "Time");
+		Spreadsheet out = (Spreadsheet) f.evaluate(s)[0];
+		assertEquals(Spreadsheet.read(3, 4,
+				"Size", "A", "B",
+				1,      10,  5,
+				2,      20,  7,
+				3,      30,  null), out);
+		InputCell[] cells = f.trackToInput(1, 2);
+		assertEquals(2, cells.length);
+		assertEquals(InputCell.get(0, 2), cells[0]);
+		assertEquals(InputCell.get(2, 2), cells[1]);
 	}
 }
