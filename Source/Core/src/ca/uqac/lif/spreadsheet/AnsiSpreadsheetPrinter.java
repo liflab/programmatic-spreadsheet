@@ -59,6 +59,12 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	 * The string inserted for a repeated value when cells are grouped.
 	 */
 	/*@ non_null @*/ protected String m_repeatSymbol;
+	
+	/**
+	 * A flag determining whether cells should be padded to be of equal length on
+	 * each row.
+	 */
+	protected boolean m_padColumns;
 
 	/**
 	 * Sets the maximum width the table is allowed to take. 
@@ -97,6 +103,19 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	}
 	
 	/**
+	 * Sets whether cells should be padded to be of equal length on
+	 * each row.
+	 * @param b Set to {@code true} to pad columns, {@code false}
+	 * otherwise
+	 * @return This renderer
+	 */
+	/*@ non_null @*/ public AnsiSpreadsheetPrinter setPadColumns(boolean b)
+	{
+		m_padColumns = b;
+		return this;
+	}
+	
+	/**
 	 * Sets the column separator. 
 	 * @param separator A character inserted between each column in each row
 	 * @return This renderer
@@ -129,6 +148,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 		m_headers = false;
 		m_maxWidth = -1;
 		m_repeatSymbol = "-";
+		m_padColumns = true;
 	}
 
 	@Override
@@ -232,6 +252,11 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	 */
 	protected static void printWidth(PrintStream ps, String s, int width)
 	{
+		if (width < 0)
+		{
+			ps.print(s);
+			return;
+		}
 		if (s.length() > width)
 		{
 			ps.print(s.substring(0, width));
@@ -256,6 +281,14 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	protected int[] getColumnWidths(String[][] contents)
 	{
 		int[] widths = new int[contents[0].length];
+		if (!m_padColumns)
+		{
+			for (int col = 0; col < widths.length; col++)
+			{
+				widths[col] = -1;
+			}
+			return widths;
+		}
 		for (int row = 0; row < contents.length; row++)
 		{
 			for (int col = 0; col < widths.length; col++)
