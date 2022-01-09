@@ -74,7 +74,7 @@ public class GnuplotBoxPlot extends Gnuplot implements BoxPlot
 			String signum = "+";
 			if (offset < 0)
 				signum = "-";
-			out.print("'-' using ($1" + signum + Math.abs(offset) + "):" + (5 * s_count + 3) + ":" + (5 * s_count + 2) + (5 * s_count + 6) + ":" + (5 * s_count + 5) + ":xticlabels(" + (5 * s_count + 7) + ") with candlesticks title \"" +  getSeriesName(s_count) + "\" whiskerbars, ");
+			out.print("'-' using ($1" + signum + Math.abs(offset) + "):" + (5 * s_count + 3) + ":" + (5 * s_count + 2) + ":" + (5 * s_count + 6) + ":" + (5 * s_count + 5) + ":xticlabels(" + (5 * s_count + 7) + ") with candlesticks title \"" +  getSeriesName(s_count) + "\" whiskerbars, ");
 			out.print("'' using ($1" + signum + Math.abs(offset) + "):" + (5 * s_count + 4) + ":" + (5 * s_count + 4) + ":" + (5 * s_count + 4) + ":" + (5 * s_count + 4) + " with candlesticks linetype -1 linewidth 2 notitle, ");
 			offset += offset_step;
 		}

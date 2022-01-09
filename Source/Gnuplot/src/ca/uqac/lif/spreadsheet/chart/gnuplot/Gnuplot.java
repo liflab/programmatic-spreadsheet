@@ -74,6 +74,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 		s_printer.setColumnSeparator(",");
 		s_printer.setGroupCells(false);
 		s_printer.setHeaders(false);
+		s_printer.setPadColumns(false);
 	}
 
 	/**
