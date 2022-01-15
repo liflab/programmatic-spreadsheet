@@ -30,9 +30,9 @@ import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.Circuit;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.functions.GetFrequencies;
-import ca.uqac.lif.spreadsheet.plot.DrawPlot;
-import ca.uqac.lif.spreadsheet.plot.part.GridCell.*;
-import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotHeatMap;
+import ca.uqac.lif.spreadsheet.chart.DrawChart;
+import ca.uqac.lif.spreadsheet.chart.part.GridCell.*;
+import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotHeatMap;
 import examples.util.GraphViewer;
 import examples.util.GraphViewer.BitmapJFrame;
 
@@ -46,9 +46,9 @@ public class HeatmapExplanation
 			// The ReadSpreadsheet function reads from a text source
 			GetFrequencies f = new GetFrequencies(0, 12, 4, 0, 6, 3);
 			
-			// The DrawPlot function is instructed to pass the resulting
+			// The DrawChart function is instructed to pass the resulting
 			// spreadsheet to a heatmap and produce an image with it
-			DrawPlot d = new DrawPlot(new GnuplotHeatMap()
+			DrawChart d = new DrawChart(new GnuplotHeatMap()
 					.setTitle("My heatmap"));
 			
 			// Connect these functions together and with the circuit

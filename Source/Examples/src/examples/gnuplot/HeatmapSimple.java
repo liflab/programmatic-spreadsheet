@@ -24,8 +24,8 @@ import java.util.List;
 
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.functions.GetFrequencies;
-import ca.uqac.lif.spreadsheet.plot.HeatMap;
-import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotHeatMap;
+import ca.uqac.lif.spreadsheet.chart.HeatMap;
+import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotHeatMap;
 import examples.util.GraphViewer.BitmapJFrame;
 
 public class HeatmapSimple

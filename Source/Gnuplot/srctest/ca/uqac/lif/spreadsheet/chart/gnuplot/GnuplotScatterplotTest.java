@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.spreadsheet.plots.gnuplot;
+package ca.uqac.lif.spreadsheet.chart.gnuplot;
 
 import static org.junit.Assert.*;
 
@@ -32,14 +32,14 @@ import ca.uqac.lif.petitpoucet.UnknownNode;
 import ca.uqac.lif.petitpoucet.function.strings.Range;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.plot.UnsupportedPlotFormatException;
-import ca.uqac.lif.spreadsheet.plot.part.Coordinate;
-import ca.uqac.lif.spreadsheet.plot.part.NamedElement;
-import ca.uqac.lif.spreadsheet.plot.part.NumberedElement;
-import ca.uqac.lif.spreadsheet.plot.part.PlotAxis;
-import ca.uqac.lif.spreadsheet.plot.part.PlotPart;
-import ca.uqac.lif.spreadsheet.plot.part.PointAt;
-import ca.uqac.lif.spreadsheet.plot.Plot.Axis;
+import ca.uqac.lif.spreadsheet.chart.UnsupportedPlotFormatException;
+import ca.uqac.lif.spreadsheet.chart.part.Coordinate;
+import ca.uqac.lif.spreadsheet.chart.part.NamedElement;
+import ca.uqac.lif.spreadsheet.chart.part.NumberedElement;
+import ca.uqac.lif.spreadsheet.chart.part.ChartAxis;
+import ca.uqac.lif.spreadsheet.chart.part.ChartPart;
+import ca.uqac.lif.spreadsheet.chart.part.PointAt;
+import ca.uqac.lif.spreadsheet.chart.Chart.Axis;
 
 /**
  * Unit tests for {@link GnuplotScatterplot}.
@@ -91,7 +91,7 @@ public class GnuplotScatterplotTest
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
 		plot.render(null, s);
 		// The explanation of the x-axis caption is cell 0,0
-		PartNode root = plot.getExplanation(ComposedPart.compose(PlotPart.caption, new PlotAxis(Axis.X), Part.self));
+		PartNode root = plot.getExplanation(ComposedPart.compose(ChartPart.caption, new ChartAxis(Axis.X), Part.self));
 		assertEquals(1, root.getOutputLinks(0).size());
 		PartNode child = (PartNode) root.getOutputLinks(0).get(0).getNode();
 		assertEquals(ComposedPart.compose(Cell.get(0, 0), Part.self), child.getPart());
@@ -117,7 +117,7 @@ public class GnuplotScatterplotTest
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
 		plot.render(null, s);
 		// The explanation of the x-axis is all column 0 except cell 0,0
-		PartNode root = plot.getExplanation(ComposedPart.compose(new PlotAxis(Axis.X), Part.self));
+		PartNode root = plot.getExplanation(ComposedPart.compose(new ChartAxis(Axis.X), Part.self));
 		assertEquals(1, root.getOutputLinks(0).size());
 		AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
 		assertEquals(10, and.getOutputLinks(0).size());
@@ -148,7 +148,7 @@ public class GnuplotScatterplotTest
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
 		plot.render(null, s);
 		// The explanation of the characters at position 1-2 in the x-axis caption is the same range in cell 0,0
-		PartNode root = plot.getExplanation(ComposedPart.compose(new Range(1, 2), PlotPart.caption, new PlotAxis(Axis.X), Part.self));
+		PartNode root = plot.getExplanation(ComposedPart.compose(new Range(1, 2), ChartPart.caption, new ChartAxis(Axis.X), Part.self));
 		assertEquals(1, root.getOutputLinks(0).size());
 		PartNode child = (PartNode) root.getOutputLinks(0).get(0).getNode();
 		assertEquals(ComposedPart.compose(new Range(1, 2), Cell.get(0, 0), Part.self), child.getPart());
@@ -228,7 +228,7 @@ public class GnuplotScatterplotTest
 		plot.render(null, s);
 		// The explanation of the 2nd element of the legend is made of cell 2,0
 		{
-			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(1), PlotPart.legend, Part.self));
+			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(1), ChartPart.legend, Part.self));
 			assertEquals(1, root.getOutputLinks(0).size());
 			PartNode child = (PartNode) root.getOutputLinks(0).get(0).getNode();
 			assertEquals(ComposedPart.compose(Cell.get(2, 0), Part.self), child.getPart());
@@ -236,7 +236,7 @@ public class GnuplotScatterplotTest
 		}
 		// The explanation of the 3nd element of the legend is unknown
 		{
-			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(3), PlotPart.legend, Part.self));
+			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(3), ChartPart.legend, Part.self));
 			assertEquals(1, root.getOutputLinks(0).size());
 			assertTrue(root.getOutputLinks(0).get(0).getNode() instanceof UnknownNode);
 		}
@@ -262,7 +262,7 @@ public class GnuplotScatterplotTest
 		plot.render(null, s);
 		// The explanation of the whole legend is made of cells 1,0 and 2,0
 		{
-			PartNode root = plot.getExplanation(ComposedPart.compose(PlotPart.legend, Part.self));
+			PartNode root = plot.getExplanation(ComposedPart.compose(ChartPart.legend, Part.self));
 			assertEquals(1, root.getOutputLinks(0).size());
 			AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
 			assertEquals(2, and.getOutputLinks(0).size());
@@ -279,7 +279,7 @@ public class GnuplotScatterplotTest
 		}
 		// The explanation of the 3nd element of the legend is unknown
 		{
-			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(3), PlotPart.legend, Part.self));
+			PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(3), ChartPart.legend, Part.self));
 			assertEquals(1, root.getOutputLinks(0).size());
 			assertTrue(root.getOutputLinks(0).get(0).getNode() instanceof UnknownNode);
 		}
@@ -304,7 +304,7 @@ public class GnuplotScatterplotTest
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
 		plot.render(null, s);
 		// The explanation of the 5th point of the second data series is the pair of cells 0,7-2,7
-		PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(4), new NumberedElement(1), PlotPart.dataSeries, Part.self));
+		PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(4), new NumberedElement(1), ChartPart.dataSeries, Part.self));
 		assertEquals(1, root.getOutputLinks(0).size());
 		AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
 		assertEquals(2, and.getOutputLinks(0).size());
@@ -339,7 +339,7 @@ public class GnuplotScatterplotTest
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
 		plot.render(null, s);
 		// The explanation of the 5th point of the data series "Oranges" is the pair of cells 0,7-2,7
-		PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(4), new NamedElement("Oranges"), PlotPart.dataSeries, Part.self));
+		PartNode root = plot.getExplanation(ComposedPart.compose(new NumberedElement(4), new NamedElement("Oranges"), ChartPart.dataSeries, Part.self));
 		assertEquals(1, root.getOutputLinks(0).size());
 		AndNode and = (AndNode) root.getOutputLinks(0).get(0).getNode();
 		assertEquals(2, and.getOutputLinks(0).size());
@@ -374,7 +374,7 @@ public class GnuplotScatterplotTest
 				.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits");
 		plot.render(null, s);
 		// The explanation of the x-coordinate of the 5th point of the data series "Apples" is the single cell 0,6
-		PartNode root = plot.getExplanation(ComposedPart.compose(new Coordinate(Axis.X), new NumberedElement(4), new NamedElement("Apples"), PlotPart.dataSeries, Part.self));
+		PartNode root = plot.getExplanation(ComposedPart.compose(new Coordinate(Axis.X), new NumberedElement(4), new NamedElement("Apples"), ChartPart.dataSeries, Part.self));
 		assertEquals(1, root.getOutputLinks(0).size());
 		PartNode child = (PartNode) root.getOutputLinks(0).get(0).getNode();
 		assertEquals(ComposedPart.compose(Cell.get(0, 6), Part.self), child.getPart());

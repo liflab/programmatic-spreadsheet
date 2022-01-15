@@ -84,7 +84,7 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	}
 	
 	@Override
-	protected void explainPlotPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
 	{
 		Part head = to_explain.head();
 		if (head instanceof OrdinalGridCell)

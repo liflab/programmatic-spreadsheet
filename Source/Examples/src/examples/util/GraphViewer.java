@@ -1,6 +1,6 @@
 /*
-    Petit Poucet, a library for tracking links between objects.
-    Copyright (C) 2016-2021 Sylvain Hallé
+    A provenance-aware spreadsheet library
+    Copyright (C) 2021 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -38,9 +38,9 @@ import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.Part.All;
 import ca.uqac.lif.petitpoucet.function.LineageDotRenderer;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.plot.Plot;
-import ca.uqac.lif.spreadsheet.plot.UnsupportedPlotFormatException;
-import ca.uqac.lif.spreadsheet.plots.gnuplot.CommandRunner;
+import ca.uqac.lif.spreadsheet.chart.Chart;
+import ca.uqac.lif.spreadsheet.chart.UnsupportedPlotFormatException;
+import ca.uqac.lif.spreadsheet.chart.gnuplot.CommandRunner;
 
 /**
  * Utility methods to render and display explanation graphs.
@@ -179,7 +179,7 @@ public class GraphViewer
 			pack();
 		}
 		
-		public BitmapJFrame(Plot p, Spreadsheet s)
+		public BitmapJFrame(Chart p, Spreadsheet s)
 		{
 			this(getBytes(p, s));
 		}
@@ -199,7 +199,7 @@ public class GraphViewer
 		  return m_frame;
 		}
 		
-		protected static byte[] getBytes(Plot p, Spreadsheet s)
+		protected static byte[] getBytes(Chart p, Spreadsheet s)
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try

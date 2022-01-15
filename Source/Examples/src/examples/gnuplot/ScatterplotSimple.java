@@ -20,9 +20,9 @@ package examples.gnuplot;
 import java.io.IOException;
 
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.plot.Plot.Axis;
-import ca.uqac.lif.spreadsheet.plot.Scatterplot;
-import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotScatterplot;
+import ca.uqac.lif.spreadsheet.chart.Chart.Axis;
+import ca.uqac.lif.spreadsheet.chart.Scatterplot;
+import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotScatterplot;
 import examples.util.GraphViewer.BitmapJFrame;
 
 public class ScatterplotSimple

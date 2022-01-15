@@ -17,7 +17,7 @@
   again will result in Ant using a cached version of the old file! Run
   "ant dummy" to make sure that the correct data is being read. Otherwise
   you might need to run "ant clean" and start over.
--->
+-->                                                   
 <build>
   <!-- Uncomment any of these if you want to override the build
        script's default values -->

@@ -22,7 +22,7 @@ import java.io.PrintStream;
 /**
  * A printer that renders a spreadsheet as HTML markup. The printer takes
  * care of escaping characters of the cell values that clash with HTML
- * reserved symboles (e.g. <tt>&amp;amp;</tt> for <tt>&amp;</tt>), and method
+ * reserved symbols (e.g. <tt>&amp;amp;</tt> for <tt>&amp;</tt>), and method
  * {@link #mergeCells(boolean)} can be used to instruct the printer to merge
  * adjacent cells with the same value into a single cell spanning
  * multiple rows or multiple columns.
@@ -37,6 +37,12 @@ import java.io.PrintStream;
  */
 public class HtmlSpreadsheetPrinter extends StructuredSpreadsheetPrinter
 {
+	@Override
+	public HtmlSpreadsheetPrinter mergeCells(boolean b)
+	{
+		super.mergeCells(b);
+		return this;
+	}
 
 	@Override
 	protected void printTableStart(Spreadsheet s, PrintStream ps)
@@ -56,6 +62,10 @@ public class HtmlSpreadsheetPrinter extends StructuredSpreadsheetPrinter
 		if (row == 0)
 		{
 			ps.println("<thead>");
+		}
+		if (row == 1)
+		{
+			ps.println("<tbody>");
 		}
 		ps.println("<tr>");
 	}
@@ -107,6 +117,10 @@ public class HtmlSpreadsheetPrinter extends StructuredSpreadsheetPrinter
 		if (row == 0)
 		{
 			ps.println("</thead>");
+		}
+		if (row == s.getHeight() - 1) // Last row
+		{
+			ps.println("</tbody>");
 		}
 	}
 	

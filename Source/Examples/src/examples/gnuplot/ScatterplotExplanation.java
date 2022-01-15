@@ -27,10 +27,10 @@ import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.Circuit;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.functions.ReadSpreadsheet;
-import ca.uqac.lif.spreadsheet.plot.DrawPlot;
-import ca.uqac.lif.spreadsheet.plot.Plot.Axis;
-import ca.uqac.lif.spreadsheet.plot.part.PlotPart;
-import ca.uqac.lif.spreadsheet.plots.gnuplot.GnuplotScatterplot;
+import ca.uqac.lif.spreadsheet.chart.DrawChart;
+import ca.uqac.lif.spreadsheet.chart.Chart.Axis;
+import ca.uqac.lif.spreadsheet.chart.part.ChartPart;
+import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotScatterplot;
 import examples.util.GraphViewer;
 import examples.util.GraphViewer.BitmapJFrame;
 
@@ -44,9 +44,9 @@ public class ScatterplotExplanation
 			// The ReadSpreadsheet function reads from a text source
 			ReadSpreadsheet r = new ReadSpreadsheet();
 			
-			// The DrawPlot function is instructed to pass the resulting
+			// The DrawChart function is instructed to pass the resulting
 			// spreadsheet to a scatterplot and produce an image with it
-			DrawPlot d = new DrawPlot(new GnuplotScatterplot()
+			DrawChart d = new DrawChart(new GnuplotScatterplot()
 					.setTitle("Apples and oranges").setCaption(Axis.Y, "Fruits"));
 			
 			// Connect these functions together and with the circuit
@@ -61,7 +61,7 @@ public class ScatterplotExplanation
 		new BitmapJFrame(picture).display();
 		
 		/* Ask the provenance of a part of the plot and display it. */
-		Part part = ComposedPart.compose(PlotPart.legend, NthOutput.FIRST);
+		Part part = ComposedPart.compose(ChartPart.legend, NthOutput.FIRST);
 		PartNode graph = c.getExplanation(part);
 		GraphViewer.display(graph);
 	}

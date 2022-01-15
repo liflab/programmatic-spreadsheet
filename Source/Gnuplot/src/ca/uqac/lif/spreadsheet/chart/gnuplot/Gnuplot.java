@@ -575,11 +575,11 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 		{
 			suffix = cp.subPart(0, i + 1);
 		}
-		explainPlotPart(to_explain.tail(), suffix, root, f);
+		explainChartPart(to_explain.tail(), suffix, root, f);
 		return root;
 	}
 
-	protected void explainPlotPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
 	{
 		root.addChild(f.getUnknownNode());
 	}

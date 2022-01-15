@@ -23,7 +23,7 @@ import ca.uqac.lif.spreadsheet.chart.Chart.Axis;
  * Part that refers to one of the three possible axes in a plot.
  * @author Sylvain Hallé
  */
-public class PlotAxis extends ChartPart
+public class ChartAxis extends ChartPart
 {
 	/**
 	 * The axis designated by the part.
@@ -34,7 +34,7 @@ public class PlotAxis extends ChartPart
 	 * Creates a new plot axis part.
 	 * @param a The axis designated by the part
 	 */
-	public PlotAxis(/*@ non_null @*/ Axis a)
+	public ChartAxis(/*@ non_null @*/ Axis a)
 	{
 		super();
 		m_axis = a;

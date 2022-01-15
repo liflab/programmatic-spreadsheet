@@ -38,7 +38,7 @@ import ca.uqac.lif.spreadsheet.chart.Scatterplot;
 import ca.uqac.lif.spreadsheet.chart.part.Coordinate;
 import ca.uqac.lif.spreadsheet.chart.part.NamedElement;
 import ca.uqac.lif.spreadsheet.chart.part.NumberedElement;
-import ca.uqac.lif.spreadsheet.chart.part.PlotAxis;
+import ca.uqac.lif.spreadsheet.chart.part.ChartAxis;
 import ca.uqac.lif.spreadsheet.chart.part.PointAt;
 import ca.uqac.lif.spreadsheet.chart.part.ChartPart.Caption;
 import ca.uqac.lif.spreadsheet.chart.part.ChartPart.DataSeries;
@@ -200,12 +200,12 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	}
 
 	@Override
-	protected void explainPlotPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
 	{
 		Part head = to_explain.head();
-		if (head instanceof PlotAxis)
+		if (head instanceof ChartAxis)
 		{
-			explainAxis((PlotAxis) head, to_explain.tail(), suffix, root, f);
+			explainAxis((ChartAxis) head, to_explain.tail(), suffix, root, f);
 		}
 		else if (head instanceof PointAt)
 		{
@@ -560,7 +560,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * @param root The root to which explanation nodes are to be appended
 	 * @param f A factory to get node instances
 	 */
-	protected void explainAxis(PlotAxis pa, Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainAxis(ChartAxis pa, Part to_explain, Part suffix, PartNode root, NodeFactory f)
 	{
 		Axis a = pa.getAxis();
 		if (a == Axis.Z)
