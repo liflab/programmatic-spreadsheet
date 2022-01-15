@@ -643,4 +643,20 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 		}
 		return 0;
 	}
+
+	/**
+	 * Retrieves the value of a cell and converts it to a string.
+	 * @param col
+	 * @param row
+	 * @return
+	 */
+	/*@ pure non_null @*/ public String getString(int col, int row)
+	{
+		Object o = get(col, row);
+		if (o == null)
+		{
+			return "null";
+		}
+		return o.toString();
+	}
 }

@@ -25,9 +25,7 @@ import java.awt.Paint;
  */
 public interface Palette
 {
-	public String getDeclaration();
-	
 	public String getHexColor(int color_nb);
 	
-	public Paint getPaint(int color_nb);	
+	public Paint getPaint(int color_nb);
 }

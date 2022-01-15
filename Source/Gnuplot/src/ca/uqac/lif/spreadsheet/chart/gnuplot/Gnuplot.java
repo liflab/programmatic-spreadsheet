@@ -30,6 +30,7 @@ import ca.uqac.lif.petitpoucet.function.ExplanationQueryable;
 import ca.uqac.lif.spreadsheet.AnsiSpreadsheetPrinter;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.Palette;
+import ca.uqac.lif.spreadsheet.chart.DiscretePalette;
 import ca.uqac.lif.spreadsheet.chart.Chart;
 import ca.uqac.lif.spreadsheet.chart.ChartFormat;
 import ca.uqac.lif.spreadsheet.chart.UnsupportedPlotFormatException;
@@ -44,13 +45,13 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	/**
 	 * The "dumb" plot format supported by GnuPlot.
 	 */
-	public static final transient ChartFormat DUMB = new ChartFormat("dumb", "txt");
+	public static final transient ChartFormat DUMB = new ChartFormat("dumb", "txt", "text/plain");
 	
 	/**
 	 * The "GP" plot format. This simply outputs the Gnuplot text file that
 	 * Gnuplot uses to render a plot.
 	 */
-	public static final transient ChartFormat GP = new ChartFormat("Gnuplot", "gp");
+	public static final transient ChartFormat GP = new ChartFormat("Gnuplot", "gp", "text/plain");
 
 	/**
 	 * The symbol used to separate data values in a file
@@ -183,6 +184,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	public Gnuplot()
 	{
 		super();
+		m_palette = DiscretePalette.EGA;
 	}
 
 	/**
@@ -362,6 +364,17 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 		{
 			out.println(m_customParameters);
 		}
+	}
+	
+	/**
+	 * Sets the color palette to be used to render the plot.
+	 * @param p The palette
+	 * @return This plot
+	 */
+	/*@ non_null @*/ public Gnuplot setPalette(Palette p)
+	{
+		m_palette = p;
+		return this;
 	}
 
 	@Override
@@ -582,5 +595,32 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
 	{
 		root.addChild(f.getUnknownNode());
+	}
+	
+	/**
+	 * Gets the Gnuplot string corresponding to the definition of a
+	 * discrete palette.
+	 * @param p The palette
+	 * @return The palette declaration
+	 */
+	public Gnuplot printPaletteDeclaration(PrintStream out, DiscretePalette p) 
+	{
+		out.println("# line styles");
+		for (int i = 0; i < p.colorCount(); i++)
+		{
+			out.println("set style line " + (i + 1) + " lc rgb \"" + p.getHexColor(i) + "\"");
+		}
+		out.println("set palette maxcolors " + p.colorCount());
+		out.print("set palette defined (");
+		for (int i = 0; i < p.colorCount(); i++)
+		{
+			if (i > 0)
+			{
+				out.print(", ");
+			}
+			out.print(i + " \"" + p.getHexColor(i) + "\"");
+		}
+		out.println(")");
+		return this;
 	}
 }

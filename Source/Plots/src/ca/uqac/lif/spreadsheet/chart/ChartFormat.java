@@ -30,27 +30,27 @@ public final class ChartFormat
 	/**
 	 * An instance of the plot format "PNG".
 	 */
-	public static final transient ChartFormat PNG = new ChartFormat("PNG", "png");
+	public static final transient ChartFormat PNG = new ChartFormat("PNG", "png", "image/png");
 	
 	/**
 	 * An instance of the plot format "JPEG".
 	 */
-	public static final transient ChartFormat JPEG = new ChartFormat("JPEG", "jpg");
+	public static final transient ChartFormat JPEG = new ChartFormat("JPEG", "jpg", "image/jpeg");
 	
 	/**
 	 * An instance of the plot format "SVG".
 	 */
-	public static final transient ChartFormat SVG = new ChartFormat("SVG", "svg");
+	public static final transient ChartFormat SVG = new ChartFormat("SVG", "svg", "image/svg+xml");
 	
 	/**
 	 * An instance of the plot format "GIF".
 	 */
-	public static final transient ChartFormat GIF = new ChartFormat("GIF", "gif");
+	public static final transient ChartFormat GIF = new ChartFormat("GIF", "gif", "image/gif");
 	
 	/**
 	 * An instance of the plot format "PDF".
 	 */
-	public static final transient ChartFormat PDF = new ChartFormat("PDF", "pdf");
+	public static final transient ChartFormat PDF = new ChartFormat("PDF", "pdf", "application/pdf");
 	
 	/**
 	 * The name of this plot format.
@@ -63,15 +63,22 @@ public final class ChartFormat
 	private final String m_extension;
 	
 	/**
+	 * The MIME type associated to this plot format.
+	 */
+	private final String m_mimeType;
+	
+	/**
 	 * Creates a new plot format of a given name.
 	 * @param name The name of the plot format
 	 * @param extension The file extension associated to this plot format
+	 * @param mime_type The MIME type associated to this plot format
 	 */
-	public ChartFormat(String name, String extension)
+	public ChartFormat(String name, String extension, String mime_type)
 	{
 		super();
 		m_name = name;
 		m_extension = extension;
+		m_mimeType = mime_type;
 	}
 	
 	/**
@@ -81,6 +88,15 @@ public final class ChartFormat
 	/*@ pure @*/ public String getExtension()
 	{
 		return m_extension;
+	}
+	
+	/**
+	 * Returns the MIME type associated to this plot format.
+	 * @return The type
+	 */
+	/*@ pure @*/ public String getMimeType()
+	{
+		return m_mimeType;
 	}
 	
 	@Override
