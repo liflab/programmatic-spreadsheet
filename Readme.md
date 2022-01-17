@@ -1,224 +1,94 @@
-AntRun: a general-purpose Ant build script
-==========================================
+The Programmatic Spreadsheet
+============================
 
-AntRun is a template structure for Java projects. Through its comprehensive
-Ant build script, it supports automated execution of unit tests, generation
-of [Javadoc](http://www.oracle.com/technetwork/articles/java/index-jsp-135444.html)
-documentation and code coverage reports (with
-[JaCoCo](http://www.eclemma.org/jacoco/)), and download and installation
-of JAR dependencies as specified in an external, user-definable XML file.
-It also includes a boilerplate `.gitignore` file suitable for an Eclipse or
-IntelliJ project.
+The Programmatic Spreadsheet (TPSS for short) is a Java library for the
+manipulation of two-dimensional tabular data. It allows users to create objects
+called *Spreadsheets*, put data into cells of these spreadsheets (or fill it
+from the contents of a file), and use functions to transform these spreadsheets
+into others. TPSS also defines *Charts*, which are abstract graphical
+renditions of the content of a spreadsheet. Currently, charts can be turned
+into images using extensions for either [Gnuplot](https://gnuplot.org) or
+[GRAL](https://github.com/eseifert/gral).
 
-All this is done in a platform-independent way, so your build scripts
-should work on MacOS, Linux and Windows.
+The most important feature of TPSS is **explainability**. Functions that
+transform a spreadsheet keep track of the relationship between each output cell
+and the input cells that have been involved in the generation of the value it
+contains. As a result, a user can "query" a cell (or even part of a value in
+a cell) and automatically obtain the complete lineage information that links it
+back to the corresponding parts of the input. Charts can also be queried in the
+same way; for instance, it is possible to designate a chart element (a point,
+an axis, an element of the legend) and retrace the elements from the input
+spreadsheet from which it originates. This functionality is available
+end-to-end without any extra code required from the user.
 
-Table of Contents                                                    {#toc}
------------------
+The Programmatic Spreadsheet's API is thoroughly documented, and the library
+comes with a number of [code examples](https://github.com/liflab/programmatic-spreadsheet/tree/main/Source/Examples/src/examples)
+illustrating its features.
 
-- [Quick start guide](#quickstart)
-- [Available tasks](#tasks)
-- [Continuous integration](#ci)
-- [Cross-compiling](#xcompile)
-- [About the author](#about)
+Quick Examples
+--------------
 
-Quick start guide                                             {#quickstart}
------------------
 
-1. First make sure you have the following installed:
 
-  - The Java Development Kit (JDK) to compile. AntRun was developed and
-    tested on version 8 of the JDK, but it is probably safe to use
-    any later version.
-  - [Ant](http://ant.apache.org) to automate the compilation and build
-    process
+Using TPSS
+----------
 
-2. Download the AntRun template from
-   [GitHub](https://github.com/sylvainhalle/AntRun) or clone the repository
-   using Git:
-   
-   git@github.com:sylvainhalle/AntRun.git
+To start using TPSS, you need to download:
 
-3. Override any defaults, and specify any dependencies your project
-   requires by editing `config.xml`. In particular, you may want
-   to change the name of the Main class.
+- The latest version of [Petit Poucet](https://github.com/liflab/petitpoucet/releases),
+  both `petitpoucet-core.jar` and `petitpoucet-functions.jar`
+- The library `tpss-core.jar` to create and manipulate spreadsheets
+- To create charts, `tpss-charts.jar`, accompanied by the extension
+  corresponding to the plotting library you wish to use (e.g.
+  `tpss-charts-gnuplot.jar` or `tpss-charts-gral.jar`)
 
-4. Start writing your code in the `Source/Core` folder, and your unit
-   tests in `Source/CoreTest`. Optionally, you can create an Eclipse
-   workspace out of the `Source` folder, with `Core` and `CoreTest` as
-   two projects within this workspace.
+Building TPSS
+-------------
 
-5. Use Ant to build your project. To compile the code, generate the
-   Javadoc, run the unit tests, generate a test and code coverage report
-   and bundle everything in a runnable JAR file, simply type `ant all` on
-   the command line.
-   
-6. If dependencies were specified in step 4 and are not present in the
-   system, type `ant download-deps` to automatically download and install
-   them before compiling.
+The Programmatic Spreadsheet comes with build scripts that can download
+dependencies, compile and test its source code, generate the API
+documentation and produce the JAR files of its various components. Its code can
+be compiled in any platform using [Ant](https://ant.apache.org), and a Java
+Development Kit (JDK) version 8 or higher.
 
-Otherwise, use one of the many [tasks](#tasks) that are predefined.
+The root of its source code is the `Source` folder; the repository is divided
+into a number sub-projects corresponding to the various parts of the library.
+Each sub-project comes with its own [AntRun](https://github.com/sylvainhalle/AntRun)
+build script for Apache Ant (please see the AntRun Readme file for instructions
+on compiling). When compiled, each sub-project generates a distinct JAR file.
 
-Available tasks                                                    {#tasks}
----------------
+The `Source` folder contains a "super-project" Ant build script, whose job is
+to call each sub-project build script in sequence for a given task. Since some
+sub-projects depend on the JAR file generated by compiling another sub-folder,
+the script takes care of compiling them in the proper order and to copy the
+required JAR files to other folders along the way. Using the super-project Ant
+script is the recommended way of building and testing TPSS.
 
-In doubt, execute
+To build from the sources, first download the code or clone the repository
+using Git:
 
-    $ ant -p
+    git@github.com:liflab/programmatic-spreadsheet.git
 
-from the project's top folder to get the list of all available targets.
+In the `Source` folder of the repository, simply type:
 
-### dist
+    ant
 
-The default task. Currently applies `jar`.
+This will take care of downloading dependencies, compiling each sub-project,
+running its unit tests, and generating the JAR file. These files are located in
+the `Source` folder.
 
-### compile
+Other tasks can be listed by typing:
 
-Compiles the project; checks and downloads dependencies, if any of them
-is not fulfilled.
+    ant -p
 
-### compile-tests
 
-Compiles the unit tests.
+Projects that use The Programmatic Spreadsheet
+----------------------------------------------
 
-### jar
-
-Compiles the project, generates the Javadoc and creates a runnable JAR,
-including the sources and the documentation (and possibly the project's
-dependencies, see `download-deps` below).
-
-### test
-
-Performs tests with jUnit and generates code coverage report with JaCoCo.
-The unit test report (in HTML format) is available in the `test/junit`
-folder (which will be created if it does not exist). The code coverage
-report is available in the `test/coverage` folder.
-
-### download-deps
-
-Downloads all the JAR dependencies declared in `config.xml`, and required
-to correctly build the project. The JAR files are extracted and placed in
-the `dep` or the `lib` folder. When compiling (with the `compile` task), the
-compiler is instructed to include these JARs in its classpath. Depending on the
-setting specified in `config.xml`, these JARs are also bundled in the
-output JAR file of the `jar` task.
-
-### download-rt8
-
-Downloads the bootstrap classpath (`rt.jar`) for Java 8, and places it in
-the project's root folder. See [cross-compiling](#xcompile).
-
-### clean
-
-Deletes compiled files and test reports. The standard task to force a fresh
-recompilation of the sources.
-
-### wipe
-
-Like `clean`, but also deletes all JAR dependencies.
-
-Continuous integration                                               {#ci}
-----------------------
-
-AntRun makes it easy to use [continuous
-integration](https://en.wikipedia.org/wiki/Continuous_integration) services
-like [Travis CI](https://travis-ci.org) or
-[Semaphore](http://semaphoreapp.com). The sequence of commands to
-automatically setup the environment, build and test it is (for Linux):
-
-    $ ant
-
-Notice how all the process is platform-independent.
-
-Declaring dependencies                                              {#deps}
-----------------------
-
-Among other configuration settings, dependencies can be declared in the file
-`config.xml`. Locate the `<dependencies>` section in that file, and add as
-many `<dependency>` entries as required. The structure of such a section is as
-follows:
-
-``` xml
-<dependency>
-      <name>Test Dep</name>
-      <classname>ca.uqac.lif.NonExistentClass</classname>
-      <files>
-        <jar>http://sylvainhalle.github.io/AntRun/placeholders/dummy-jar.jar</jar>
-        <zip>http://sylvainhalle.github.io/AntRun/placeholders/dummy-zip.zip</zip>
-        <tgz>http://sylvainhalle.github.io/AntRun/placeholders/dummy-tar.tgz</tgz>
-      </files>
-      <bundle>true</bundle>
-</dependency>
-```
-
-The parameters are:
-
-- `name`: a human-readable name for the dependency, only used for display
-- `classname`: a fully qualified class name that is supposed to be provided
-  by the dependency. AntRun checks if this class name is present in the
-  classpath; if not, it will download the files specified in the `files`
-  section
-- `files`: a list of either `jar`, `zip` or `tgz` elements, each containing a
-  URL to a JAR file, or an archive of JAR files. AntRun downloads these files
-  and places them in either the `dep` or the `lib` folders of the project (both
-  are in the classpath). If the URL is a zip or tgz, it also unzips the content
-  of the archive.
-- `bundle`: when this element has the value `true`, the dependency is copied
-  to the `dep` folder; otherwise, it is copied to the `lib` folder. As was
-  said, both are in the classpath, but only the JARs in the `dep` folder are
-  bundled when creating a JAR file for the project (using the `jar` task).
-
-Cross-compiling                                                 {#xcompile}
----------------
-
-The `.class` files are marked with the major version number of the compiler
-that created them; hence a file compiled with JDK 1.11 will contain this
-version number in its metadata. A JRE 1.8 will refuse to run them,
-regardless of whether they were built from 1.8-compliant code.
-*Cross-compiling* is necessary if one wants to make a project compatible
-with a version of Java earlier than the one used to compile it. 
-
-By default, AntRun compiles your project using the default JDK installed on
-your computer. However, you can compile files that are compatible with
-a specific version of Java by putting the *bootstrap* JAR file `rt.jar`
-that corresponds to that version in the project's root folder (i.e. in the
-same folder as `build.xml`). When started, AntRun checks for the presence
-of this bootstrap JAR; if present, it uses it instead of the system's
-bootstrap classpath.
-
-For example, if one downloads the `rt.jar` file from JDK 1.8 (using
-the `download-rt8` task), the compiled files will be able to be run by
-a Java 6 virtual machine. (Assuming the code itself is Java 8-compliant,
-and all JAR dependencies included in the code have also been compiled
-for 1.8.)
-
-Projects that use AntRun                                        {#projects}
-------------------------
-
-Virtually every Java project developed at [LIF](http://liflab.ca) uses
-an AntRun template project. This includes:
-
-- [Azrael](https://github.com/sylvainhalle/Azrael), a generic serialization
-  library
-- [BeepBeep 3](https://liflab.github.io/beepbeep-3), an event stream
-  processing engine, and most of its
-  [palettes](https://github.com/liflab/beepbeep-3-palettes)
-- [Bullwinkle](https://github.com/sylvainhalle/Bullwinkle), a runtime BNF
-  parser
-- [Jerrydog](https://github.com/sylvainhalle/Jerrydog), a lightweight web
-  server
 - [LabPal](https://liflab.github.io/labpal), a framework for running
   computer experiments
-- [Petit Poucet](https://github.com/liflab/petitpoucet), a generic
-  explainability library
-- [Synthia](https://github.com/liflab/synthia), a modular data structure
-  generator
-- [TeXtidote](https://github.com/sylvainhalle/textidote), a spelling and
-  grammar checker for LaTeX documents
 
-...and more.
-
-About the author                                                   {#about}
+About the author
 ----------------
 
 AntRun was written by [Sylvain Hallé](https://leduotang.ca/sylvain),

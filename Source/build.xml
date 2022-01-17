@@ -24,7 +24,7 @@
   <!-- The author -->
   <property name="build.author" value="Sylvain Hallé"/>
   
-  <target name="all">
+  <target name="all" description="Compiles, tests and generates the JAR for each component">
     <!-- Compile core -->
     <ant dir="Core" target="jar" />
     <!-- Copy core to other projects -->
@@ -48,7 +48,7 @@
     <ant dir="Examples" target="jar" />
   </target>
   
-  <target name="download-deps">
+  <target name="download-deps" description="Downloads the JAR dependencies of each component">
     <ant dir="Core" target="download-deps" />
     <ant dir="Plots" target="download-deps" />
     <ant dir="Gnuplot" target="download-deps" />
@@ -56,14 +56,22 @@
     <ant dir="Examples" target="download-deps" />
   </target>
   
-  <target name="test">
+  <target name="download-rt8" description="Downloads the Java 8 bootstrap classes">
+    <ant dir="Core" target="download-rt8" />
+    <copy file="Core/rt.jar" todir="Plots" />
+    <copy file="Core/rt.jar" todir="Gnuplot" />
+    <copy file="Core/rt.jar" todir="Gral" />
+    <copy file="Core/rt.jar" todir="Examples" />
+  </target>
+  
+  <target name="test" description="Runs the unit tests of each component">
     <ant dir="Core" target="test" />
     <ant dir="Plots" target="test" />
     <ant dir="Gnuplot" target="test" />
     <ant dir="Gral" target="test" />
   </target>
   
-  <target name="clean">
+  <target name="clean" description="Cleans each component (deletes compiled files)">
     <!-- Clean individual projects -->
     <ant dir="Core" target="clean" />
     <ant dir="Plots" target="clean" />
@@ -82,7 +90,7 @@
     <delete file="Examples/lib/pss-charts-gral.jar" />
   </target>
   
-  <target name="javadoc">
+  <target name="javadoc" description="Generates the combined API documentation of all components">
     <mkdir dir="../docs/javadoc"/>
     <mkdir dir="../docs/javadoc/doc-files"/>
     <javadoc
@@ -97,10 +105,10 @@
       Encoding="utf8"
       docencoding="utf8"
       charset="utf8"
-      windowtitle="Programmatic Spreadsheet Documentation">
+      windowtitle="The Programmatic Spreadsheet Documentation">
       <doctitle><![CDATA[<h1>]]>${build.name}<![CDATA[ Documentation</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright&nbsp;&#169; ]]>${build.author}<![CDATA[. All Rights Reserved.</i>]]></bottom>
-      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/"/>
+      <link href="https://docs.oracle.com/en/java/javase/8/docs/api/"/>
       <sourcepath>
         <pathelement path="Core/src"/>
         <pathelement path="Plots/src"/>
@@ -117,7 +125,7 @@
         </fileset>
       </classpath>
       <group title="Core" packages="ca.uqac.lif.spreadsheet"/>
-      <group title="Plots" packages="ca.uqac.lif.synthia.spreadsheet.chart.*"/>
+      <group title="Plots" packages="ca.uqac.lif.spreadsheet.chart.*"/>
       <group title="Gnuplot" packages="ca.uqac.lif.synthia.spreadsheet.chart.gnuplot.*"/>
       <group title="Gral" packages="ca.uqac.lif.synthia.spreadsheet.chart.gral.*"/>
       <group title="Examples" packages="examples:examples.*"/>
