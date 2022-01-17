@@ -40,6 +40,27 @@ public class GnuplotBoxPlot extends Gnuplot implements BoxPlot
 		super();
 		m_seriesNames = series_names;
 	}
+	
+	@Override
+	public GnuplotBoxPlot setTitle(String title)
+	{
+		super.setTitle(title);
+		return this;
+	}
+
+	@Override
+	public GnuplotBoxPlot setCaption(Axis a, String caption)
+	{
+		super.setCaption(a, caption);
+		return this;
+	}
+
+	@Override
+	public GnuplotBoxPlot setFormat(ChartFormat f)
+	{
+		super.setFormat(f);
+		return this;
+	}
 
 	@Override
 	public void toGnuplot(PrintStream out, Spreadsheet table, ChartFormat term, String lab_title, boolean with_caption)

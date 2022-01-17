@@ -57,6 +57,20 @@ public class GralBoxPlot extends GralPlot implements BoxPlot
 		customize(plot);
 		return plot;
 	}
+	
+	@Override
+	public GralBoxPlot setTitle(String title)
+	{
+		super.setTitle(title);
+		return this;
+	}
+	
+	@Override
+	public GralBoxPlot setCaption(Axis a, String caption)
+	{
+		super.setCaption(a, caption);
+		return this;
+	}
 
 	@Override
 	public GralBoxPlot duplicate()

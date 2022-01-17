@@ -17,58 +17,65 @@
   again will result in Ant using a cached version of the old file! Run
   "ant dummy" to make sure that the correct data is being read. Otherwise
   you might need to run "ant clean" and start over.
--->                                                   
+-->
 <build>
   <!-- Uncomment any of these if you want to override the build
        script's default values -->
 
   <!-- The project's name -->
-  <!-- <name>AntRun</name> -->
+  <name>Programmatic Spreadsheet</name>
   
   <!-- The project's author. Currently this only
   shows up in the footer of the Javadoc documentation. -->
-  <!-- <author>Marty McFly</author> -->
+  <author>Sylvain Hallé</author>
   
   <!-- The project's main class -->
-  <!-- <mainclass>my.package.MainClass</mainclass> -->
+  <mainclass>ca.uqac.lif.spreadsheet.Main</mainclass>
+
+  <!-- Default folders -->
+  <srcdir>src</srcdir>
+  <libdir>lib</libdir>
+  <depdir>dep</depdir>
+  <bindir>bin</bindir>
+
+  <!-- JAR filename -->
+  <jar>
+    <filename>../pss-core.jar</filename>
+  </jar>
   
   <test>
+    <srcdir>srctest</srcdir>
+    <bindir>bintest</bindir>
+    <depdir>dep</depdir>
+    <libdir>lib</libdir>
     <!-- The filename pattern to recognize test files -->
-    <!-- <filenamepattern>**/*Test.java</filenamepattern> -->
+    <filenamepattern>**/*Test.java</filenamepattern>
   </test>
   
   <!--
     Write JAR dependencies here.
   -->
   <dependencies>
-    <dependency>
-      <!-- This entry points to a nonexistent class on purpose, to test
-      whether the detection/download of dependencies works. Delete this in
-      a real-world project.
+  <dependency>
+      <!--
+      Petit Poucet. Used to store provenance information.
       -->
       <name>Petit Poucet Core</name>
       <classname>ca.uqac.lif.petitpoucet.Part</classname>
       <files>
-        <!-- You typically need only one of these two for each dependency -->
-        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.0/petitpoucet-core.jar</jar>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1/petitpoucet-core.jar</jar>
       </files>
-      <!-- The following parameter is mandatory. Set it to false if you don't
-           want this library to be bundled into the compiled JAR. -->
       <bundle>false</bundle>
     </dependency>
     <dependency>
-      <!-- This entry points to a nonexistent class on purpose, to test
-      whether the detection/download of dependencies works. Delete this in
-      a real-world project.
+      <!--
+      Petit Poucet. Used to store provenance information.
       -->
       <name>Petit Poucet Functions</name>
-      <classname>ca.uqac.lif.petitpoucet.functions.Function</classname>
+      <classname>ca.uqac.lif.petitpoucet.function.Function</classname>
       <files>
-        <!-- You typically need only one of these two for each dependency -->
-        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.0/petitpoucet-functions.jar</jar>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1/petitpoucet-functions.jar</jar>
       </files>
-      <!-- The following parameter is mandatory. Set it to false if you don't
-           want this library to be bundled into the compiled JAR. -->
       <bundle>false</bundle>
     </dependency>
   </dependencies>
