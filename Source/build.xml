@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 	A build script for a super-project containing multiple sub-projects
-    Copyright (C) 2019  Sylvain Hallé
+    Copyright (C) 2019-2022  Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,14 +27,28 @@
   <target name="all" description="Compiles, tests and generates the JAR for each component">
     <!-- Compile core -->
     <ant dir="Core" target="jar" />
+    <!-- Copy Petit Poucet to other projects (not necessary, but avoids
+         re-downloading the files in each project -->
+    <mkdir dir="Charts/lib" />
+    <mkdir dir="Gnuplot/lib" />
+    <mkdir dir="Gral/lib" />
+    <mkdir dir="Examples/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Charts/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Gnuplot/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Examples/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Charts/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Gnuplot/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Examples/lib" />
     <!-- Copy core to other projects -->
-    <copy file="pss-core.jar" todir="Plots/lib" />
+    <copy file="pss-core.jar" todir="Charts/lib" />
     <copy file="pss-core.jar" todir="Gnuplot/lib" />
     <copy file="pss-core.jar" todir="Gral/lib" />
     <copy file="pss-core.jar" todir="Examples/lib" />
-    <!-- Compile Plots -->
-    <ant dir="Plots" target="jar" />
-    <!-- Copy Plots to other projects -->
+    <!-- Compile Charts -->
+    <ant dir="Charts" target="jar" />
+    <!-- Copy Charts to other projects -->
     <copy file="pss-charts.jar" todir="Gnuplot/lib" />
     <copy file="pss-charts.jar" todir="Gral/lib" />
     <copy file="pss-charts.jar" todir="Examples/lib" />
@@ -48,9 +62,38 @@
     <ant dir="Examples" target="jar" />
   </target>
   
+  <target name="copy-petitpoucet" description="Copies the Petit Poucet JARs to each component">
+    <mkdir dir="Charts/lib" />
+    <mkdir dir="Gnuplot/lib" />
+    <mkdir dir="Gral/lib" />
+    <mkdir dir="Examples/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Charts/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Gnuplot/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Examples/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Charts/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Gnuplot/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Examples/lib" />
+  </target>
+  
+  <target name="delete-petitpoucet" description="Deletes the Petit Poucet JARs in each component">
+    <delete file="Core/lib/petitpoucet-core.jar" />
+    <delete file="Charts/lib/petitpoucet-core.jar" />
+    <delete file="Gnuplot/lib/petitpoucet-core.jar" />
+    <delete file="Gral/lib/petitpoucet-core.jar" />
+    <delete file="Examples/lib/petitpoucet-core.jar" />
+    <delete file="Core/lib/petitpoucet-functions.jar" />
+    <delete file="Charts/lib/petitpoucet-functions.jar" />
+    <delete file="Gnuplot/lib/petitpoucet-functions.jar" />
+    <delete file="Gral/lib/petitpoucet-functions.jar" />
+    <delete file="Examples/lib/petitpoucet-functions.jar" />
+  </target>
+  
   <target name="download-deps" description="Downloads the JAR dependencies of each component">
     <ant dir="Core" target="download-deps" />
-    <ant dir="Plots" target="download-deps" />
+    <antcall target="copy-petitpoucet" />
+    <ant dir="Charts" target="download-deps" />
     <ant dir="Gnuplot" target="download-deps" />
     <ant dir="Gral" target="download-deps" />
     <ant dir="Examples" target="download-deps" />
@@ -58,7 +101,7 @@
   
   <target name="download-rt8" description="Downloads the Java 8 bootstrap classes">
     <ant dir="Core" target="download-rt8" />
-    <copy file="Core/rt.jar" todir="Plots" />
+    <copy file="Core/rt.jar" todir="Charts" />
     <copy file="Core/rt.jar" todir="Gnuplot" />
     <copy file="Core/rt.jar" todir="Gral" />
     <copy file="Core/rt.jar" todir="Examples" />
@@ -66,7 +109,7 @@
   
   <target name="test" description="Runs the unit tests of each component">
     <ant dir="Core" target="test" />
-    <ant dir="Plots" target="test" />
+    <ant dir="Charts" target="test" />
     <ant dir="Gnuplot" target="test" />
     <ant dir="Gral" target="test" />
   </target>
@@ -74,12 +117,12 @@
   <target name="clean" description="Cleans each component (deletes compiled files)">
     <!-- Clean individual projects -->
     <ant dir="Core" target="clean" />
-    <ant dir="Plots" target="clean" />
+    <ant dir="Charts" target="clean" />
     <ant dir="Gnuplot" target="clean" />
     <ant dir="Gral" target="clean" />
     <ant dir="Examples" target="clean" />
     <!-- Remove dependencies that the script copies manually-->
-    <delete file="Plots/lib/pss-core.jar" />
+    <delete file="Charts/lib/pss-core.jar" />
     <delete file="Gnuplot/lib/pss-core.jar" />
     <delete file="Gral/lib/pss-core.jar" />
     <delete file="Examples/lib/pss-core.jar" />
@@ -111,7 +154,7 @@
       <link href="https://docs.oracle.com/en/java/javase/8/docs/api/"/>
       <sourcepath>
         <pathelement path="Core/src"/>
-        <pathelement path="Plots/src"/>
+        <pathelement path="Charts/src"/>
         <pathelement path="Gnuplot/src"/>
         <pathelement path="Gral/src"/>
         <pathelement path="Examples/src"/>
@@ -125,13 +168,13 @@
         </fileset>
       </classpath>
       <group title="Core" packages="ca.uqac.lif.spreadsheet"/>
-      <group title="Plots" packages="ca.uqac.lif.spreadsheet.chart.*"/>
+      <group title="Charts" packages="ca.uqac.lif.spreadsheet.chart.*"/>
       <group title="Gnuplot" packages="ca.uqac.lif.synthia.spreadsheet.chart.gnuplot.*"/>
       <group title="Gral" packages="ca.uqac.lif.synthia.spreadsheet.chart.gral.*"/>
       <group title="Examples" packages="examples:examples.*"/>
     </javadoc>
     <copy todir="../docs/javadoc/doc-files">
-      <fileset dir="Plots/src/doc-files"/>
+      <fileset dir="Charts/src/doc-files"/>
       <fileset dir="Gnuplot/src/doc-files"/>
       <fileset dir="Gral/src/doc-files"/>
       <fileset dir="Examples/src/doc-files"/>
