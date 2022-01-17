@@ -48,6 +48,16 @@ import ca.uqac.lif.util.Duplicable;
 public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 {
 	/**
+	 * The regex pattern to find leading spaces in a string.
+	 */
+	protected static final Pattern s_leadingPattern = Pattern.compile("^\\s+");
+	
+	/**
+	 * The regex pattern to find trailing spaces in a string.
+	 */
+	protected static final Pattern s_trailingPattern = Pattern.compile("\\s+$");
+	
+	/**
 	 * A spreadsheet printer used by the method {@link #toString()}.
 	 */
 	/*@ non_null @*/ protected static final AnsiSpreadsheetPrinter s_printer = new AnsiSpreadsheetPrinter();
@@ -112,9 +122,9 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 		while (scanner.hasNextLine())
 		{
 			String original_line = scanner.nextLine();
-			String line = original_line.stripLeading();
+			String line = stripLeading(original_line);
 			int spaces = original_line.length() - line.length();
-			line = line.stripTrailing();
+			line = stripTrailing(line);
 			in_line_nb++;
 			if (line.isEmpty() || line.startsWith(comment_marker))
 			{
@@ -176,7 +186,7 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	{
 		return read(scanner, "#", "\\s+", null);
 	}
-	
+		
 	/**
 	 * Creates a primitive value out of a character string. The rules are as
 	 * follows:
@@ -659,4 +669,35 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 		}
 		return o.toString();
 	}
+	
+	/**
+	 * Strips a string of its leading whitespace characters.
+	 * @param s The string
+	 * @return The stripped string
+	 */
+	/*@ non_null @*/ protected static String stripLeading(String s)
+	{
+		Matcher mat = s_leadingPattern.matcher(s);
+		if (!mat.find())
+		{
+			return s;
+		}
+		return s.substring(mat.end());
+	}
+	
+	/**
+	 * Strips a string of its trailing whitespace characters.
+	 * @param s The string
+	 * @return The stripped string
+	 */
+	/*@ non_null @*/ protected static String stripTrailing(String s)
+	{
+		Matcher mat = s_leadingPattern.matcher(s);
+		if (!mat.find())
+		{
+			return s;
+		}
+		return s.substring(0, mat.start());
+	}
+
 }
