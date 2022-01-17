@@ -47,6 +47,7 @@
     <copy file="pss-core.jar" todir="Gral/lib" />
     <copy file="pss-core.jar" todir="Examples/lib" />
     <!-- Compile Charts -->
+    <mkdir dir="Charts/srctest" /> <!-- Create folder since Charts has no tests -->
     <ant dir="Charts" target="jar" />
     <!-- Copy Charts to other projects -->
     <copy file="pss-charts.jar" todir="Gnuplot/lib" />
