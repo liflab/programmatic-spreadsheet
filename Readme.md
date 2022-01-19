@@ -2,6 +2,9 @@ The Programmatic Spreadsheet
 ============================
 
 [![Java CI](https://github.com/liflab/programmatic-spreadsheet/actions/workflows/ant.yml/badge.svg)](https://github.com/liflab/programmatic-spreadsheet/actions/workflows/ant.yml)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=liflab_programmatic-spreadsheet&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=liflab_programmatic-spreadsheet)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=liflab_programmatic-spreadsheet&metric=coverage)](https://sonarcloud.io/summary/new_code?id=liflab_programmatic-spreadsheet)
+
 
 The Programmatic Spreadsheet (TPSS for short) is a Java library for the
 manipulation of two-dimensional tabular data. It allows users to create objects
