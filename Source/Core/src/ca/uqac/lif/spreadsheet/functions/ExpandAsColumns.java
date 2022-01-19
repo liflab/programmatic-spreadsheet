@@ -127,7 +127,7 @@ public class ExpandAsColumns extends SpreadsheetFunction
 		}
 		for (TrackedCell tc : headers)
 		{
-			if (key != null && key.equals(tc.getValue()))
+			if (key.equals(tc.getValue()))
 			{
 				return true;
 			}

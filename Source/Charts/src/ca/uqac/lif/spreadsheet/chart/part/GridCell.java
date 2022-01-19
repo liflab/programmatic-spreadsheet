@@ -48,7 +48,7 @@ public abstract class GridCell extends ChartPart
 	 * @param x The x position of the cell
 	 * @param y The y position of the cell
 	 */
-	public GridCell(double x, double y)
+	protected GridCell(double x, double y)
 	{
 		super();
 		m_x = x;

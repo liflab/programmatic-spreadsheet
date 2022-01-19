@@ -1,27 +1,27 @@
 /*
-  LabPal, a versatile environment for running experiments on a computer
-  Copyright (C) 2015-2017 Sylvain Hallé
+    A provenance-aware spreadsheet library
+    Copyright (C) 2021-2022 Sylvain Hallé
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.uqac.lif.spreadsheet.chart.gnuplot;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Facilitates the execution of an external command and the collection of
@@ -35,7 +35,7 @@ public class CommandRunner extends Thread
 	protected StreamGobbler m_stdoutGobbler;
 	protected StreamGobbler m_stderrGobbler;
 	protected int m_errorCode = 0;
-	
+
 	/**
 	 * Creates a CommandRunner to run a command.
 	 * @param command The command to run
@@ -53,7 +53,7 @@ public class CommandRunner extends Thread
 		}
 		m_stdin = stdin;
 	}
-	
+
 	/**
 	 * Creates a CommandRunner to run a command.
 	 * @param command The command to run
@@ -66,7 +66,7 @@ public class CommandRunner extends Thread
 		m_command = command;
 		m_stdin = stdin;
 	}
-	
+
 	/**
 	 * Creates a CommandRunner to run a command.
 	 * @param command The command to run
@@ -75,7 +75,7 @@ public class CommandRunner extends Thread
 	{
 		this(command, null);
 	}
-	
+
 	/**
 	 * Constantly reads an input stream and captures its content.
 	 * Inspired from <a href="http://stackoverflow.com/questions/14165517/processbuilder-forwarding-stdout-and-stderr-of-started-processes-without-blocki">Stack Overflow</a>
@@ -83,16 +83,16 @@ public class CommandRunner extends Thread
 	protected class StreamGobbler extends Thread
 	{
 		InputStream m_is;
-		Vector<Byte> m_contents;
+		List<Byte> m_contents;
 		String m_name;
 		private StreamGobbler(InputStream is, String name)
 		{
 			super();
-			m_contents = new Vector<Byte>();
+			m_contents = new ArrayList<Byte>();
 			this.m_is = is;
 			m_name = name;
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -117,7 +117,7 @@ public class CommandRunner extends Thread
 				ioe.printStackTrace();
 			}
 		}
-		
+
 		/**
 		 * Returns the contents captured by the gobbler as an array of bytes
 		 * @return The contents
@@ -134,7 +134,7 @@ public class CommandRunner extends Thread
 			return out;
 		}
 	}
-	
+
 	public static byte[] runAndGet(String[] command, String inputs)
 	{
 		CommandRunner runner = new CommandRunner(command, inputs);
@@ -158,16 +158,21 @@ public class CommandRunner extends Thread
 		byte[] out = runner.getBytes();
 		return out;
 	}
-	
+
 	public static byte[] runAndGet(String command, String inputs)
 	{
 		String[] s_command = new String[1];
 		s_command[0] = command;
 		return runAndGet(s_command, inputs);
 	}
-	
+
 	@Override
 	public void run()
+	{
+		execute();
+	}
+
+	public void execute()
 	{
 		ProcessBuilder builder = new ProcessBuilder(m_command);
 		Process process = null;
@@ -184,7 +189,6 @@ public class CommandRunner extends Thread
 				process_stdin.write(stdin_bytes, 0, stdin_bytes.length);
 				process_stdin.flush();
 				process_stdin.close();
-				//System.out.println("Writing " + stdin_bytes.length + " bytes");
 			}
 			// Start gobblers
 			m_stderrGobbler.start();
@@ -201,15 +205,11 @@ public class CommandRunner extends Thread
 		}
 		catch (InterruptedException e)
 		{
-			// Destroy the running command
-			if (process != null)
-			{
-				process.destroy();
-			}
+			process.destroy();
+			interrupt();
 		}
-		//System.err.println(new String(error_gobbler.getBytes()));
 	}
-	
+
 	/**
 	 * Gets the contents of stdout sent by the command as an array of bytes
 	 * @return The contents of stdout
@@ -218,7 +218,7 @@ public class CommandRunner extends Thread
 	{
 		return m_stdoutGobbler.getBytes();
 	}
-	
+
 	/**
 	 * Gets the contents of stdout sent by the command as a string
 	 * @return The contents of stdout
@@ -236,7 +236,7 @@ public class CommandRunner extends Thread
 		}
 		return new String(out);
 	}
-	
+
 	/**
 	 * Gets the return code of the command. Generally 0 indicates that
 	 * everything was OK; a non-zero value indicates an error. 
@@ -246,7 +246,7 @@ public class CommandRunner extends Thread
 	{
 		return m_errorCode;
 	}
-	
+
 	/**
 	 * Interrupts the execution of the command
 	 */

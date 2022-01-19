@@ -1,19 +1,19 @@
 /*
-  LabPal, a versatile environment for running experiments on a computer
-  Copyright (C) 2015-2017 Sylvain Hallé
+    A provenance-aware spreadsheet library
+    Copyright (C) 2021-2022 Sylvain Hallé
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.uqac.lif.spreadsheet.chart.gnuplot;
 
@@ -135,18 +135,14 @@ import java.util.jar.JarFile;
 	 */
 	public static byte[] readToBytes(File f)
 	{
-		FileInputStream fileInputStream = null;
 		byte[] bFile = new byte[(int) f.length()];
-		try 
+		try (FileInputStream fileInputStream = new FileInputStream(f)) 
 		{
-			//convert file into array of bytes
-			fileInputStream = new FileInputStream(f);
 			fileInputStream.read(bFile);
-			fileInputStream.close();
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			// Do nothing
 		}
 		return bFile;
 	}
@@ -159,14 +155,13 @@ import java.util.jar.JarFile;
 	 */
 	public static void writeFromString(File f, String content)
 	{
-		try 
+		// if file doesnt exists, then create it
+		if (!f.exists()) 
 		{
-			// if file doesnt exists, then create it
-			if (!f.exists()) 
-			{
-				createIfNotExists(f);
-			}
-			FileWriter fw = new FileWriter(f.getAbsoluteFile());
+			createIfNotExists(f);
+		}
+		try (FileWriter fw = new FileWriter(f.getAbsoluteFile())) 
+		{
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write(content);
 			bw.close();
@@ -200,15 +195,14 @@ import java.util.jar.JarFile;
 	 */
 	public static void writeFromBytes(File f, byte[] bFile)
 	{
-		try 
+		// if file doesnt exists, then create it
+		if (!f.exists()) 
 		{
-			// if file doesnt exists, then create it
-			if (!f.exists()) 
-			{
-				createIfNotExists(f);
-			}
-			//convert array of bytes into file
-			FileOutputStream fileOuputStream = new FileOutputStream(f); 
+			createIfNotExists(f);
+		}
+		try (FileOutputStream fileOuputStream = new FileOutputStream(f))
+		{
+			//convert array of bytes into file 
 			fileOuputStream.write(bFile);
 			fileOuputStream.close();
 		}
@@ -366,7 +360,7 @@ import java.util.jar.JarFile;
 		// Check if Gnuplot is present
 		String[] args = {command, "--version"};
 		CommandRunner runner = new CommandRunner(args);
-		runner.run();
+		runner.execute();
 		return runner.getErrorCode() == 0;
 	}
 

@@ -49,17 +49,17 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	 * displayed as column headers. 
 	 */
 	protected boolean m_headers;
-	
+
 	/**
 	 * A character inserted between each column in each row.
 	 */
 	/*@ non_null @*/ protected String m_columnSeparator;
-	
+
 	/**
 	 * The string inserted for a repeated value when cells are grouped.
 	 */
 	/*@ non_null @*/ protected String m_repeatSymbol;
-	
+
 	/**
 	 * A flag determining whether cells should be padded to be of equal length on
 	 * each row.
@@ -101,7 +101,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 		m_headers = b;
 		return this;
 	}
-	
+
 	/**
 	 * Sets whether cells should be padded to be of equal length on
 	 * each row.
@@ -114,7 +114,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 		m_padColumns = b;
 		return this;
 	}
-	
+
 	/**
 	 * Sets the column separator. 
 	 * @param separator A character inserted between each column in each row
@@ -125,7 +125,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 		m_columnSeparator = separator;
 		return this;
 	}
-	
+
 	/**
 	 * Sets the string inserted for a repeated value when cells are grouped. 
 	 * @param symbol A character inserted between each column in each row
@@ -136,7 +136,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 		m_repeatSymbol = symbol;
 		return this;
 	}
-	
+
 	/**
 	 * Creates a new spreadsheet printer with default settings.
 	 */
@@ -181,7 +181,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 			ps.println();
 		}
 	}
-	
+
 	/**
 	 * Converts the contents of a spreadsheet into a string rendition of each
 	 * cell.
@@ -201,7 +201,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 		}
 		return contents;
 	}
-	
+
 	/**
 	 * Prints the content of a cell. Descendants of this class can override this
 	 * method to customize the way cell contents are rendered.
@@ -311,10 +311,17 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 			if (total_width > m_maxWidth)
 			{
 				// Decrease all column widths by the same factor
-				float factor = (float) m_maxWidth / (float) total_width;
-				for (int col = 0; col < widths.length; col++)
+				if (total_width == 0)
 				{
-					widths[col] *= factor;
+					return widths;
+				}
+				else
+				{
+					float factor = (float) m_maxWidth / (float) total_width;
+					for (int col = 0; col < widths.length; col++)
+					{
+						widths[col] *= factor;
+					}
 				}
 			}
 		}

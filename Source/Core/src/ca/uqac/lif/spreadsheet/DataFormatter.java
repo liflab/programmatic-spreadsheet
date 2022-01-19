@@ -28,6 +28,14 @@ public class DataFormatter
 	public static final String CRLF = System.getProperty("line.separator");
 	
 	/**
+	 * Private constructor.
+	 */
+	private DataFormatter()
+	{
+		super();
+	}
+	
+	/**
 	 * Attempts to convert an object into a number
 	 * @param o The object to convert
 	 * @return The object as a number; if the conversion cannot be

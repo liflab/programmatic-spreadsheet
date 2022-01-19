@@ -54,6 +54,7 @@ public class Sort extends SpreadsheetFunction
 	 * otherwise
 	 * @return This function
 	 */
+	@Override
 	/*@ non_null @*/ public Sort excludeFirst(boolean b)
 	{
 		m_excludeFirst = b;
@@ -65,6 +66,7 @@ public class Sort extends SpreadsheetFunction
 	 * sort. This is equivalent to calling {@code excludeFirst(true)}.
 	 * @return This function
 	 */
+	@Override
 	/*@ non_null @*/ public Sort excludeFirst()
 	{
 		return excludeFirst(true);

@@ -405,9 +405,8 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	public Gnuplot setFormat(ChartFormat f)
 	{
 		if (!(f.equals(ChartFormat.GIF) || f.equals(ChartFormat.JPEG) 
-				|| f.equals(ChartFormat.PDF) || f.equals(ChartFormat.PDF) 
-				|| f.equals(ChartFormat.PNG) || f.equals(ChartFormat.SVG) 
-				|| f.equals(DUMB)))
+				|| f.equals(ChartFormat.PDF) || f.equals(ChartFormat.PNG)
+				|| f.equals(ChartFormat.SVG) || f.equals(DUMB)))
 		{
 			throw new UnsupportedPlotFormatException("Unsupported format " + f);
 		}
@@ -532,7 +531,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	protected static String checkGnuplot()
 	{
 		CommandRunner runner = new CommandRunner(new String[]{"gnuplot", "--version"});
-		runner.run();
+		runner.execute();
 		return runner.getString().trim() + ", exit code " + runner.getErrorCode();
 	}
 
