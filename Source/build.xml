@@ -36,15 +36,18 @@
     <copy file="Core/lib/petitpoucet-core.jar" todir="Charts/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Gnuplot/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Units/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Examples/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Charts/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Gnuplot/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Units/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Examples/lib" />
     <!-- Copy core to other projects -->
     <copy file="pss-core.jar" todir="Charts/lib" />
     <copy file="pss-core.jar" todir="Gnuplot/lib" />
     <copy file="pss-core.jar" todir="Gral/lib" />
+    <copy file="pss-core.jar" todir="Units/lib" />
     <copy file="pss-core.jar" todir="Examples/lib" />
     <!-- Compile Charts -->
     <mkdir dir="Charts/srctest" /> <!-- Create folder since Charts has no tests -->
@@ -59,6 +62,10 @@
     <!-- Copy to Examples -->
     <copy file="pss-charts-gnuplot.jar" todir="Examples/lib" />
     <copy file="pss-charts-gral.jar" todir="Examples/lib" />
+    <!-- Compile Units -->
+    <ant dir="Units" target="jar" />
+    <!-- Copy to Examples -->
+    <copy file="pss-units.jar" todir="Units/lib" />
     <!-- Compile Examples -->
     <ant dir="Examples" target="jar" />
   </target>
@@ -67,14 +74,17 @@
     <mkdir dir="Charts/lib" />
     <mkdir dir="Gnuplot/lib" />
     <mkdir dir="Gral/lib" />
+    <mkdir dir="Units/lib" />
     <mkdir dir="Examples/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Charts/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Gnuplot/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-core.jar" todir="Units/lib" />
     <copy file="Core/lib/petitpoucet-core.jar" todir="Examples/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Charts/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Gnuplot/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Gral/lib" />
+    <copy file="Core/lib/petitpoucet-functions.jar" todir="Units/lib" />
     <copy file="Core/lib/petitpoucet-functions.jar" todir="Examples/lib" />
   </target>
   
@@ -83,11 +93,13 @@
     <delete file="Charts/lib/petitpoucet-core.jar" />
     <delete file="Gnuplot/lib/petitpoucet-core.jar" />
     <delete file="Gral/lib/petitpoucet-core.jar" />
+    <delete file="Units/lib/petitpoucet-core.jar" />
     <delete file="Examples/lib/petitpoucet-core.jar" />
     <delete file="Core/lib/petitpoucet-functions.jar" />
     <delete file="Charts/lib/petitpoucet-functions.jar" />
     <delete file="Gnuplot/lib/petitpoucet-functions.jar" />
     <delete file="Gral/lib/petitpoucet-functions.jar" />
+    <delete file="Units/lib/petitpoucet-functions.jar" />
     <delete file="Examples/lib/petitpoucet-functions.jar" />
   </target>
   
@@ -97,6 +109,7 @@
     <ant dir="Charts" target="download-deps" />
     <ant dir="Gnuplot" target="download-deps" />
     <ant dir="Gral" target="download-deps" />
+    <ant dir="Units" target="download-deps" />
     <ant dir="Examples" target="download-deps" />
   </target>
   
@@ -105,6 +118,7 @@
     <copy file="Core/rt.jar" todir="Charts" />
     <copy file="Core/rt.jar" todir="Gnuplot" />
     <copy file="Core/rt.jar" todir="Gral" />
+    <copy file="Core/rt.jar" todir="Units" />
     <copy file="Core/rt.jar" todir="Examples" />
   </target>
   
@@ -113,6 +127,7 @@
     <ant dir="Charts" target="test" />
     <ant dir="Gnuplot" target="test" />
     <ant dir="Gral" target="test" />
+    <ant dir="Units" target="test" />
   </target>
   
   <target name="clean" description="Cleans each component (deletes compiled files)">
@@ -121,17 +136,20 @@
     <ant dir="Charts" target="clean" />
     <ant dir="Gnuplot" target="clean" />
     <ant dir="Gral" target="clean" />
+    <ant dir="Units" target="clean" />
     <ant dir="Examples" target="clean" />
     <!-- Remove dependencies that the script copies manually-->
     <delete file="Charts/lib/pss-core.jar" />
     <delete file="Gnuplot/lib/pss-core.jar" />
     <delete file="Gral/lib/pss-core.jar" />
+    <delete file="Units/lib/pss-core.jar" />
     <delete file="Examples/lib/pss-core.jar" />
     <delete file="Gnuplot/lib/pss-charts.jar" />
     <delete file="Gral/lib/pss-charts.jar" />
     <delete file="Examples/lib/pss-charts.jar" />
     <delete file="Examples/lib/pss-charts-gnuplot.jar" />
     <delete file="Examples/lib/pss-charts-gral.jar" />
+    <delete file="Examples/lib/pss-units.jar" />
   </target>
   
   <target name="javadoc" description="Generates the combined API documentation of all components">
@@ -158,6 +176,7 @@
         <pathelement path="Charts/src"/>
         <pathelement path="Gnuplot/src"/>
         <pathelement path="Gral/src"/>
+        <pathelement path="Units/src"/>
         <pathelement path="Examples/src"/>
       </sourcepath>
       <classpath>
@@ -172,12 +191,14 @@
       <group title="Charts" packages="ca.uqac.lif.spreadsheet.chart.*"/>
       <group title="Gnuplot" packages="ca.uqac.lif.synthia.spreadsheet.chart.gnuplot.*"/>
       <group title="Gral" packages="ca.uqac.lif.synthia.spreadsheet.chart.gral.*"/>
+      <group title="Units" packages="ca.uqac.lif.synthia.spreadsheet.units.*"/>
       <group title="Examples" packages="examples:examples.*"/>
     </javadoc>
     <copy todir="../docs/javadoc/doc-files">
       <fileset dir="Charts/src/doc-files"/>
       <fileset dir="Gnuplot/src/doc-files"/>
       <fileset dir="Gral/src/doc-files"/>
+      <fileset dir="Units/src/doc-files"/>
       <fileset dir="Examples/src/doc-files"/>
     </copy>
   </target>
