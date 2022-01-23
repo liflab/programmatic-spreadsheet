@@ -17,12 +17,26 @@
  */
 package ca.uqac.lif.spreadsheet.units;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ca.uqac.lif.dag.LabelledNode;
+import ca.uqac.lif.petitpoucet.AndNode;
+import ca.uqac.lif.petitpoucet.ComposedPart;
+import ca.uqac.lif.petitpoucet.NodeFactory;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.FunctionException;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
+import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.petitpoucet.function.strings.Range;
+import ca.uqac.lif.petitpoucet.function.strings.RangeMapping;
+import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.functions.SpreadsheetFunction;
 import ca.uqac.lif.units.DimensionValue;
+import ca.uqac.lif.units.DimensionValuePart;
 import ca.uqac.lif.units.NoSuchUnitException;
 
 /**
@@ -81,6 +95,10 @@ import ca.uqac.lif.units.NoSuchUnitException;
  */
 public class MoveUnitsToHeader extends SpreadsheetFunction
 {
+	protected String[] m_lastHeaders;
+
+	protected int[] m_unitRows;
+
 	public MoveUnitsToHeader()
 	{
 		super(1);
@@ -96,6 +114,8 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 		Spreadsheet table = (Spreadsheet) inputs[0];
 		Spreadsheet out = new Spreadsheet(table.getWidth(), table.getHeight());
 		m_mapping = new InputCell[table.getHeight()][table.getHeight()][];
+		m_unitRows = new int[table.getWidth()];
+		m_lastHeaders = new String[table.getWidth()];
 		for (int col = 0; col < table.getWidth(); col++)
 		{
 			DimensionValue reference_unit = getColumnUnit(table, col);
@@ -106,11 +126,16 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 				{
 					out.set(col, row, table.get(col, row));
 					m_mapping[row][col] = new InputCell[] {InputCell.get(col, row)};
+					if (row == 0)
+					{
+						m_lastHeaders[col] = table.getString(col, row);
+					}
 				}
 			}
 			else
 			{
-				out.set(col, 0, table.get(col, 0).toString() + " (" + reference_unit.getUnitName() + ")");
+				m_lastHeaders[col] = table.get(col, 0).toString() + " (" + reference_unit.getUnitName() + ")";
+				out.set(col, 0, m_lastHeaders[col]);
 				for (int row = 1; row < table.getHeight(); row++)
 				{
 					Object o = table.get(col, row);
@@ -137,17 +162,129 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 		}
 		return new Object[] {out};
 	}
-	
-	/*@ null @*/ protected static DimensionValue getColumnUnit(Spreadsheet table, int col_index)
+
+	@Override
+	public PartNode getExplanation(Part d, NodeFactory f)
+	{
+		PartNode root = f.getPartNode(d, this);
+		if (NthOutput.mentionedOutput(d) != 0)
+		{
+			// The part mentions no output or the incorrect output
+			root.addChild(f.getUnknownNode());
+			return root;
+		}
+		Part d_tail = d.tail();
+		Cell c = Cell.mentionedCell(d_tail);
+		if (c == null)
+		{
+			// No cell mentioned: return whole input table
+			root.addChild(f.getPartNode(NthOutput.replaceOutByIn(d, 0), this));
+			return root;
+		}
+		Part tail = d_tail.tail();
+		if (tail == null)
+		{
+			// Same cell in the input
+			root.addChild(f.getPartNode(NthOutput.replaceOutByIn(d, 0), this));
+			return root;
+		}
+		root.addChild(explainPart(c, tail, d, f));
+		return root;
+	}
+
+	/*@ pure non_null @*/ protected LabelledNode explainPart(Cell c, Part d, Part original, NodeFactory f)
+	{
+		Part head = d.head();
+		int row = c.getRow();
+		if (!(head instanceof Range && row == 0))
+		{
+			return f.getPartNode(NthOutput.replaceOutByIn(original, 0), this);
+		}
+		int col = c.getColumn();
+		// Explain a character range in a cell of the first row
+		if (m_unitRows[col] < 0)
+		{
+			// This header has not been changed: relay the part as is
+			return f.getPartNode(NthOutput.replaceOutByIn(d, 0), this);
+		}
+		Range queried_r = (Range) head;
+		int unit_start_index = m_lastHeaders[col].lastIndexOf("(") + 1;
+		int unit_end_index = m_lastHeaders[col].lastIndexOf(")") - 1;
+		Range unit_r = new Range(unit_start_index, unit_end_index);
+		List<Range> fragments = RangeMapping.fragment(queried_r, unit_r);
+		List<PartNode> children = new ArrayList<PartNode>(fragments.size());
+		for (Range r : fragments)
+		{
+			if (!r.overlaps(queried_r))
+			{
+				continue;
+			}
+			if (r.getEnd() < unit_start_index)
+			{
+				// To the left of the unit name
+				children.add(f.getPartNode(NthOutput.replaceOutByIn(original, 0), this));
+			}
+			else if (r.getStart() >= unit_start_index && r.getEnd() <= unit_end_index)
+			{
+				Part new_p = null;
+				// Inside the unit name
+				if (r.length() == unit_end_index - unit_start_index + 1)
+				{
+					// Whole unit name
+					new_p = Range.replaceRangeBy(original, DimensionValuePart.unitName);
+				}
+				else
+				{
+					// Part of unit name
+					Range new_r = r.shift(-unit_start_index);
+					new_p = Range.replaceRangeBy(original, ComposedPart.compose(new_r, DimensionValuePart.unitName));
+				}
+				new_p = Cell.replaceCellBy(new_p, Cell.get(col, m_unitRows[col]));
+				new_p = NthOutput.replaceOutByIn(new_p, 0);
+				children.add(f.getPartNode(new_p, this));
+			}
+			else
+			{
+				// To the right of the unit name
+				Range new_r = r.shift(-unit_end_index);
+				Part new_p = Range.replaceRangeBy(d, new_r);
+				new_p = NthOutput.replaceOutByIn(new_p, 0);
+				children.add(f.getPartNode(new_p, this));
+			}
+		}
+		if (children.size() == 1)
+		{
+			return children.get(0);
+		}
+		AndNode and = f.getAndNode();
+		for (PartNode child : children)
+		{
+			and.addChild(child);
+		}
+		return and;
+	}
+
+	/**
+	 * Gets the first non-null instance of {@link DimensionValue} of a column,
+	 * stating from the second row. This method is used to guess the dimension
+	 * and units of the values in a column.
+	 * @param table The table to look into
+	 * @param col_index The index of the column
+	 * @return The first instance, or <tt>null</tt> if no instance exists in that
+	 * column
+	 */
+	/*@ null @*/ protected DimensionValue getColumnUnit(Spreadsheet table, int col_index)
 	{
 		for (int row = 1; row < table.getHeight(); row++)
 		{
 			Object o = table.get(col_index, row);
 			if (o instanceof DimensionValue)
 			{
+				m_unitRows[col_index] = row;
 				return (DimensionValue) o;
 			}
 		}
+		m_unitRows[col_index] = -1;
 		return null;
 	}
 }

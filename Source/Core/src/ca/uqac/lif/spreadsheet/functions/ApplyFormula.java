@@ -22,11 +22,13 @@ import java.util.List;
 
 import ca.uqac.lif.dag.NestedNode;
 import ca.uqac.lif.dag.NodeConnector;
+import ca.uqac.lif.petitpoucet.ComposedPart;
 import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
 import ca.uqac.lif.petitpoucet.function.ExplanationQueryable;
+import ca.uqac.lif.petitpoucet.function.Function;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.petitpoucet.function.NthInput;
@@ -42,6 +44,40 @@ public class ApplyFormula extends AtomicFunction
 	{
 		super(in_arity, 1);
 		m_formulas = sort(formulas);
+	}
+	
+	public ApplyFormula(CellFormula ... formulas)
+	{
+		this(1, formulas);
+	}
+	
+	public ApplyFormula(int in_arity, List<CellFormula> formulas)
+	{
+		super(in_arity, 1);
+		m_formulas = sort(formulas);
+	}
+	
+	/**
+	 * Adds a formula to the list of formulas to apply in the spreadsheet.
+	 * @param formula The formula to add
+	 * @return This function
+	 */
+	public ApplyFormula add(CellFormula formula)
+	{
+		m_formulas.add(formula);
+		return this;
+	}
+	
+	/**
+	 * Adds a formula to the list of formulas to apply in the spreadsheet.
+	 * @param target The cell where the result of the formula is written
+	 * @param f The function to apply
+	 * @return This function
+	 */
+	public ApplyFormula add(Cell target, Function f)
+	{
+		m_formulas.add(new CellFormula(target, f));
+		return this;
 	}
 	
 	@Override
@@ -79,7 +115,8 @@ public class ApplyFormula extends AtomicFunction
 			{
 				PartNode root = factory.getPartNode(part, this);
 				NodeFactory sub_factory = factory.getFactory(part, this);
-				PartNode sub_root = ((ExplanationQueryable) formula.m_formula).getExplanation(NthOutput.FIRST, sub_factory);
+				Part sub_part = ComposedPart.compose(part.tail().tail(), NthOutput.FIRST); // we remove nth-output + cell
+				PartNode sub_root = ((ExplanationQueryable) formula.m_formula).getExplanation(sub_part, sub_factory);
 				NestedNode nn = NestedNode.createFromTree(sub_root);
 				NodeConnector.connect(root, 0, nn, 0);
 				for (int i = 0; i < nn.getOutputArity(); i++)
@@ -120,5 +157,10 @@ public class ApplyFormula extends AtomicFunction
 			out.add(formulas[i]);
 		}
 		return out;
+	}
+	
+	/*@ non_null @*/ protected static List<CellFormula> sort(/*@ non_null @*/ List<CellFormula> formulas)
+	{
+		return formulas;
 	}
 }
