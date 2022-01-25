@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2022 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,9 @@
 package ca.uqac.lif.spreadsheet.functions;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ca.uqac.lif.dag.NestedNode;
 import ca.uqac.lif.dag.NodeConnector;
@@ -36,14 +38,70 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
+/**
+ * Fills cells of an input spreadsheet by applying functions on other cells of
+ * that same spreadsheet. This function resembles the low-level operation of
+ * most spreadsheet software such as Excel, Gnumeric or LibreOffice Calc.
+ * <p>
+ * For example, consider the following input spreadsheet:
+ * <p>
+ * <table border="1">
+ * <thead>
+ * <tr><th>A</th><th>B</th><th>C</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><td>1</td><td>3</td><td></td></tr>
+ * <tr><td>2</td><td>1</td><td></td></tr>
+ * <tr><td>3</td><td>4</td><td></td></tr>
+ * </tbody>
+ * </table>
+ * <p>
+ * If we associate to cell (2,1) a function that applies the sum of cells
+ * (0,1) and (1,1) (using method {@link #add(Cell, Function) add()} , a call to
+ * {@link #evaluate(Object...) evaluate()} will result in the following output:
+ * <p>
+ * <table border="1">
+ * <thead>
+ * <tr><th>A</th><th>B</th><th>C</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><td>1</td><td>3</td><td><strong>4</strong></td></tr>
+ * <tr><td>2</td><td>1</td><td></td></tr>
+ * <tr><td>3</td><td>4</td><td></td></tr>
+ * </tbody>
+ * </table>
+ * <p>
+ * For convenience, it is possible to associate functions to multiple cells in
+ * a single instance of {@link ApplyFormula} (through multiple calls to
+ * <tt>add()</tt>).
+ * <p>
+ * <strong>Caveat emptor:</strong> the function does not check for eventual
+ * circular dependencies between cells. If such dependencies are present in the
+ * set of formulas to apply, a call to {@link #evaluate(Object...)} will result
+ * in an infinite loop.
+ * 
+ * @author Sylvain Hallé
+ */
 public class ApplyFormula extends AtomicFunction
 {
+	
 	/*@ non_null @*/ protected final List<CellFormula> m_formulas;
+	
+	/**
+	 * A set that keeps track of the cells in the spreadsheet that are the result
+	 * of the application of a function to other cells.
+	 */
+	/*@ non_null @*/ protected final Set<Cell> m_computedCells;
 	
 	public ApplyFormula(int in_arity, CellFormula ... formulas)
 	{
 		super(in_arity, 1);
 		m_formulas = sort(formulas);
+		m_computedCells = new HashSet<Cell>();
+		for (CellFormula cf : formulas)
+		{
+			m_computedCells.add(cf.getTarget());
+		}
 	}
 	
 	public ApplyFormula(CellFormula ... formulas)
@@ -55,6 +113,11 @@ public class ApplyFormula extends AtomicFunction
 	{
 		super(in_arity, 1);
 		m_formulas = sort(formulas);
+		m_computedCells = new HashSet<Cell>();
+		for (CellFormula cf : formulas)
+		{
+			m_computedCells.add(cf.getTarget());
+		}
 	}
 	
 	/**
@@ -65,6 +128,7 @@ public class ApplyFormula extends AtomicFunction
 	public ApplyFormula add(CellFormula formula)
 	{
 		m_formulas.add(formula);
+		m_computedCells.add(formula.getTarget());
 		return this;
 	}
 	
@@ -77,6 +141,7 @@ public class ApplyFormula extends AtomicFunction
 	public ApplyFormula add(Cell target, Function f)
 	{
 		m_formulas.add(new CellFormula(target, f));
+		m_computedCells.add(target);
 		return this;
 	}
 	
@@ -123,8 +188,9 @@ public class ApplyFormula extends AtomicFunction
 				{
 					PartNode pn = (PartNode) nn.getAssociatedOutput(i).getNode();
 					Part inner_part = pn.getPart();
+					Cell exp_c = Cell.mentionedCell(inner_part);
 					int input_index = NthInput.mentionedInput(inner_part);
-					if (input_index == 0)
+					if (m_computedCells.contains(exp_c))
 					{
 						// If the formula refers to other cells of the same spreadsheet,
 						// we refer to the output spreadsheet and not the input one
@@ -135,7 +201,7 @@ public class ApplyFormula extends AtomicFunction
 						PartNode other = getExplanation(new_part, factory);
 						NodeConnector.connect(to_connect, 0, other, 0);
 					}
-					else if (input_index > 0)
+					else
 					{
 						// Re-plug input of inner function to input of function
 						int spreadsheet_index = formula.m_arguments.get(input_index);
@@ -147,6 +213,12 @@ public class ApplyFormula extends AtomicFunction
 			}
 		}
 		return super.getExplanation(part, factory);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Apply formulas";
 	}
 	
 	/*@ non_null @*/ protected static List<CellFormula> sort(/*@ non_null @*/ CellFormula[] formulas)

@@ -287,4 +287,10 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 		m_unitRows[col_index] = -1;
 		return null;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Move units to header";
+	}
 }
