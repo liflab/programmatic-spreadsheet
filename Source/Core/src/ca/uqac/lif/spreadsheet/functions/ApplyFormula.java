@@ -29,7 +29,9 @@ import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
+import ca.uqac.lif.petitpoucet.function.Circuit;
 import ca.uqac.lif.petitpoucet.function.ExplanationQueryable;
+import ca.uqac.lif.petitpoucet.function.Fork;
 import ca.uqac.lif.petitpoucet.function.Function;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
@@ -84,7 +86,9 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
  */
 public class ApplyFormula extends AtomicFunction
 {
-	
+	/**
+	 * The list of cell formulas to be applied to the input spreadsheet.
+	 */
 	/*@ non_null @*/ protected final List<CellFormula> m_formulas;
 	
 	/**
@@ -93,6 +97,13 @@ public class ApplyFormula extends AtomicFunction
 	 */
 	/*@ non_null @*/ protected final Set<Cell> m_computedCells;
 	
+	/**
+	 * Creates a new instance of the function.
+	 * @param in_arity The input arity of the function
+	 * @param formulas An optional list of cell formulas to be applied to the
+	 * input spreadsheet. Formulas can also be added later with
+	 * {@link #add(CellFormula)} and its variations. 
+	 */
 	public ApplyFormula(int in_arity, CellFormula ... formulas)
 	{
 		super(in_arity, 1);
@@ -104,11 +115,24 @@ public class ApplyFormula extends AtomicFunction
 		}
 	}
 	
+	/**
+	 * Creates a new instance of the function, assuming an input arity of 1.
+	 * @param formulas An optional list of cell formulas to be applied to the
+	 * input spreadsheet. Formulas can also be added later with
+	 * {@link #add(CellFormula)} and its variations. 
+	 */
 	public ApplyFormula(CellFormula ... formulas)
 	{
 		this(1, formulas);
 	}
 	
+	/**
+	 * Creates a new instance of the function.
+	 * @param in_arity The input arity of the function
+	 * @param formulas An optional list of cell formulas to be applied to the
+	 * input spreadsheet. Formulas can also be added later with
+	 * {@link #add(CellFormula)} and its variations. 
+	 */
 	public ApplyFormula(int in_arity, List<CellFormula> formulas)
 	{
 		super(in_arity, 1);
@@ -143,6 +167,64 @@ public class ApplyFormula extends AtomicFunction
 		m_formulas.add(new CellFormula(target, f));
 		m_computedCells.add(target);
 		return this;
+	}
+	
+	public ApplyFormula add(Cell target, Function f, Object ... arguments)
+	{
+		return add(target, getFunction(f, arguments));
+	}
+	
+	/**
+	 * Creates a 1:1 function circuit that forks the input to each argument, and
+	 * then connects the output of these arguments to another function <i>f</i>.
+	 * @param f The function <i>f</i>
+	 * @param arguments The arguments of <i>f</i>. Each of these elements is
+	 * assumed to be an instance of a 1:1 function taking a spreadsheet as its
+	 * input, or a {@link Cell} &mdash;in which case the cell is encased in an
+	 * instance of {@link ValueOf}.
+	 * @return The function circuit
+	 */
+	protected static Function getFunction(Function f, Object ... arguments)
+	{
+		if (arguments.length == 1)
+		{
+			return asFunction(arguments[0]);
+		}
+		Circuit c = new Circuit(1, 1);
+		Fork fork = new Fork(arguments.length);
+		c.associateInput(0, fork.getInputPin(0));
+		for (int i = 0; i < arguments.length; i++)
+		{
+			Function in_f = asFunction(arguments[i]);
+			NodeConnector.connect(fork, i, in_f, 0);
+			NodeConnector.connect(in_f, 0, f, i);
+		}
+		c.associateOutput(0, f.getOutputPin(0));
+		return c;
+	}
+	
+	/**
+	 * Turns an object into a function, if possible. This method does two things:
+	 * <ol>
+	 * <li>If the argument is a {@link Function}, it is returned as is</li>
+	 * <li>If the argument is a {@link Cell}, it is wrapped into a
+	 * {@link ValueOf} and returned</li>
+	 * </ol>
+	 * If the argument is anything else, <tt>null</tt> is returned
+	 * @param o The object
+	 * @return The function
+	 */
+	/*@ null @*/ protected static Function asFunction(Object o)
+	{
+		if (o instanceof Cell)
+		{
+			return new ValueOf((Cell) o);
+		}
+		if (o instanceof Function)
+		{
+			return (Function) o;
+		}
+		return null;
 	}
 	
 	@Override

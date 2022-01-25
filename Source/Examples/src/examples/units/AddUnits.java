@@ -107,15 +107,14 @@ public class AddUnits
 		 * 1. Fill the value of each cell of the last column with the *dimensional*
 		 *    sum of the cells to its left
 		 * 2. Uniformize the units of each column and move their name to the column
-		 *    header 
-		 */
+		 *    header */
 		Circuit c = new Circuit(1, 1, "Add units");
 		{
 			ApplyFormula f = new ApplyFormula();
 			c.associateInput(0, f.getInputPin(0));
 			for (int row = 1; row < s.getHeight(); row++)
 			{
-				f.add(Cell.get(3, row), UnitAdd.add((Object[]) CellRange.getRow(row, 0, 2)));
+				f.add(Cell.get(3, row), new UnitAdd(3), (Object[]) CellRange.getRow(row, 0, 2));
 			}
 			MoveUnitsToHeader h = new MoveUnitsToHeader();
 			connect(f, 0, h, 0);

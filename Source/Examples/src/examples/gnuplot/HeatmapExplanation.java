@@ -36,6 +36,31 @@ import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotHeatMap;
 import examples.util.GraphViewer;
 import examples.util.GraphViewer.BitmapJFrame;
 
+/**
+ * Creates a heat map and answers a provenance query about an element of the
+ * resulting chart.
+ * <p>
+ * This program is a follow-up to {@link HeatmapSimple}. It creates the same
+ * heatmap, but uses the {@link DrawChart} function to obtain the picture:
+ * <p>
+ * <img src="{@docRoot}/doc-files/gnuplot/HeatmapSimple-window.png" alt="Window" />
+ * <p>
+ * The advantage is that this function can then be queried for an explanation
+ * of plot elements in this picture. In the present case, we ask for the
+ * explanation of the square containing coordinate (0,0) inside the heatmap;
+ * the {@link CardinalGridCell} part is used to refer to this square. This
+ * results in the following graph:
+ * <p>
+ * <img src="{@docRoot}/doc-files/gnuplot/HeatmapExplanation-exp.png" alt="Explanation graph" />
+ * <p>
+ * One can see that the explanation for this square in the picture is twofold:
+ * it points both to the first (<tt>[0]</tt>) and the third (<tt>[2]</tt>)
+ * elements of the input list. This corresponds to the pairs (1,1) and (2,1),
+ * which are indeed the only two pairs that fall into this square in the
+ * plot, and "explain" its color.
+ * 
+ * @see HeatmapSimple
+ */
 public class HeatmapExplanation
 {
 	public static void main(String[] args) throws IOException
@@ -62,13 +87,12 @@ public class HeatmapExplanation
 				createPair(1, 1),
 				createPair(3, 5),
 				createPair(2, 1),
-				createPair(7, 3)
-				);
+				createPair(7, 3));
 		byte[] picture = (byte[]) c.evaluate(list)[0];
 		new BitmapJFrame(picture).display();
 		
 		/* Ask the provenance of a part of the plot and display it. */
-		Part part = ComposedPart.compose(new CardinalGridCell(6, 2), NthOutput.FIRST);
+		Part part = ComposedPart.compose(new CardinalGridCell(0, 0), NthOutput.FIRST);
 		PartNode graph = c.getExplanation(part);
 		GraphViewer.display(graph);
 	}

@@ -153,6 +153,12 @@
   </target>
   
   <target name="javadoc" description="Generates the combined API documentation of all components">
+    <!-- Preventively create the doc-files folder in case it does not exist -->
+    <mkdir dir="Core/src/doc-files"/>
+    <mkdir dir="Charts/src/doc-files"/>
+    <mkdir dir="Gnuplot/src/doc-files"/>
+    <mkdir dir="Gral/src/doc-files"/>
+    <mkdir dir="Units/src/doc-files"/>
     <mkdir dir="../docs/javadoc"/>
     <mkdir dir="../docs/javadoc/doc-files"/>
     <javadoc
@@ -181,17 +187,23 @@
       </sourcepath>
       <classpath>
         <fileset dir="Core/dep">
-          <include name="**/*.jar"/>
+          <include name="*.jar"/>
         </fileset>
-        <fileset dir="Core/lib">
-          <include name="**/*.jar"/>
+        <fileset dir="Charts/lib">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="Gral/lib">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="Units/lib">
+          <include name="*.jar"/>
         </fileset>
       </classpath>
-      <group title="Core" packages="ca.uqac.lif.spreadsheet"/>
-      <group title="Charts" packages="ca.uqac.lif.spreadsheet.chart.*"/>
-      <group title="Gnuplot" packages="ca.uqac.lif.synthia.spreadsheet.chart.gnuplot.*"/>
-      <group title="Gral" packages="ca.uqac.lif.synthia.spreadsheet.chart.gral.*"/>
-      <group title="Units" packages="ca.uqac.lif.synthia.spreadsheet.units.*"/>
+      <group title="Core" packages="ca.uqac.lif.spreadsheet:ca.uqac.lif.spreadsheet.functions"/>
+      <group title="Charts" packages="ca.uqac.lif.spreadsheet.chart:ca.uqac.lif.spreadsheet.chart.part"/>
+      <group title="Gnuplot" packages="ca.uqac.lif.spreadsheet.chart.gnuplot"/>
+      <group title="Gral" packages="ca.uqac.lif.spreadsheet.chart.gral"/>
+      <group title="Units" packages="ca.uqac.lif.spreadsheet.units"/>
       <group title="Examples" packages="examples:examples.*"/>
     </javadoc>
     <copy todir="../docs/javadoc/doc-files">

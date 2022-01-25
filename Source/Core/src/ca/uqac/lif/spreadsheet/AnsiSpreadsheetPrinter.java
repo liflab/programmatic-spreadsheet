@@ -215,7 +215,7 @@ public class AnsiSpreadsheetPrinter implements SpreadsheetPrinter
 	{
 		if (content == null)
 		{
-			return "null";
+			return "";
 		}
 		if (content instanceof Number)
 		{
