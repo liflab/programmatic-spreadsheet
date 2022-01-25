@@ -34,6 +34,31 @@ import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotScatterplot;
 import examples.util.GraphViewer;
 import examples.util.GraphViewer.BitmapJFrame;
 
+/**
+ * Displays a scatterplot from a spreadsheet extracted from a file, and answers
+ * a provenance query on the contents of the plot.
+ * <p>
+ * The scatterplot is identical to that of {@link ScatterplotSimple}, except
+ * that it is parsed from a text file instead of being hard-coded. Thus, the
+ * following picture is displayed:
+ * <p>
+ * <img src="{@docRoot}/doc-files/gnuplot/ScatterplotSimple-window.png" alt="Plot" />
+ * <p>
+ * The program then asks an explanation for the legend of this plot (top-right
+ * corner); this is done using the {@link ChartPart.Legend} part. 
+ * <p>
+ * <img src="{@docRoot}/doc-files/gnuplot/ScatterplotExplanation-exp.png" alt="Explanation graph" />
+ * <p>
+ * As one can see by examining the leaves of the graph, the plot's legend can
+ * be traced to two character ranges inside the input text file:
+ * <ul>
+ * <li>Line 1, characters 11-16: the part of the first input line corresponding
+ * to the word "Apples"</li>
+ * <li>Line 1, characters 18-24: the part of the first input line corresponding
+ * to the word "Oranges"</li>
+ * </ul>
+ * @see ScatterplotSimple
+ */
 public class ScatterplotExplanation
 {
 	public static void main(String[] args) throws IOException

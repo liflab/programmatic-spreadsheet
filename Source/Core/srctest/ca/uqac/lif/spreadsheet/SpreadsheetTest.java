@@ -141,4 +141,25 @@ public class SpreadsheetTest
 		assertEquals(ComposedPart.compose(new PositionRange(new Position(3, 2), new Position(3, 2)), NthInput.FIRST), mapping.get(Cell.get(0, 2)));
 		assertEquals(ComposedPart.compose(new PositionRange(new Position(3, 9), new Position(3, 12)), NthInput.FIRST), mapping.get(Cell.get(2, 2)));
 	}
+	
+	@Test
+	public void testRead2()
+	{
+		Map<Cell,Part> mapping = new HashMap<Cell,Part>();
+		Scanner scanner = new Scanner(
+				"a\tb\tfoo" + CRLF + 
+				"0\t1\ttrue" + CRLF +
+				" # Commented line to be ignored   " + CRLF +
+				"  2\t3.5\tnull" + CRLF);
+		Spreadsheet out = Spreadsheet.read(scanner, "#", "\\s+", mapping);
+		assertNotNull(out);
+		assertEquals(Spreadsheet.read(3, 3,
+				"a", "b", "foo",
+				0, 1, true,
+				2, 3.5, null), out);
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(0, 0), new Position(0, 0)), NthInput.FIRST), mapping.get(Cell.get(0, 0)));
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(0, 7), new Position(0, 9)), NthInput.FIRST), mapping.get(Cell.get(2, 0)));
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(3, 2), new Position(3, 2)), NthInput.FIRST), mapping.get(Cell.get(0, 2)));
+		assertEquals(ComposedPart.compose(new PositionRange(new Position(3, 9), new Position(3, 12)), NthInput.FIRST), mapping.get(Cell.get(2, 2)));
+	}
 }
