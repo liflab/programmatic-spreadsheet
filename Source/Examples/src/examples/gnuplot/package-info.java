@@ -17,6 +17,6 @@
  */
 
 /**
- * A set of {@link Function}s for common manipulations of spreadsheets.
+ * Examples illustrating the creation of charts rendered with Gnuplot.
  */
-package ca.uqac.lif.spreadsheet.functions;
+package examples.gnuplot;

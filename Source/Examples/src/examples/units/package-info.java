@@ -17,6 +17,7 @@
  */
 
 /**
- * A set of {@link Function}s for common manipulations of spreadsheets.
+ * Code examples showing how dimensional units can be manipulated inside a
+ * spreadsheet.
  */
-package ca.uqac.lif.spreadsheet.functions;
+package examples.units;

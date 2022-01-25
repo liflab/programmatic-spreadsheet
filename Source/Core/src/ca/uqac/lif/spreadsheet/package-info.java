@@ -17,6 +17,7 @@
  */
 
 /**
- * A set of {@link Function}s for common manipulations of spreadsheets.
+ * Core classes related to the creation of two-dimensional tabular structures
+ * called {@link Spreadsheet}s.
  */
-package ca.uqac.lif.spreadsheet.functions;
+package ca.uqac.lif.spreadsheet;

@@ -17,6 +17,6 @@
  */
 
 /**
- * A set of {@link Function}s for common manipulations of spreadsheets.
+ * Utility methods shared by multiple examples in this package.
  */
-package ca.uqac.lif.spreadsheet.functions;
+package examples.util;
