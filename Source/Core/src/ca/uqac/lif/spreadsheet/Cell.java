@@ -227,7 +227,7 @@ public class Cell implements Part
 	 * Since column numbers start at zero, 1 must be subtracted from the
 	 * resulting value. Hence&hellip;
 	 * <ul>
-	 * <li>"Z" corresponds to 26&times26⁰ &minus; 1 = 25</li>
+	 * <li>"Z" corresponds to 26&times;26⁰ &minus; 1 = 25</li>
 	 * <li>"AA" (the next column according to the convention) corresponds to
 	 * 1&times;26¹ + 1&times;26⁰ &minus; 1 = 26</li>
 	 * <li>"ABF" corresponds to 1&times;26² + 2&times;26¹ + 6&times;26⁰ &minus;
