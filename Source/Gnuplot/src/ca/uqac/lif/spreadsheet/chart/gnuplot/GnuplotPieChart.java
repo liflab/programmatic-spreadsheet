@@ -23,8 +23,19 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.ChartFormat;
 import ca.uqac.lif.spreadsheet.chart.PieChart;
 
+/**
+ * GnuPlot implementation of a pie chart.
+ * @author Sylvain Hallé
+ */
 public class GnuplotPieChart extends Gnuplot implements PieChart
 {
+	/**
+	 * Creates a new instance of the pie chart.
+	 */
+	public GnuplotPieChart()
+	{
+		super();
+	}
 
 	@Override
 	public void toGnuplot(PrintStream out, Spreadsheet table, ChartFormat term, String lab_title,

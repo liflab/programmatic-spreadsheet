@@ -19,7 +19,7 @@
 /**
  * Objects to manipulate spreadsheets whose elements are numerical values with
  * units and uncertainty. These values are represented by the
- * {@link DimensionValue} class of the
+ * {@link ca.uqac.lif.units.DimensionValue DimensionValue} class of the
  * <a href="https://github.com/liflab/lif-units">lif-units</a> package.
  */
 package ca.uqac.lif.spreadsheet.units;

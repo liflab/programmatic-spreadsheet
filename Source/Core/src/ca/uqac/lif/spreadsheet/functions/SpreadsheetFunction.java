@@ -257,6 +257,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * @param col The column corresponding to the cell
 		 * @param row The row corresponding to the cell
 		 * @param index The index of the input argument this cell points to
+		 * @return An instance of the corresponding input cell
 		 */
 		/*@ non_null @*/ public static InputCell get(int col, int row, int index)
 		{
@@ -267,6 +268,7 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		 * Creates a new input cell referring to input at index 0.
 		 * @param col The column corresponding to the cell
 		 * @param row The row corresponding to the cell
+		 * @return An instance of the corresponding input cell
 		 */
 		/*@ non_null @*/ public static InputCell get(int col, int row)
 		{

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>The Programmatic Spreadsheet (TPSS for short) is a Java library for the manipulation of two-dimensional tabular data. It allows users to create objects called {@link ca.uqac.spreadsheet.Spreadsheet Spreadsheets}, put data into cells of these spreadsheets (or fill it from the contents of a file), and use functions to transform these spreadsheets into others. TPSS also defines {@link ca.uqac.lif.spreadsheet.chart.Chart Charts}, which are abstract graphical renditions of the content of a spreadsheet. Currently, charts can be turned into images using extensions for either <a href="https://gnuplot.org">Gnuplot</a> or <a href="https://github.com/eseifert/gral">GRAL</a>.</p>
+
+<p>The most important feature of TPSS is <strong>explainability</strong>. Functions that transform a spreadsheet keep track of the relationship between each output cell and the input cells that have been involved in the generation of the value it contains. As a result, a user can "query" a cell (or even part of a value in a cell) and automatically obtain the complete lineage information that links it back to the corresponding parts of the input. Charts can also be queried in the same way; for instance, it is possible to designate a chart element (a point, an axis, an element of the legend) and retrace the elements from the input spreadsheet from which it originates. This functionality is available end-to-end without any extra code required from the user.</p>
+
+</body>
+</html>

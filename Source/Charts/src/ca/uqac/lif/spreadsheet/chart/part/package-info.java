@@ -17,7 +17,7 @@
  */
 
 /**
- * A set of {@link Part}s that can be used to refer to graphical elements of
- * a plot.
+ * A set of {@link ca.uqac.lif.petitpoucet.Part Part}s that can be used to
+ * refer to graphical elements of a chart.
  */
 package ca.uqac.lif.spreadsheet.chart.part;

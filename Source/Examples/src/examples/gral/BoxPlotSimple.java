@@ -23,6 +23,9 @@ import ca.uqac.lif.spreadsheet.chart.Chart.Axis;
 import ca.uqac.lif.spreadsheet.chart.gral.GralBoxPlot;
 import examples.util.GraphViewer.BitmapJFrame;
 
+/**
+ * Draws a box plot from a table of quartile data. 
+ */
 public class BoxPlotSimple
 {
 

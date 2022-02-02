@@ -22,7 +22,7 @@ import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
- * Function that performs the union of two spreadsheets by appending their
+ * Performs the union of two spreadsheets by appending their
  * rows. Note that this function allows a union to be performed regardless of
  * the dimensions of the original spreadsheets. Hence, if <i>S</i><sub>1</sub>
  * is the following spreadsheet:

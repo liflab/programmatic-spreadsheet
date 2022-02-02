@@ -17,6 +17,7 @@
  */
 
 /**
- * A set of {@link Function}s for common manipulations of spreadsheets.
+ * A set of {@link ca.uqac.lif.petitpoucet.function.Function Function}s for 
+ * common manipulations of spreadsheets.
  */
 package ca.uqac.lif.spreadsheet.functions;

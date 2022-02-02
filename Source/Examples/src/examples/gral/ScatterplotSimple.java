@@ -21,10 +21,42 @@ import java.io.IOException;
 
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.Chart.Axis;
+import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotScatterplot;
 import ca.uqac.lif.spreadsheet.chart.Scatterplot;
 import ca.uqac.lif.spreadsheet.chart.gral.GralScatterplot;
+import examples.gnuplot.ScatterplotExplanation;
 import examples.util.GraphViewer.BitmapJFrame;
 
+/**
+ * Displays a scatterplot from the contents of a spreadsheet.
+ * <p>
+ * The program first creates this spreadsheet:
+ * <p>
+ * <table border="1">
+ * <thead>
+ * <tr><th>x</th><th>Apples</th><th>Oranges</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><td>0</td><td>0</td><td>3</td></tr>
+ * <tr><td>1</td><td>1</td><td>1</td></tr>
+ * <tr><td>2</td><td>2</td><td>4</td></tr>
+ * <tr><td>3</td><td>3</td><td>1</td></tr>
+ * <tr><td>4</td><td>4</td><td>5</td></tr>
+ * <tr><td>5</td><td>5</td><td>9</td></tr>
+ * <tr><td>6</td><td>6</td><td>2</td></tr>
+ * <tr><td>7</td><td>7</td><td>5</td></tr>
+ * <tr><td>8</td><td>8</td><td>6</td></tr>
+ * <tr><td>9</td><td>9</td><td>3</td></tr>
+ * </tbody>
+ * </table>
+ * <p>
+ * It then passes this spreadsheet to a {@link GnuplotScatterplot} and sends
+ * its output to a window, resulting in the following picture:
+ * <p>
+ * <img src="{@docRoot}/doc-files/gral/ScatterplotSimple-window.png" alt="Plot" />
+ * 
+ * @see ScatterplotExplanation
+ */
 public class ScatterplotSimple
 {
 	public static void main(String[] args) throws IOException

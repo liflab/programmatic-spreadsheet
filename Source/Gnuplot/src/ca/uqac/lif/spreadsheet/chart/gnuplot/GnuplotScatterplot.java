@@ -554,8 +554,8 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * </ol>
 	 * Note that no explanation can be given for the y-axis caption, as it is
 	 * provided by the user and does not come from the spreadsheet.
-	 * @param p The part designating the legend
-	 * @param to_explain The part of the legend to explain, if any
+	 * @param pa The part designating the axis
+	 * @param to_explain The part of the axis to explain, if any
 	 * @param suffix The part to be affixed to each part of the explanation
 	 * @param root The root to which explanation nodes are to be appended
 	 * @param f A factory to get node instances

@@ -23,7 +23,7 @@
        script's default values -->
 
   <!-- The project's name -->
-  <name>Programmatic Spreadsheet - lif-units</name>
+  <name>Programmatic Spreadsheet - Units</name>
   
   <!-- The project's author. Currently this only
   shows up in the footer of the Javadoc documentation. -->
@@ -86,9 +86,7 @@
       <bundle>false</bundle>
       <classname>ca.uqac.lif.units.DimensionValue</classname>
       <files>
-        <!--
-        <jar>TODO</jar>
-        -->
+        <jar>https://github.com/liflab/lif-units/releases/download/v1.0/lif-units.jar</jar>
       </files>
       <bundle>false</bundle>
     </dependency>

@@ -60,9 +60,9 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
  * </ol>
  * <p>
  * This function is called "box stats", because it produces a
- * table in a form that can be used by a
- * {@link ca.uqac.lif.spreadsheet.plots.BoxPlot BoxPlot}. Each cell of the output
- * is tracked to the coresponding cell in the input spreadsheet.
+ * table in a form that can be used by a 
+ * {@link ca.uqac.lif.spreadsheet.chart.BoxPlot BoxPlot}. Each cell of the
+ * output is tracked to the corresponding cell in the input spreadsheet.
  *  
  * @author Sylvain Hallé
  */

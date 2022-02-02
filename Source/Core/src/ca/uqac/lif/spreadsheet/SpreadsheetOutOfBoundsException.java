@@ -17,6 +17,10 @@
  */
 package ca.uqac.lif.spreadsheet;
 
+/**
+ * Exception thrown when attempting to access an invalid cell of a spreadsheet.
+ * @author Sylvain Hallé
+ */
 public class SpreadsheetOutOfBoundsException extends RuntimeException
 {
 	/**
@@ -24,11 +28,20 @@ public class SpreadsheetOutOfBoundsException extends RuntimeException
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Creates a new instance of the exception.
+	 * @param message The message associated to the exception
+	 */
 	public SpreadsheetOutOfBoundsException(String message)
 	{
 		super(message);
 	}
 	
+	/**
+	 * Creates a new instance of the exception by propagating another
+	 * throwable object.
+	 * @param t The throwable object
+	 */
 	public SpreadsheetOutOfBoundsException(Throwable t)
 	{
 		super(t);

@@ -65,7 +65,7 @@
     <!-- Compile Units -->
     <ant dir="Units" target="jar" />
     <!-- Copy to Examples -->
-    <copy file="pss-units.jar" todir="Units/lib" />
+    <copy file="pss-units.jar" todir="Examples/lib" />
     <!-- Compile Examples -->
     <ant dir="Examples" target="jar" />
   </target>
@@ -173,10 +173,11 @@
       Encoding="utf8"
       docencoding="utf8"
       charset="utf8"
+      additionalparam="-Xdoclint:missing,reference,syntax"
       windowtitle="The Programmatic Spreadsheet Documentation">
       <doctitle><![CDATA[<h1>]]>${build.name}<![CDATA[ Documentation</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright&nbsp;&#169; ]]>${build.author}<![CDATA[. All Rights Reserved.</i>]]></bottom>
-      <link href="https://docs.oracle.com/en/java/javase/8/docs/api/"/>
+      <link href="https://docs.oracle.com/javase/8/docs/api/"/>
       <sourcepath>
         <pathelement path="Core/src"/>
         <pathelement path="Charts/src"/>
@@ -193,6 +194,9 @@
           <include name="*.jar"/>
         </fileset>
         <fileset dir="Gral/lib">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="Gral/dep">
           <include name="*.jar"/>
         </fileset>
         <fileset dir="Units/lib">

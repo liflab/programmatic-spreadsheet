@@ -63,17 +63,27 @@ public class CellFormula
 	 * @param index The argument index of the formula
 	 * @return This cell formula object
 	 */
-	public CellFormula associate(int spreadsheet, int index)
+	/*@ non_null @*/ public CellFormula associate(int spreadsheet, int index)
 	{
 		m_arguments.put(index, spreadsheet);
 		return this;
 	}
 	
+	/**
+	 * Gets the cell into which the output of this formula is written.
+	 * @return The cell
+	 */
 	/*@ non_null @*/ public Cell getTarget()
 	{
 		return m_target;
 	}
 	
+	/**
+	 * Evaluates the function.
+	 * @param args The spreadsheet(s) that serve as the arguments of the formula
+	 * @throws FunctionException Thrown if the formula refers to a spreadsheet
+	 * index that is not present in the arguments
+	 */
 	public void evaluate(Spreadsheet ... args) throws FunctionException
 	{
 		m_formula.reset();

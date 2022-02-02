@@ -31,9 +31,9 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
  * <pre> A    B    C D     E    
  * 1    2    3 4     5    
  * 1    3    5 6     7    
- * null null 3 4     a < b
- * 6    7    8 9     a < b
- * 7    8    9 a < b a < b</pre>
+ * null null 3 4     a &lt; b
+ * 6    7    8 9     a &lt; b
+ * 7    8    9 a &lt; b a &lt; b</pre>
  */
 public class AnsiPrint
 {

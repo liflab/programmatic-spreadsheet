@@ -24,6 +24,9 @@ import ca.uqac.lif.spreadsheet.chart.ChartFormat;
 import ca.uqac.lif.spreadsheet.chart.gnuplot.GnuplotBoxPlot;
 import examples.util.GraphViewer.BitmapJFrame;
 
+/**
+ * Draws a box plot from a table of quartile data. 
+ */
 public class BoxPlotSimple
 {
 

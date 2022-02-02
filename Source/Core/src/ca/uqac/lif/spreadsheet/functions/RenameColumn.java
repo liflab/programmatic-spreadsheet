@@ -22,7 +22,7 @@ import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
- * Function that renames the first cell of a column.
+ * Renames the first cell of a column.
  * @author Sylvain Hallé
  */
 public class RenameColumn extends SpreadsheetFunction

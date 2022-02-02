@@ -26,8 +26,15 @@ import de.erichseifert.gral.graphics.Insets2D;
 import de.erichseifert.gral.plots.PiePlot;
 import de.erichseifert.gral.plots.Plot;
 
+/**
+ * GnuPlot implementation of a pie chart.
+ * @author Sylvain Hallé
+ */
 public class GralPieChart extends GralPlot implements PieChart
 {
+	/**
+	 * Creates a new instance of the pie chart.
+	 */
 	public GralPieChart()
 	{
 		super();

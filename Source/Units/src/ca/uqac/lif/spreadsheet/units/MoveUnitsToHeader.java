@@ -40,7 +40,8 @@ import ca.uqac.lif.units.DimensionValuePart;
 import ca.uqac.lif.units.NoSuchUnitException;
 
 /**
- * Turns a spreadsheet containing {@link DimensionValue}s into another where
+ * Turns a spreadsheet containing
+ * {@link ca.uqac.lif.units.DimensionValue DimensionValue}s into another where
  * units for each cell are moved to the column's header.
  * <p>
  * For example, consider the following spreadsheet:
@@ -82,13 +83,14 @@ import ca.uqac.lif.units.NoSuchUnitException;
  * <li>Cells that do not contain descendants of {@link DimensionValue} are
  * ignored and left as they are.</li>
  * <li>All cells of the input spreadsheet that are {@link DimensionValue}s
- * become cells containing {@link Real}s in the output. That is, all
- * dimensional information is lost and the values become "simple numbers".
- * For this reason, it is expected that this function be used primarily for
- * <em>displaying</em> the contents of a spreadsheet, and not as an
- * intermediate step in a computation. If you need to simply convert
- * spreadsheet cells into a given unit, apply the function {@link ConvertTo}
- * to the desired cells instead.</li>
+ * become cells containing {@link ca.uqac.lif.numbers.Real Real}s in
+ * the output. That is, all dimensional information is lost and the values
+ * become "simple numbers". For this reason, it is expected that this function
+ * be used primarily for <em>displaying</em> the contents of a spreadsheet,
+ * and not as an intermediate step in a computation. If you need to simply
+ * convert spreadsheet cells into a given unit, apply the function
+ * {@link ca.uqac.lif.units.functions.ConvertTo ConvertTo} to the desired cells
+ * instead.</li>
  * </ul>
  * @author Sylvain Hallé
  *

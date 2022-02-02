@@ -27,6 +27,10 @@ import de.erichseifert.gral.graphics.Insets2D;
 import de.erichseifert.gral.plots.Plot;
 import de.erichseifert.gral.plots.XYPlot;
 
+/**
+ * GRAL implementation of a boxplot.
+ * @author Sylvain Hallé
+ */
 public class GralBoxPlot extends GralPlot implements BoxPlot
 {
 	/**

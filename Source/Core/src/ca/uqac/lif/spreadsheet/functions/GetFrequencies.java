@@ -39,7 +39,7 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
 /**
  * Calculates a two-dimensional frequency table out of a list of pairs of
  * numbers. The result of such a table can be displayed graphically in the
- * form of a {@link HeatMap}.
+ * form of a {@link ca.uqac.lif.spreadsheet.chart.HeatMap HeatMap}.
  * <p>
  * For example, given a frequency table with the columns divided into 4
  * buckets spanning the range [0-12], and the rows divided into 3 buckets

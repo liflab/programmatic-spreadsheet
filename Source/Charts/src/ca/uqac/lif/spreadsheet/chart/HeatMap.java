@@ -17,7 +17,21 @@
  */
 package ca.uqac.lif.spreadsheet.chart;
 
+/**
+ * A two-dimensional plot obtained from a frequency table. In such a plot,
+ * each cell of the original table corresponds to a rectangular region of the
+ * plot, and the numerical value inside that cell is converted to a color used
+ * to fill this rectangle.
+ *   
+ * @author Sylvain Hallé
+ *
+ */
 public interface HeatMap extends Chart
 {
+	/**
+	 * Sets the caption for the color scale of the heatmap.
+	 * @param caption The caption
+	 * @return This heatmap
+	 */
 	public HeatMap setScaleCaption(String caption);
 }

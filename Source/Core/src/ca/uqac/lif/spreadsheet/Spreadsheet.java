@@ -112,7 +112,7 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	 * will be filled with associations between cells of the spreadsheet and
 	 * the character ranges in the input they have been derived from.
 	 * @return The resulting spreadsheet
-	 * @see {@link #readValue(String)}
+	 * @see #readValue(String)
 	 */
 	/*@ non_null @*/ public static Spreadsheet read(/*@ non_null @*/ Scanner scanner, /*@ non_null @*/ String comment_marker, /*@ non_null @*/ String separator, /*@ null @*/ Map<Cell,Part> mapping)
 	{
@@ -180,7 +180,7 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 	 * and any number of whitespace characters as the cell separator.
 	 * @param scanner A scanner pointing to the start of a text source
 	 * @return The resulting spreadsheet
-	 * @see {@link #read(Scanner, String, String)
+	 * @see #read(Scanner, String, String, Map)
 	 */
 	/*@ non_null @*/ public static Spreadsheet read(Scanner scanner)
 	{
@@ -656,9 +656,10 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 
 	/**
 	 * Retrieves the value of a cell and converts it to a string.
-	 * @param col
-	 * @param row
-	 * @return
+	 * @param col The cell's column
+	 * @param row The cell's row
+	 * @return The value at that location in the spreadsheet, converted to a
+	 * string using the value's <tt>toString()</tt> method
 	 */
 	/*@ pure non_null @*/ public String getString(int col, int row)
 	{

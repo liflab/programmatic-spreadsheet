@@ -30,11 +30,20 @@ public class SpreadsheetCellNameException extends RuntimeException
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Creates a new instance of the exception.
+	 * @param message The message associated to the exception
+	 */
 	public SpreadsheetCellNameException(String message)
 	{
 		super(message);
 	}
 	
+	/**
+	 * Creates a new instance of the exception by propagating another
+	 * throwable object.
+	 * @param t The throwable object
+	 */
 	public SpreadsheetCellNameException(Throwable t)
 	{
 		super(t);

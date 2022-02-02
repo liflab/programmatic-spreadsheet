@@ -1,19 +1,19 @@
 /*
-  MTNP: Manipulate Tables N'Plots
-  Copyright (C) 2017 Sylvain Hallé
+    A provenance-aware spreadsheet library
+    Copyright (C) 2021-2022 Sylvain Hallé
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.uqac.lif.spreadsheet.chart;
 
@@ -49,7 +49,7 @@ package ca.uqac.lif.spreadsheet.chart;
  * The position of the lines and box boundaries in each data series correspond
  * the the min/max values and quartiles of that series. 
  * 
- * @see ca.uqac.lif.mtnp.table.BoxTransformation
+ * @see ca.uqac.lif.spreadsheet.functions.BoxStats
  * @author Sylvain Hallé
  *
  */

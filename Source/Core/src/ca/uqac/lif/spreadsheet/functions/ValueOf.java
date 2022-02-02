@@ -32,7 +32,7 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.SpreadsheetOutOfBoundsException;
 
 /**
- * Function that extracts the value of a single cell within a spreadsheet.
+ * Extracts the value of a single cell within a spreadsheet.
  * @author Sylvain Hallé
  */
 public class ValueOf extends AtomicFunction

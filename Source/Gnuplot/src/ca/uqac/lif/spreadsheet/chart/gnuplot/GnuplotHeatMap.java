@@ -123,8 +123,8 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	/**
 	 * Calculates the explanation of a heatmap cell expressed as an cardinal
 	 * location.
-	 * @param left The x value of the cell
-	 * @param bottom The y value of the cell
+	 * @param x The x value of the cell
+	 * @param y The y value of the cell
 	 * @param suffix The part suffix to add to the leaf nodes
 	 * @param root The root to which nodes are to be added
 	 * @param f A factory to get node instances

@@ -160,10 +160,9 @@ public class SpreadsheetDataSource implements DataSource
 	 * a <tt>NullPointerException</tt>) when it contains
 	 * data series with missing values.
 	 *  
-	 * @param col_name_x The name of the first column
-	 * @param col_name_y The name of the second column. This will also be the
-	 *   name of the resulting GRAL data series. 
-	 * @param table The table from which to create the data series
+	 * @param col_index_x The index of the first column
+	 * @param col_index_y The index of the second column. This name of this
+	 * column will also be the name of the resulting GRAL data series 
 	 * @return The GRAL data series
 	 */
 	public DataSeries getCleanedDataSeries(int col_index_x, int col_index_y)

@@ -106,6 +106,7 @@ public abstract class GralPlot implements Chart
 	 * Runs GRAL on a file and returns the resulting graph
 	 * @param term The terminal (i.e. PNG, etc.) to use for the image.
 	 * For GRAL plots, PDF is not supported.
+	 * @param s The spreadsheet to turn into an image
 	 * @param with_caption Set to true to ignore the plot's caption when
 	 *   rendering
 	 * @return The (binary) contents of the image produced by Gnuplot
@@ -153,7 +154,8 @@ public abstract class GralPlot implements Chart
 	}
 
 	/**
-	 * Gets a Plot object from a data source
+	 * Gets a Plot object from a spreadsheet.
+	 * @param source The spreadsheet from which to obtain a plot
 	 * @return The plot
 	 */
 	public abstract Plot getPlot(Spreadsheet source);
