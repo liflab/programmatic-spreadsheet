@@ -29,7 +29,7 @@ public class CellTest
 	@Test
 	public void testGetCell1()
 	{
-		Cell c = Cell.get("A0");
+		Cell c = Cell.get("A1");
 		assertNotNull(c);
 		assertEquals(0, c.getColumn());
 		assertEquals(0, c.getRow());
@@ -41,7 +41,7 @@ public class CellTest
 		Cell c = Cell.get("B5");
 		assertNotNull(c);
 		assertEquals(1, c.getColumn());
-		assertEquals(5, c.getRow());
+		assertEquals(4, c.getRow());
 	}
 	
 	@Test
@@ -50,7 +50,7 @@ public class CellTest
 		Cell c = Cell.get("BC9");
 		assertNotNull(c);
 		assertEquals(54, c.getColumn());
-		assertEquals(9, c.getRow());
+		assertEquals(8, c.getRow());
 	}
 	
 	@Test (expected = SpreadsheetCellNameException.class)

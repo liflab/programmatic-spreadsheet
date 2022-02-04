@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2022 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -546,6 +546,26 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 			}
 		}
 		return -1;
+	}
+	
+	/**
+	 * Gets the first non-null class of objects in a column, stating from the
+	 * second row. This method is used to guess the type of a column.
+	 * @param col_index The index of the column
+	 * @return The first class, or <tt>null</tt> if no non-null cell exists in
+	 * that column
+	 */
+	/*@ null @*/ public Class<?> getColumnType(int col_index)
+	{
+		for (int row = 1; row < getHeight(); row++)
+		{
+			Object o = get(col_index, row);
+			if (o != null)
+			{
+				return o.getClass();
+			}
+		}
+		return null;
 	}
 	
 	/**
