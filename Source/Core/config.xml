@@ -63,7 +63,7 @@
       <name>Petit Poucet Core</name>
       <classname>ca.uqac.lif.petitpoucet.Part</classname>
       <files>
-        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1-beta2/petitpoucet-core.jar</jar>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1-beta3/petitpoucet-core.jar</jar>
       </files>
       <bundle>false</bundle>
     </dependency>
@@ -74,7 +74,7 @@
       <name>Petit Poucet Functions</name>
       <classname>ca.uqac.lif.petitpoucet.function.Function</classname>
       <files>
-        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1-beta2/petitpoucet-functions.jar</jar>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1-beta3/petitpoucet-functions.jar</jar>
       </files>
       <bundle>false</bundle>
     </dependency>
