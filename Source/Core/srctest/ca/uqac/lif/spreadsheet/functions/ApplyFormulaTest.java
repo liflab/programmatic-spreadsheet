@@ -98,7 +98,7 @@ public class ApplyFormulaTest
 			assertEquals(1, nn.getOutputLinks(0).size());
 			PartNode child_1 = (PartNode) nn.getOutputLinks(0).get(0).getNode();
 			Part child_part = child_1.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthOutput.FIRST), child_part);
+			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthInput.FIRST), child_part);
 		}
 	}
 
@@ -140,7 +140,7 @@ public class ApplyFormulaTest
 			assertEquals(1, nn.getOutputLinks(0).size());
 			PartNode child_1 = (PartNode) nn.getOutputLinks(0).get(0).getNode();			
 			Part child_part1 = child_1.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthOutput.FIRST), child_part1);
+			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthInput.FIRST), child_part1);
 		}
 	}
 
@@ -179,10 +179,10 @@ public class ApplyFormulaTest
 			PartNode child_1 = (PartNode) nn.getOutputLinks(0).get(0).getNode();
 			assertEquals(1, nn.getOutputLinks(1).size());
 			Part child_part1 = child_1.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthOutput.FIRST), child_part1);
+			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthInput.FIRST), child_part1);
 			PartNode child_2 = (PartNode) nn.getOutputLinks(1).get(0).getNode();
 			Part child_part2 = child_2.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(1, 0), NthOutput.FIRST), child_part2);
+			assertEquals(ComposedPart.compose(Cell.get(1, 0), NthInput.FIRST), child_part2);
 		}
 	}
 
@@ -223,7 +223,7 @@ public class ApplyFormulaTest
 			PartNode child_1 = (PartNode) nn.getOutputLinks(0).get(0).getNode();
 			assertEquals(1, nn.getOutputLinks(1).size());
 			Part child_part1 = child_1.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthOutput.FIRST), child_part1);
+			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthInput.FIRST), child_part1);
 			PartNode child_2 = (PartNode) nn.getOutputLinks(1).get(0).getNode();
 			Part child_part2 = child_2.getPart();
 			assertEquals(ComposedPart.compose(Cell.get(0, 0), NthInput.SECOND), child_part2);
@@ -253,7 +253,7 @@ public class ApplyFormulaTest
 			assertEquals(1, nn.getOutputLinks(0).size());
 			PartNode child_1 = (PartNode) nn.getOutputLinks(0).get(0).getNode();
 			Part child_part1 = child_1.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(1, 0), NthOutput.FIRST), child_part1);
+			assertEquals(ComposedPart.compose(Cell.get(1, 0), NthInput.FIRST), child_part1);
 		}
 		{
 			// 0:1 is explained by the value of 0:0, which in turn is explained
@@ -274,7 +274,7 @@ public class ApplyFormulaTest
 			assertEquals(1, nn2.getOutputLinks(0).size());
 			PartNode child_3 = (PartNode) nn2.getOutputLinks(0).get(0).getNode();
 			Part child_part3 = child_3.getPart();
-			assertEquals(ComposedPart.compose(Cell.get(1, 0), NthOutput.FIRST), child_part3);
+			assertEquals(ComposedPart.compose(Cell.get(1, 0), NthInput.FIRST), child_part3);
 		}
 	}
 }
