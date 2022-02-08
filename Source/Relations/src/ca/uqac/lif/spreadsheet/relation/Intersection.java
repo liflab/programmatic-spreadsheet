@@ -18,9 +18,7 @@
 package ca.uqac.lif.spreadsheet.relation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ca.uqac.lif.dag.LabelledNode;
 import ca.uqac.lif.petitpoucet.NodeFactory;
@@ -29,28 +27,28 @@ import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
- * Calculates the union of multiple relations. For example, given these two
- * spreadsheets:
+ * Calculates the intersection of multiple relations. For example, given these
+ * two spreadsheets:
  * <p>
  * <div style="display:flex">
- * <table border="1" style="background:#f44;margin-right:12pt">
+ * <table border="1" style="margin-right:12pt">
  * <thead>
  * <tr><th>A</th><th>B</th><th>C</th></tr>
  * </thead>
  * <tbody>
  * <tr><td>3</td><td>f</td><td>true</td></tr>
- * <tr><td>1</td><td>o</td><td></td></tr>
- * <tr><td></td><td>o</td><td>false</td></tr>
+ * <tr style="background:cyan"><td></td><td>o</td><td>true</td></tr>
+ * <tr style="background:yellow"><td>1</td><td>o</td><td></td></tr>
  * </tbody>
  * </table>
- * <table border="1" style="background:yellow">
+ * <table border="1">
  * <thead>
  * <tr><th>A</th><th>B</th><th>C</th></tr>
  * </thead>
  * <tbody>
- * <tr><td>1</td><td>o</td><td></td></tr>
+ * <tr style="background:yellow"><td>1</td><td>o</td><td></td></tr>
  * <tr><td>5</td><td>f</td><td>true</td></tr>
- * <tr><td></td><td>o</td><td>true</td></tr>
+ * <tr style="background:cyan"><td></td><td>o</td><td>true</td></tr>
  * </tbody>
  * </table>
  * </div>
@@ -59,67 +57,65 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
  * <p>
  * <table border="1">
  * <thead>
- * <tr style="background:#8c0"><th>A</th><th>B</th><th>C</th></tr>
+ * <tr><th>A</th><th>B</th><th>C</th></tr>
  * </thead>
  * <tbody>
- * <tr style="background:#f44"><td>3</td><td>f</td><td>true</td></tr>
- * <tr style="background:#f44"><td>1</td><td>o</td><td></td></tr>
- * <tr style="background:#8c0"><td></td><td>o</td><td>false</td></tr>
- * <tr style="background:yellow"><td>5</td><td>f</td><td>true</td></tr>
- * <tr style="background:yellow"><td></td><td>o</td><td>true</td></tr>
+ * <tr style="background:cyan"><td></td><td>o</td><td>true</td></tr>
+ * <tr style="background:yellow"><td>1</td><td>o</td><td></td></tr>
  * </tbody>
  * </table>
  * <p>
  * In line with the definition of a relation, rows with identical values
  * appearing in more than one spreadsheet occur only once in the result.
  * However, contrary to the definition of a relation, the rows of the result
- * are listed in a specific order: all rows of the first argument of the
- * function are first appended (in their order of occurrence), followed by all
- * rows of the second argument that are not duplicates, and so on.
+ * are listed in their order of occurrence in the first input spreadsheet.
  * <p>
- * The operator also tracks the provenance of each cell of the output. In
- * the output spreadsheet:
+ * The operator also tracks the provenance of each cell of the output. For
+ * example:
  * <ul>
- * <li>cells in red rows are associated to corresponding cells of the first
- * input spreadsheet</li>
- * <li>cells in yellow rows are associated to corresponding cells of the
- * second input spreadsheet</li>
- * <li>cells in green rows appear in both spreadsheets and are associated
- * to corresponding cells of both</li>
- * </ul> 
+ * <li>in the output spreadsheet, cells in the second row are associated
+ * to corresponding cells in both the second row of the first input
+ * spreadsheet, and the fourth row of the second input spreadsheet (highlighted
+ * in cyan)</li>
+ * <li>in the output spreadsheet, cells in the third row are associated
+ * to corresponding cells in both the fourth row of the first input
+ * spreadsheet, and the second row of the yellow spreadsheet (highlighted in
+ * yellow)</li>
+ * </ul>
+ *  
  * @author Sylvain Hallé
  *
  */
-public class Union extends RelationalOperator
+public class Intersection extends RelationalOperator
 {
 	/**
 	 * Creates a new instance of the Union function, assuming that the rows
 	 * of its output will be unsorted.
 	 * @param in_arity The input arity of the function
 	 */
-	public Union(int in_arity)
+	public Intersection(int in_arity)
 	{
 		super(in_arity);
 	}
-
+	
 	/**
-	 * Creates a new instance of the Union function.
+	 * Creates a new instance of the Intersection function.
 	 * @param in_arity The input arity of the function
 	 * @param sort_output Set to <tt>true</tt> to sort rows of the output,
 	 * <tt>false</tt> otherwise 
 	 */
-	public Union(int in_arity, boolean sort_output)
+	public Intersection(int in_arity, boolean sort_output)
 	{
 		super(in_arity, sort_output);
 	}
-
+	
 	@Override
-	/*@ non_null @*/ public Union sortOutput(boolean b)
+	/*@ non_null @*/ public Intersection sortOutput(boolean b)
 	{
 		super.sortOutput(b);
 		return this;
 	}
-
+	
 	@Override
 	protected Object[] getValue(Object... inputs) throws InvalidNumberOfArgumentsException
 	{
@@ -137,47 +133,41 @@ public class Union extends RelationalOperator
 				throw new InvalidArgumentTypeException("Arguments have incompatible signatures");
 			}
 		}
-		// We use both a set and a list to store rows. The hashset is used to check
-		// for the existence of a duplicate row; this avoids doing a linear search
-		// in the list in case the row has never been seen before.
-		Set<Row> row_set = new HashSet<Row>();
 		List<Row> row_list = new ArrayList<Row>();
-		for (int s_index = 0; s_index < s_inputs.length; s_index++)
+		for (int row = 1; row < s_inputs[0].getHeight(); row++)
 		{
-			Spreadsheet s = s_inputs[s_index];
-			for (int s_row = 1; s_row < s.getHeight(); s_row++)
+			Row r = new Row(s_inputs[0].getRow(row));
+			List<Integer[]> tuples = new ArrayList<Integer[]>(s_inputs.length);
+			tuples.add(new Integer[] {0, row});
+			boolean all_present = true;
+			for (int s_index = 1; s_index < s_inputs.length && all_present; s_index++)
 			{
-				Row r = new Row(s.getRow(s_row));
-				if (row_set.contains(r))
+				int row_index = r.rowOf(s_inputs[s_index]);
+				if (row_index < 0)
 				{
-					// Duplicate of existing row in the output
-					int index = row_list.indexOf(r);
-					List<Integer[]> tuples = m_mapping.get(index);
-					tuples.add(new Integer[] {s_index, s_row});
+					all_present = false;
+					continue;
 				}
-				else
-				{
-					// New unique row
-					row_set.add(r);
-					List<Integer[]> tuples = new ArrayList<Integer[]>(1);
-					tuples.add(new Integer[] {s_index, s_row});
-					m_mapping.add(tuples);
-					row_list.add(r);
-				}
+				tuples.add(new Integer[] {s_index, row_index});
+			}
+			if (all_present)
+			{
+				row_list.add(r);
+				m_mapping.add(tuples);
 			}
 		}
 		return new Object[] {createOutput(s_inputs[0].getRow(0), row_list)};
 	}
-
+	
 	@Override
 	protected LabelledNode getConnectorNode(NodeFactory f)
 	{
-		return f.getOrNode();
+		return f.getAndNode();
 	}
-
+	
 	@Override
 	public String toString()
 	{
-		return "\u222a";
+		return "\u2229";
 	}
 }

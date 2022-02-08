@@ -29,7 +29,7 @@ import ca.uqac.lif.spreadsheet.Spreadsheet;
  * 
  * @author Sylvain Hallé
  */
-public class Row
+/* package */ class Row implements Comparable<Row>
 {
 	/**
 	 * The contents of the row.
@@ -51,12 +51,30 @@ public class Row
 	 * @param s The spreadsheet to write to
 	 * @param row The row index where to write the contents
 	 */
-	public void set(Spreadsheet s, int row)
+	public void set(/*@ non_null @*/ Spreadsheet s, int row)
 	{
 		for (int col = 0; col < m_contents.length; col++)
 		{
 			s.set(col, row, m_contents[col]);
 		}
+	}
+	
+	/**
+	 * Gets the row of the spreadsheet that contains the current row.
+	 * @param s The spreadsheet
+	 * @return The non-negative row index if the row is contained in the
+	 * spreadsheet; -1 if the spreadsheet does not contain that row
+	 */
+	public int rowOf(/*@ non_null @*/ Spreadsheet s)
+	{
+		for (int row = 1; row < s.getHeight(); row++)
+		{
+			if (Spreadsheet.equalRows(m_contents, s.getRow(row)))
+			{
+				return row;
+			}
+		}
+		return -1;
 	}
 	
 	@Override
@@ -93,5 +111,11 @@ public class Row
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public int compareTo(Row r)
+	{
+		return Spreadsheet.compareRows(m_contents, r.m_contents);
 	}
 }

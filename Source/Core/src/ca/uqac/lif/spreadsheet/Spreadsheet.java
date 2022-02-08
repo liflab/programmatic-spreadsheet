@@ -658,7 +658,16 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 		return 0;
 	}
 	
-	protected static int compareRows(Object[] r1, Object[] r2)
+	/**
+	 * Compares two arrays of objects representing the contents of two rows in
+	 * a spreadsheet.
+	 * @param r1 The values of the first row
+	 * @param r2 The values of the second row
+	 * @return A negative value if r1 goes before r2, 0 if the two rows are
+	 * identical, and a positive value otherwise
+	 * @see #equalRows(Object[], Object[])
+	 */
+	public static int compareRows(Object[] r1, Object[] r2)
 	{
 		int l1 = r1.length, l2 = r2.length;
 		for (int col = 0; col < Math.max(l1, l2); col++)
@@ -672,6 +681,29 @@ public class Spreadsheet implements Duplicable, Comparable<Spreadsheet>
 			}
 		}
 		return 0;
+	}
+	
+	/**
+	 * Determines if two arrays of objects representing the contents of two rows
+	 * in a spreadsheet are equal.
+	 * @param r1 The values of the first row
+	 * @param r2 The values of the second row
+	 * @return <tt>true</tt> if they are equal, <tt>false</tt> otherwise
+	 * @see #compareRows(Object[], Object[])
+	 */
+	public static boolean equalRows(Object[] r1, Object[] r2)
+	{
+		int l1 = r1.length, l2 = r2.length;
+		for (int col = 0; col < Math.max(l1, l2); col++)
+		{
+			Object o1 = col < l1 ? r1[col] : null;
+			Object o2 = col < l2 ? r2[col] : null;
+			if (!same(o1, o2))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

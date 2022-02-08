@@ -17,24 +17,171 @@
  */
 package ca.uqac.lif.spreadsheet.relation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import ca.uqac.lif.dag.LabelledNode;
+import ca.uqac.lif.petitpoucet.NodeFactory;
+import ca.uqac.lif.petitpoucet.OrNode;
+import ca.uqac.lif.petitpoucet.Part;
+import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
+import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
  * Common ancestor to functions specific to relational algebra. These functions
  * may have a varying input arity, but their output arity is always 1.
+ * <p>
+ * A relational operator <strong>assumes</strong> that its input arguments are
+ * spreadsheets with no duplicate rows. In turn, it <strong>guarantees</strong>
+ * that the spreadsheet it produces as its output contains no duplicate rows.
  * @author Sylvain Hallé
  */
 public abstract class RelationalOperator extends AtomicFunction
 {
 	/**
-	 * Creates a new instance of the relational operator.
+	 * A mapping associating each row of the output spreadsheet with the row(s)
+	 * of the input spreadsheet(s) where it is found.
+	 */
+	/*@ non_null @*/ protected final List<List<Integer[]>> m_mapping;
+	
+	/**
+	 * A flag indicating whether the rows of the output spreadsheet should be
+	 * sorted.
+	 */
+	protected boolean m_sortOutput = false;
+	
+	/**
+	 * Creates a new instance of the relational operator, assuming that the rows
+	 * of its output will be unsorted.
 	 * @param in_arity The input arity of the function
 	 */
 	public RelationalOperator(int in_arity)
 	{
-		super(in_arity, 1);
+		this(in_arity, false);
 	}
+	
+	/**
+	 * Creates a new instance of the relational operator.
+	 * @param in_arity The input arity of the function
+	 * @param sort_output Set to <tt>true</tt> to sort rows of the output,
+	 * <tt>false</tt> otherwise 
+	 */
+	public RelationalOperator(int in_arity, boolean sort_output)
+	{
+		super(in_arity, 1);
+		m_mapping = new ArrayList<List<Integer[]>>();
+		m_sortOutput = sort_output;
+	}
+	
+	/**
+	 * Sets whether the the rows of the output spreadsheet should be sorted.
+	 * @param b Set to <tt>true</tt> to sort rows, <tt>false</tt> otherwise
+	 * @return This relational operator
+	 */
+	/*@ non_null @*/ public RelationalOperator sortOutput(boolean b)
+	{
+		m_sortOutput = b;
+		return this;
+	}
+	
+	@Override
+	public PartNode getExplanation(Part d, NodeFactory f)
+	{
+		Cell c = Cell.mentionedCell(d);
+		if (c == null)
+		{
+			return super.getExplanation(d, f);
+		}
+		int c_row = c.getRow();
+		int c_col = c.getColumn();
+		PartNode root = f.getPartNode(d, this);
+		if (c_row == 0)
+		{
+			// First row is made of labels
+			LabelledNode to_add = root;
+			int in_arity = getInputArity();
+			if (in_arity > 1)
+			{
+				OrNode or = f.getOrNode();
+				to_add.addChild(or);
+				to_add = or;
+			}
+			for (int s_index = 0; s_index < in_arity; s_index++)
+			{
+				Part p = NthOutput.replaceOutByIn(d, s_index);
+				to_add.addChild(f.getPartNode(p, this));
+			}
+			return root;
+		}
+		if (c_row < 1 || c_row > m_mapping.size())
+		{
+			root.addChild(f.getUnknownNode());
+			return root;
+		}
+		List<Integer[]> positions = m_mapping.get(c_row - 1);
+		LabelledNode to_add = root;
+		if (positions.size() > 1)
+		{
+			LabelledNode conn = getConnectorNode(f);
+			to_add.addChild(conn);
+			to_add = conn;
+		}
+		for (Integer[] pos : positions)
+		{
+			Part p = NthOutput.replaceOutByIn(d, pos[0]);
+			p = Cell.replaceCellBy(p, Cell.get(c_col, pos[1]));
+			to_add.addChild(f.getPartNode(p, this));
+		}
+		return root;
+	}
+	
+	/**
+	 * Creates the output spreadsheet out of a list of rows gathered from the
+	 * input spreadsheets. This method is called by {@link #getValue(Object...)}
+	 * in each of the descendant classes.
+	 * @param top_row The values of the top row, containing the names of each
+	 * column of the output spreadsheet. The size of this array determines the
+	 * width of the output spreadsheet.
+	 * @param row_list The list of rows to be appended to the output spreadsheet.
+	 * The size of this list determines the height of the output spreadsheet
+	 * (which is size of list + 1).
+	 * @return The output spreadsheet
+	 */
+	protected Spreadsheet createOutput(Object[] top_row, List<Row> row_list)
+	{
+		Spreadsheet out = new Spreadsheet(top_row.length, row_list.size() + 1);
+		for (int col = 0; col < top_row.length; col++)
+		{
+			// First row
+			out.set(col, 0, top_row[col]);
+		}
+		if (m_sortOutput)
+		{
+			Collections.sort(row_list);
+		}
+		for (int i = 0; i < row_list.size(); i++)
+		{
+			Row r = row_list.get(i);
+			r.set(out, i + 1);
+		}
+		return out;
+	}
+	
+	/**
+	 * Creates a labelled node for an explanation involving more than one
+	 * spreadsheet. What type of labelled node this corresponds to depends on the
+	 * actual operator providing the explanation. For example, {@link Union}
+	 * produces an {@link OrNode}, while {@link Intersection} produces an
+	 * {@link AndNode}. Classes where this method is not used can simply return
+	 * <tt>null</tt>.
+	 * @param f The node factory used to obtain a node instance
+	 * @return The node (or null)
+	 */
+	/*@ null @*/ protected abstract LabelledNode getConnectorNode(NodeFactory f);
 	
 	/**
 	 * Checks if two spreadsheets, when interpreted as relations, have the same
