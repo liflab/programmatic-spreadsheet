@@ -25,7 +25,6 @@ import ca.uqac.lif.petitpoucet.AndNode;
 import ca.uqac.lif.petitpoucet.ComposedPart;
 import ca.uqac.lif.petitpoucet.OrNode;
 import ca.uqac.lif.petitpoucet.PartNode;
-import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.Cell;
@@ -60,7 +59,7 @@ public class UnionTest
 				null, "o",  true), out);
 	}
 
-	@Test (expected = InvalidArgumentTypeException.class)
+	@Test (expected = RelationalException.class)
 	public void testInvalid1()
 	{
 		// Invalid: columns have different names
@@ -78,7 +77,7 @@ public class UnionTest
 		f.evaluate(s1, s2);
 	}
 
-	@Test (expected = InvalidArgumentTypeException.class)
+	@Test (expected = RelationalException.class)
 	public void testInvalid2()
 	{
 		// Invalid: different widths
@@ -96,7 +95,7 @@ public class UnionTest
 		f.evaluate(s1, s2);
 	}
 
-	@Test (expected = InvalidArgumentTypeException.class)
+	@Test (expected = RelationalException.class)
 	public void testInvalid3()
 	{
 		// Invalid: incompatible column types

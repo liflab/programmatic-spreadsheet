@@ -133,10 +133,21 @@ public abstract class RelationalOperator extends AtomicFunction
 		for (Integer[] pos : positions)
 		{
 			Part p = NthOutput.replaceOutByIn(d, pos[0]);
-			p = Cell.replaceCellBy(p, Cell.get(c_col, pos[1]));
+			p = Cell.replaceCellBy(p, Cell.get(getColumnOf(c_col), pos[1]));
 			to_add.addChild(f.getPartNode(p, this));
 		}
 		return root;
+	}
+	
+	/**
+	 * Gets the column index in the input spreadsheet corresponding to a column
+	 * index in the output spreadsheet.
+	 * @param col The index of the column
+	 * @return The column index in the input spreadsheet
+	 */
+	protected int getColumnOf(int col)
+	{
+		return col;
 	}
 	
 	/**

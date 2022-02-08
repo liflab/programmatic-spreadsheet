@@ -104,11 +104,11 @@ public class Union extends RelationalOperator
 
 	/**
 	 * Creates a new instance of the Union function.
-	 * @param in_arity The input arity of the function
 	 * @param sort_output Set to <tt>true</tt> to sort rows of the output,
 	 * <tt>false</tt> otherwise 
+	 * @param in_arity The input arity of the function
 	 */
-	public Union(int in_arity, boolean sort_output)
+	public Union(boolean sort_output, int in_arity)
 	{
 		super(in_arity, sort_output);
 	}
@@ -134,7 +134,7 @@ public class Union extends RelationalOperator
 			s_inputs[i] = (Spreadsheet) inputs[i];
 			if (i > 0 && !sameSignature(s_inputs[i - 1], s_inputs[i]))
 			{
-				throw new InvalidArgumentTypeException("Arguments have incompatible signatures");
+				throw new RelationalException("Arguments have incompatible signatures");
 			}
 		}
 		// We use both a set and a list to store rows. The hashset is used to check
