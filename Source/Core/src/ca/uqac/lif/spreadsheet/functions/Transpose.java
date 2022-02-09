@@ -58,4 +58,12 @@ public class Transpose extends SpreadsheetFunction
 	{
 		return "^T";
 	}
+	
+	@Override
+	public Transpose duplicate(boolean with_state)
+	{
+		Transpose t = new Transpose();
+		copyInto(t, with_state);
+		return t;
+	}
 }

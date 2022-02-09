@@ -226,4 +226,16 @@ public class ExpandAsColumns extends SpreadsheetFunction
 		}
 		return "Expand " + m_headerColumn + " as " + m_valueColumn;
 	}
+	
+	@Override
+	public ExpandAsColumns duplicate(boolean with_state)
+	{
+		ExpandAsColumns eac = new ExpandAsColumns(null, null);
+		eac.m_headerCaption = m_headerCaption;
+		eac.m_headerColumn = m_headerColumn;
+		eac.m_valueCaption = m_valueCaption;
+		eac.m_valueColumn = m_valueColumn;
+		super.copyInto(eac, with_state);
+		return eac;
+	}
 }

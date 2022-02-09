@@ -136,7 +136,9 @@ public class ApplyFormula extends AtomicFunction
 	public ApplyFormula(int in_arity, List<CellFormula> formulas)
 	{
 		super(in_arity, 1);
-		m_formulas = sort(formulas);
+		List<CellFormula> forms = new ArrayList<CellFormula>(formulas.size());
+		forms.addAll(formulas);
+		m_formulas = sort(forms);
 		m_computedCells = new HashSet<Cell>();
 		for (CellFormula cf : formulas)
 		{
@@ -295,6 +297,14 @@ public class ApplyFormula extends AtomicFunction
 			}
 		}
 		return super.getExplanation(part, factory);
+	}
+	
+	@Override
+	public ApplyFormula duplicate(boolean with_state)
+	{
+		ApplyFormula af = new ApplyFormula(getInputArity(), m_formulas);
+		af.m_computedCells.addAll(m_computedCells);
+		return af;
 	}
 	
 	@Override

@@ -170,4 +170,12 @@ public class Intersection extends RelationalOperator
 	{
 		return "\u2229";
 	}
+	
+	@Override
+	public Intersection duplicate(boolean with_state)
+	{
+		Intersection i = new Intersection(m_sortOutput, getInputArity());
+		super.copyInto(i, with_state);
+		return i;
+	}
 }

@@ -136,6 +136,22 @@ public class Sort extends SpreadsheetFunction
 		return new Object[] {out};
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "Sort";
+	}
+	
+	@Override
+	public Sort duplicate(boolean with_state)
+	{
+		Sort s = new Sort();
+		copyInto(s, with_state);
+		s.m_conditions.addAll(m_conditions);
+		s.m_excludeFirst = m_excludeFirst;
+		return s;
+	}
+	
 	/**
 	 * Specification of a column index to be sorted, associated with the
 	 * direction (ascending or descending) for that sort.

@@ -184,6 +184,31 @@ public abstract class SpreadsheetFunction extends AtomicFunction
 		}
 		return out;
 	}
+	
+	protected void copyInto(SpreadsheetFunction sf, boolean with_state)
+	{
+		super.copyInto(sf, with_state);
+		sf.m_excludeFirst = m_excludeFirst;
+		if (with_state)
+		{
+			InputCell[][][] mapping = new InputCell[m_mapping.length][][];
+			for (int i = 0; i < m_mapping.length; i++)
+			{
+				InputCell[][] ic = new InputCell[m_mapping[i].length][];
+				for (int j = 0; j < m_mapping[i].length; j++)
+				{
+					InputCell[] c = new InputCell[m_mapping[i][j].length];
+					for (int k = 0; k < m_mapping[i][j].length; k++)
+					{
+						c[k] = m_mapping[i][j][k];
+					}
+					ic[j] = c;
+				}
+				mapping[i] = ic;
+			}
+			sf.m_mapping = mapping;
+		}
+	}
 
 	/**
 	 * A mapping between a value and a cell of the original input spreadsheet. 

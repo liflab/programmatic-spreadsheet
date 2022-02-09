@@ -18,6 +18,7 @@
 package ca.uqac.lif.spreadsheet.functions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ca.uqac.lif.dag.LabelledNode;
@@ -291,6 +292,18 @@ public class GetFrequencies extends AtomicFunction
 	public String toString()
 	{
 		return "Get frequencies";
+	}
+	
+	@Override
+	public GetFrequencies duplicate(boolean with_state)
+	{
+		GetFrequencies gf = new GetFrequencies(m_minX, m_maxX, m_numBucketsX, m_minY, m_maxY, m_numBucketsY, m_defaultIncrement);
+		super.copyInto(gf, with_state);
+		if (with_state)
+		{
+			gf.m_pairs = Arrays.copyOf(m_pairs, m_pairs.length);
+		}
+		return gf;
 	}
 	
 	/**

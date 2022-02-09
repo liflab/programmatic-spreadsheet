@@ -98,4 +98,12 @@ public class ValueOf extends AtomicFunction
 	{
 		return "Value of " + m_cell.toString();
 	}
+	
+	@Override
+	public ValueOf duplicate(boolean with_state)
+	{
+		ValueOf v = new ValueOf(m_cell);
+		copyInto(v, with_state);
+		return v;
+	}
 }

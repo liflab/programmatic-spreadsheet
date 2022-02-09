@@ -189,4 +189,12 @@ public class BoxStats extends SpreadsheetFunction
 		}
 		return new Object[] {new_table};
 	}
+	
+	@Override
+	public BoxStats duplicate(boolean with_state)
+	{
+		BoxStats o = new BoxStats();
+		super.copyInto(o, with_state);
+		return o;
+	}
 }

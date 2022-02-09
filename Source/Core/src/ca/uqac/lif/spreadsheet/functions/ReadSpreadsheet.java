@@ -98,4 +98,16 @@ public class ReadSpreadsheet extends AtomicFunction
 	{
 		return "Read spreadsheet";
 	}
+	
+	@Override
+	public ReadSpreadsheet duplicate(boolean with_state)
+	{
+		ReadSpreadsheet rs = new ReadSpreadsheet();
+		copyInto(rs, with_state);
+		if (with_state)
+		{
+			rs.m_mapping.putAll(m_mapping);
+		}
+		return rs;
+	}
 }

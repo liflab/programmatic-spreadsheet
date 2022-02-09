@@ -67,4 +67,12 @@ public class ColumnSum extends SpreadsheetFunction
 		}
 		return new Object[] {out};
 	}
+	
+	@Override
+	public ColumnSum duplicate(boolean with_state)
+	{
+		ColumnSum cs = new ColumnSum();
+		super.copyInto(cs, with_state);
+		return cs;
+	}
 }

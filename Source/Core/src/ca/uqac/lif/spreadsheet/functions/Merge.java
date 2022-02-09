@@ -134,6 +134,20 @@ public class Merge extends SpreadsheetFunction
 	{
 		return (Merge) super.excludeFirst();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Merge";
+	}
+	
+	@Override
+	public Merge duplicate(boolean with_state)
+	{
+		Merge m = new Merge(m_keyColumns);
+		super.copyInto(m, with_state);
+		return m;
+	}
 
 	@Override
 	protected Object[] getValue(Object... inputs) throws InvalidNumberOfArgumentsException

@@ -180,4 +180,12 @@ public class Union extends RelationalOperator
 	{
 		return "\u222a";
 	}
+	
+	@Override
+	public Union duplicate(boolean with_state)
+	{
+		Union u = new Union(m_sortOutput, getInputArity());
+		copyInto(u, with_state);
+		return u;
+	}
 }

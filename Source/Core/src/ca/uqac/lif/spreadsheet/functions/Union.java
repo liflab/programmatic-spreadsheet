@@ -17,6 +17,8 @@
  */
 package ca.uqac.lif.spreadsheet.functions;
 
+import java.util.Arrays;
+
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
@@ -186,5 +188,24 @@ public class Union extends SpreadsheetFunction
 			m_heights[i] = 0;
 			m_widths[i] = 0;
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Union";
+	}
+	
+	@Override
+	public Union duplicate(boolean with_state)
+	{
+		Union u = new Union(getInputArity());
+		super.copyInto(u, with_state);
+		if (with_state)
+		{
+			u.m_heights = Arrays.copyOf(m_heights, m_heights.length);
+			u.m_widths = Arrays.copyOf(m_widths, m_widths.length);
+		}
+		return u;
 	}
 }

@@ -18,6 +18,7 @@
 package ca.uqac.lif.spreadsheet.units;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ca.uqac.lif.dag.LabelledNode;
@@ -294,5 +295,18 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 	public String toString()
 	{
 		return "Move units to header";
+	}
+	
+	@Override
+	public MoveUnitsToHeader duplicate(boolean with_state)
+	{
+		MoveUnitsToHeader muth = new MoveUnitsToHeader();
+		super.copyInto(muth, with_state);
+		if (with_state)
+		{
+			muth.m_lastHeaders = Arrays.copyOf(m_lastHeaders, m_lastHeaders.length);
+			muth.m_unitRows = Arrays.copyOf(m_unitRows, m_unitRows.length);
+		}
+		return muth;
 	}
 }

@@ -102,8 +102,10 @@ public class Projection extends RelationalOperator
 
 	/**
 	 * Creates a new instance of the function.
-	 * @param sort_output The names of the columns to retain in the output spreadsheet
-	 * @param col_names The names of the columns to retain in the output spreadsheet
+	 * @param sort_output Set to <tt>true</tt> to sort rows of the output,
+	 * <tt>false</tt> otherwise
+	 * @param col_names The names of the columns to retain in the output
+	 * spreadsheet
 	 */
 	public Projection(boolean sort_output, String ... col_names)
 	{
@@ -126,6 +128,7 @@ public class Projection extends RelationalOperator
 	@Override
 	protected Object[] getValue(Object... inputs)
 	{
+		m_mapping.clear();
 		if (!(inputs[0] instanceof Spreadsheet))
 		{
 			throw new InvalidArgumentTypeException("Argument is not a spreadsheet");
@@ -205,5 +208,20 @@ public class Projection extends RelationalOperator
 	protected int getColumnOf(int col)
 	{
 		return m_originalIndices[col];
+	}
+	
+	@Override
+	public Projection duplicate(boolean with_state)
+	{
+		Projection p = new Projection(m_sortOutput, m_columnNames);
+		copyInto(p, with_state);
+		if (with_state)
+		{
+			for (int i = 0; i < m_originalIndices.length; i++)
+			{
+				p.m_originalIndices[i] = m_originalIndices[i];
+			}
+		}
+		return p;
 	}
 }

@@ -119,6 +119,16 @@ public class DrawChart extends AtomicFunction
 	{
 		return "Draw " + m_plot;
 	}
+	
+	@Override
+	public DrawChart duplicate(boolean with_state)
+	{
+		DrawChart dp = new DrawChart(m_plot.duplicate());
+		dp.m_format = m_format;
+		dp.m_withTitle = m_withTitle;
+		super.copyInto(dp, with_state);
+		return dp;
+	}
 
 	/**
 	 * A crawler that appends a new part node to each leaf of an explanation

@@ -61,4 +61,18 @@ public class RenameColumn extends SpreadsheetFunction
 		new_s.set(index, 0, m_to);
 		return new Object[] {new_s};
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Rename " + m_from + " to " + m_to;
+	}
+	
+	@Override
+	public RenameColumn duplicate(boolean with_state)
+	{
+		RenameColumn r = new RenameColumn(m_from, m_to);
+		super.copyInto(r, with_state);
+		return r;
+	}
 }
