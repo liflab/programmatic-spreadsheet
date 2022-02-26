@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2022 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	 * The "dumb" plot format supported by GnuPlot.
 	 */
 	public static final transient ChartFormat DUMB = new ChartFormat("dumb", "txt", "text/plain");
-	
+
 	/**
 	 * The "GP" plot format. This simply outputs the Gnuplot text file that
 	 * Gnuplot uses to render a plot.
@@ -212,7 +212,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 		m_customParameters = s;
 		return this;
 	}
-	
+
 	/**
 	 * Generates a stand-alone Gnuplot file for this plot, and prints it to a
 	 * print stream.
@@ -284,7 +284,14 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 				{
 					os.write(s_blankImagePdf);
 				}
-				os.write(s_blankImagePng);
+				else if (term.equals(DUMB))
+				{
+					os.write(new byte[] {});
+				}
+				else
+				{
+					os.write(s_blankImagePng);
+				}
 				return this;
 			}
 		}
@@ -295,6 +302,10 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 			if (term.equals(ChartFormat.PDF))
 			{
 				image = s_blankImagePdf;
+			}
+			else if (term.equals(DUMB))
+			{
+				image = new byte[0];
 			}
 			else
 			{
@@ -365,7 +376,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 			out.println(m_customParameters);
 		}
 	}
-	
+
 	/**
 	 * Sets the color palette to be used to render the plot.
 	 * @param p The palette
@@ -595,7 +606,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	{
 		root.addChild(f.getUnknownNode());
 	}
-	
+
 	/**
 	 * Gets the Gnuplot string corresponding to the definition of a
 	 * discrete palette.
