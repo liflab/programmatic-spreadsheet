@@ -116,7 +116,7 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 		}
 		Spreadsheet table = (Spreadsheet) inputs[0];
 		Spreadsheet out = new Spreadsheet(table.getWidth(), table.getHeight());
-		m_mapping = new InputCell[table.getHeight()][table.getHeight()][];
+		m_mapping = new InputCell[table.getHeight()][table.getWidth()][];
 		m_unitRows = new int[table.getWidth()];
 		m_lastHeaders = new String[table.getWidth()];
 		for (int col = 0; col < table.getWidth(); col++)

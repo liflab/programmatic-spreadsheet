@@ -59,6 +59,19 @@ public class MoveUnitsToHeaderTest
 	}
 	
 	@Test
+	public void testOutput2()
+	{
+		Spreadsheet s = Spreadsheet.read(3, 2, 
+				"n", "Time", "Distance",
+				0,   null,   null);
+		MoveUnitsToHeader f = new MoveUnitsToHeader();
+		Spreadsheet out = (Spreadsheet) f.evaluate(s)[0];
+		assertEquals(Spreadsheet.read(3, 2, 
+				"n", "Time", "Distance",
+				0,   null,   null), out);
+	}
+	
+	@Test
 	public void testExplain1()
 	{
 		Spreadsheet s = Spreadsheet.read(3, 4, 
