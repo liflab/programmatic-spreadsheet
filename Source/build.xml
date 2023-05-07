@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 	A build script for a super-project containing multiple sub-projects
-    Copyright (C) 2019-2022  Sylvain Hallé
+    Copyright (C) 2019-2023  Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,33 +28,111 @@
     <!-- Compile core -->
     <ant dir="Core" target="jar" />
     <!-- Copy core to other projects -->
-    <copy file="pss-core.jar" todir="Charts/lib" />
-    <copy file="pss-core.jar" todir="Gnuplot/lib" />
-    <copy file="pss-core.jar" todir="Gral/lib" />
-    <copy file="pss-core.jar" todir="Units/lib" />
-    <copy file="pss-core.jar" todir="Relations/lib" />
-    <copy file="pss-core.jar" todir="Examples/lib" />
+    <copy todir="Charts/lib">
+      <fileset dir=".">
+        <include name="pss-core*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Gnuplot/lib">
+      <fileset dir=".">
+        <include name="pss-core*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Gral/lib">
+      <fileset dir=".">
+        <include name="pss-core*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Units/lib">
+      <fileset dir=".">
+        <include name="pss-core*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Relations/lib">
+      <fileset dir=".">
+        <include name="pss-core*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Examples/lib">
+      <fileset dir=".">
+        <include name="pss-core*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
     <!-- Compile Charts -->
     <mkdir dir="Charts/srctest" /> <!-- Create folder since Charts has no tests -->
     <ant dir="Charts" target="jar" />
     <!-- Copy Charts to other projects -->
-    <copy file="pss-charts.jar" todir="Gnuplot/lib" />
-    <copy file="pss-charts.jar" todir="Gral/lib" />
-    <copy file="pss-charts.jar" todir="Examples/lib" />
+    <copy todir="Gnuplot/lib">
+      <fileset dir=".">
+        <include name="pss-charts*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Gral/lib">
+      <fileset dir=".">
+        <include name="pss-charts*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Examples/lib">
+      <fileset dir=".">
+        <include name="pss-charts*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
     <!-- Compile Gnuplot and Gral -->
     <ant dir="Gnuplot" target="jar" />
     <ant dir="Gral" target="jar" />
     <!-- Copy to Examples -->
-    <copy file="pss-charts-gnuplot.jar" todir="Examples/lib" />
-    <copy file="pss-charts-gral.jar" todir="Examples/lib" />
+    <copy todir="Examples/lib">
+      <fileset dir=".">
+        <include name="pss-charts-gnuplot*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="Examples/lib">
+      <fileset dir=".">
+        <include name="pss-charts-gral*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
     <!-- Compile Units -->
     <ant dir="Units" target="jar" />
     <!-- Copy to Examples -->
-    <copy file="pss-units.jar" todir="Examples/lib" />
+    <copy todir="Examples/lib">
+      <fileset dir=".">
+        <include name="pss-units*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
     <!-- Compile Relations -->
     <ant dir="Relations" target="jar" />
     <!-- Copy to Examples -->
-    <copy file="pss-relations.jar" todir="Examples/lib" />
+    <copy todir="Examples/lib">
+      <fileset dir=".">
+        <include name="pss-relations*.jar"/>
+        <exclude name="*javadoc.jar"/>
+        <exclude name="*sources.jar"/>
+      </fileset>
+    </copy>
     <!-- Compile Examples -->
     <ant dir="Examples" target="jar" />
   </target>

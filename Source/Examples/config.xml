@@ -24,6 +24,15 @@
 
   <!-- The project's name -->
   <name>Programmatic Spreadsheet - Examples</name>
+
+  <!-- The project's version -->
+  <version>0.2</version>
+
+  <!-- The project's package -->
+  <package>ca/uqac/lif/spreadsheet/examples/</package>
+
+  <!-- The target JDK -->
+  <targetjdk>8</targetjdk>
   
   <!-- The project's author. Currently this only
   shows up in the footer of the Javadoc documentation. -->
@@ -40,7 +49,7 @@
 
   <!-- JAR filename -->
   <jar>
-    <filename>../pss-examples.jar</filename>
+    <filename>../pss-examples</filename>
   </jar>
   
   <test>
@@ -63,7 +72,7 @@
       <name>Petit Poucet Core</name>
       <classname>ca.uqac.lif.petitpoucet.Part</classname>
       <files>
-        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1-beta3/petitpoucet-core.jar</jar>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.3/petitpoucet-core-2.3.jar</jar>
       </files>
       <bundle>false</bundle>
     </dependency>
@@ -74,7 +83,7 @@
       <name>Petit Poucet Functions</name>
       <classname>ca.uqac.lif.petitpoucet.function.Function</classname>
       <files>
-        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.1-beta3/petitpoucet-functions.jar</jar>
+        <jar>https://github.com/liflab/petitpoucet/releases/download/v2.3/petitpoucet-functions-2.3.jar</jar>
       </files>
       <bundle>false</bundle>
     </dependency>

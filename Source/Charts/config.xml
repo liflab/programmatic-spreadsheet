@@ -40,7 +40,7 @@
 
   <!-- JAR filename -->
   <jar>
-    <filename>../pss-charts.jar</filename>
+    <filename>../pss-charts</filename>
   </jar>
   
   <test>
