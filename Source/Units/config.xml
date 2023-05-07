@@ -94,7 +94,8 @@
       <name>lif-units</name>
       <bundle>false</bundle>
       <classname>ca.uqac.lif.units.DimensionValue</classname>
-      <files>
-        <jar>https://github.com/liflab/lif-units/releases/download/v1.2/lif-units-1.2.jar
+      <files>        <jar>https://github.com/liflab/lif-units/releases/download/v1.2/lif-units-1.2.jar</jar>
+      </files>
+    </dependency>
   </dependencies>
 </build>

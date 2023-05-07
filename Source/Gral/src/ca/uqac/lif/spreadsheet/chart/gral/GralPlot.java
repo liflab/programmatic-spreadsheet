@@ -21,9 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.Chart;
 import ca.uqac.lif.spreadsheet.chart.ChartFormat;

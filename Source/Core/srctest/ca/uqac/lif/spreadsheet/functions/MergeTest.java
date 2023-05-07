@@ -28,7 +28,6 @@ import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.functions.Merge;
 
 public class MergeTest
 {

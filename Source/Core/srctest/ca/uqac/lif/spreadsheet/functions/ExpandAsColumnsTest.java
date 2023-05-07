@@ -28,7 +28,6 @@ import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.functions.ExpandAsColumns;
 import ca.uqac.lif.spreadsheet.functions.SpreadsheetFunction.InputCell;
 
 public class ExpandAsColumnsTest

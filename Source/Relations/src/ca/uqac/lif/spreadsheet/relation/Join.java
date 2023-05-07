@@ -25,7 +25,6 @@ import ca.uqac.lif.petitpoucet.function.AtomicFunction;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.functions.Merge;
 
 public class Join extends RelationalOperator
 {

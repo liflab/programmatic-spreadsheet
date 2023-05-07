@@ -17,9 +17,9 @@
  */
 package ca.uqac.lif.spreadsheet.chart.gral;
 
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.BoxPlot;
 import de.erichseifert.gral.data.DataSource;

@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021-2022 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -17,9 +17,9 @@
  */
 package ca.uqac.lif.spreadsheet.chart.gral;
 
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.PieChart;
 import de.erichseifert.gral.graphics.Insets2D;
