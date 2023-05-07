@@ -89,7 +89,7 @@ public abstract class RelationalOperator extends AtomicFunction
 	}
 	
 	@Override
-	public PartNode getExplanation(Part d, NodeFactory f)
+	public PartNode getExplanation(Part d, RelationNodeFactory f)
 	{
 		Cell c = Cell.mentionedCell(d);
 		if (c == null)

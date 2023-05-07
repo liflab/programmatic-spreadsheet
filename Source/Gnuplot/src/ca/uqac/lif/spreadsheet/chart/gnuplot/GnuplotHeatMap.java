@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -20,9 +20,9 @@ package ca.uqac.lif.spreadsheet.chart.gnuplot;
 import java.io.PrintStream;
 
 import ca.uqac.lif.petitpoucet.ComposedPart;
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.HeatMap;
@@ -84,7 +84,7 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	}
 	
 	@Override
-	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		Part head = to_explain.head();
 		if (head instanceof OrdinalGridCell)
@@ -114,7 +114,7 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	 * @param root The root to which nodes are to be added
 	 * @param f A factory to get node instances
 	 */
-	protected void explainOrdinalGridCell(int left, int bottom, Part suffix, PartNode root, NodeFactory f)
+	protected void explainOrdinalGridCell(int left, int bottom, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		Part new_p = ComposedPart.compose(suffix, Cell.get(left + 1, bottom + 1), Part.self);
 		root.addChild(f.getPartNode(new_p, m_lastSpreadsheet));
@@ -129,7 +129,7 @@ public class GnuplotHeatMap extends Gnuplot implements HeatMap
 	 * @param root The root to which nodes are to be added
 	 * @param f A factory to get node instances
 	 */
-	protected void explainCardinalGridCell(double x, double y, Part suffix, PartNode root, NodeFactory f)
+	protected void explainCardinalGridCell(double x, double y, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		int left, top;
 		Double last = null;

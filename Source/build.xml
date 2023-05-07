@@ -24,7 +24,7 @@
   <!-- The author -->
   <property name="build.author" value="Sylvain Hallé"/>
   
-  <target name="all" depends="copy-petitpoucet" description="Compiles, tests and generates the JAR for each component">
+  <target name="all" description="Compiles, tests and generates the JAR for each component">
     <!-- Compile core -->
     <ant dir="Core" target="jar" />
     <!-- Copy core to other projects -->
@@ -137,65 +137,14 @@
     <ant dir="Examples" target="jar" />
   </target>
   
-  <!-- Copy Petit Poucet to other projects (not necessary, but avoids
-       re-downloading the files in each project -->
-  <target name="copy-petitpoucet" description="Copies the Petit Poucet JARs to each component">
-    <mkdir dir="Charts/lib" />
-    <mkdir dir="Gnuplot/lib" />
-    <mkdir dir="Gral/lib" />
-    <mkdir dir="Units/lib" />
-    <mkdir dir="Relations/lib" />
-    <mkdir dir="Examples/lib" />
-    <copy file="Core/lib/petitpoucet-core.jar" todir="Charts/lib" />
-    <copy file="Core/lib/petitpoucet-core.jar" todir="Gnuplot/lib" />
-    <copy file="Core/lib/petitpoucet-core.jar" todir="Gral/lib" />
-    <copy file="Core/lib/petitpoucet-core.jar" todir="Units/lib" />
-    <copy file="Core/lib/petitpoucet-core.jar" todir="Relations/lib" />
-    <copy file="Core/lib/petitpoucet-core.jar" todir="Examples/lib" />
-    <copy file="Core/lib/petitpoucet-functions.jar" todir="Charts/lib" />
-    <copy file="Core/lib/petitpoucet-functions.jar" todir="Gnuplot/lib" />
-    <copy file="Core/lib/petitpoucet-functions.jar" todir="Gral/lib" />
-    <copy file="Core/lib/petitpoucet-functions.jar" todir="Units/lib" />
-    <copy file="Core/lib/petitpoucet-functions.jar" todir="Relations/lib" />
-    <copy file="Core/lib/petitpoucet-functions.jar" todir="Examples/lib" />
-  </target>
-  
-  <target name="delete-petitpoucet" description="Deletes the Petit Poucet JARs in each component">
-    <delete file="Core/lib/petitpoucet-core.jar" />
-    <delete file="Charts/lib/petitpoucet-core.jar" />
-    <delete file="Gnuplot/lib/petitpoucet-core.jar" />
-    <delete file="Gral/lib/petitpoucet-core.jar" />
-    <delete file="Units/lib/petitpoucet-core.jar" />
-    <delete file="Relations/lib/petitpoucet-core.jar" />
-    <delete file="Examples/lib/petitpoucet-core.jar" />
-    <delete file="Core/lib/petitpoucet-functions.jar" />
-    <delete file="Charts/lib/petitpoucet-functions.jar" />
-    <delete file="Gnuplot/lib/petitpoucet-functions.jar" />
-    <delete file="Gral/lib/petitpoucet-functions.jar" />
-    <delete file="Units/lib/petitpoucet-functions.jar" />
-    <delete file="Relations/lib/petitpoucet-functions.jar" />
-    <delete file="Examples/lib/petitpoucet-functions.jar" />
-  </target>
-  
   <target name="download-deps" description="Downloads the JAR dependencies of each component">
     <ant dir="Core" target="download-deps" />
-    <antcall target="copy-petitpoucet" />
     <ant dir="Charts" target="download-deps" />
     <ant dir="Gnuplot" target="download-deps" />
     <ant dir="Gral" target="download-deps" />
     <ant dir="Units" target="download-deps" />
     <ant dir="Relations" target="download-deps" />
     <ant dir="Examples" target="download-deps" />
-  </target>
-  
-  <target name="download-rt8" description="Downloads the Java 8 bootstrap classes">
-    <ant dir="Core" target="download-rt8" />
-    <copy file="Core/rt.jar" todir="Charts" />
-    <copy file="Core/rt.jar" todir="Gnuplot" />
-    <copy file="Core/rt.jar" todir="Gral" />
-    <copy file="Core/rt.jar" todir="Units" />
-    <copy file="Core/rt.jar" todir="Relations" />
-    <copy file="Core/rt.jar" todir="Examples" />
   </target>
   
   <target name="test" description="Runs the unit tests of each component">
@@ -208,6 +157,8 @@
   </target>
   
   <target name="clean" description="Cleans each component (deletes compiled files)">
+    <delete dir="tests"/>
+    <delete dir="coverage"/>
     <!-- Clean individual projects -->
     <ant dir="Core" target="clean" />
     <ant dir="Charts" target="clean" />
@@ -216,20 +167,19 @@
     <ant dir="Units" target="clean" />
     <ant dir="Relations" target="clean" />
     <ant dir="Examples" target="clean" />
-    <!-- Remove dependencies that the script copies manually-->
-    <delete file="Charts/lib/pss-core.jar" />
-    <delete file="Gnuplot/lib/pss-core.jar" />
-    <delete file="Gral/lib/pss-core.jar" />
-    <delete file="Units/lib/pss-core.jar" />
-    <delete file="Relations/lib/pss-core.jar" />
-    <delete file="Examples/lib/pss-core.jar" />
-    <delete file="Gnuplot/lib/pss-charts.jar" />
-    <delete file="Gral/lib/pss-charts.jar" />
-    <delete file="Examples/lib/pss-charts.jar" />
-    <delete file="Examples/lib/pss-charts-gnuplot.jar" />
-    <delete file="Examples/lib/pss-charts-gral.jar" />
-    <delete file="Examples/lib/pss-units.jar" />
-    <delete file="Examples/lib/pss-relations.jar" />
+  </target>
+  
+  <target name="wipe" description="Wipes each component (deletes compiled files)">
+    <delete dir="tests"/>
+    <delete dir="coverage"/>
+    <!-- Clean individual projects -->
+    <ant dir="Core" target="wipe" />
+    <ant dir="Charts" target="wipe" />
+    <ant dir="Gnuplot" target="wipe" />
+    <ant dir="Gral" target="wipe" />
+    <ant dir="Units" target="wipe" />
+    <ant dir="Relations" target="wipe" />
+    <ant dir="Examples" target="wipe" />
   </target>
   
   <target name="javadoc" description="Generates the combined API documentation of all components">

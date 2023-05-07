@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
@@ -71,7 +71,7 @@ public class ReadSpreadsheet extends AtomicFunction
 	}
 
 	@Override
-	public PartNode getExplanation(Part d, NodeFactory f)
+	public PartNode getExplanation(Part d, RelationNodeFactory f)
 	{
 		PartNode root = f.getPartNode(d, this);
 		Cell c = Cell.mentionedCell(d);

@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021-2022 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -17,13 +17,13 @@
  */
 package ca.uqac.lif.spreadsheet.functions;
 
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.SpreadsheetOutOfBoundsException;
@@ -109,7 +109,7 @@ public class CopyFrom extends AtomicFunction
 	}
 	
 	@Override
-	public PartNode getExplanation(Part d, NodeFactory f)
+	public PartNode getExplanation(Part d, RelationNodeFactory f)
 	{
 		PartNode root = f.getPartNode(d, this);
 		if (NthOutput.mentionedOutput(d) != 0)

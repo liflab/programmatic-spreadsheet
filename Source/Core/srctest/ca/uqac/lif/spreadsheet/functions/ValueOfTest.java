@@ -29,7 +29,6 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.petitpoucet.function.strings.Range;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.functions.ValueOf;
 
 public class ValueOfTest
 {

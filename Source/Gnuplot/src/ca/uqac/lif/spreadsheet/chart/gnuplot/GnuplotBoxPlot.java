@@ -1,6 +1,6 @@
 /*
   MTNP: Manipulate Tables N'Plots
-  Copyright (C) 2017-2020 Sylvain Hallé
+  Copyright (C) 2017-2023 Sylvain Hallé
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

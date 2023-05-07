@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021-2022 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,6 @@ import java.util.Set;
 import ca.uqac.lif.dag.NestedNode;
 import ca.uqac.lif.dag.NodeConnector;
 import ca.uqac.lif.petitpoucet.ComposedPart;
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.AtomicFunction;
@@ -37,6 +36,7 @@ import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
@@ -251,7 +251,7 @@ public class ApplyFormula extends AtomicFunction
 	}
 	
 	@Override
-	/*@ non_null @*/ public PartNode getExplanation(/*@ non_null @*/ Part part, /*@ non_null @*/ NodeFactory factory)
+	/*@ non_null @*/ public PartNode getExplanation(/*@ non_null @*/ Part part, /*@ non_null @*/ RelationNodeFactory factory)
 	{
 		Cell c = Cell.mentionedCell(part);
 		if (c == null)
@@ -263,7 +263,7 @@ public class ApplyFormula extends AtomicFunction
 			if (formula.getTarget().equals(c))
 			{
 				PartNode root = factory.getPartNode(part, this);
-				NodeFactory sub_factory = factory.getFactory(part, this);
+				RelationNodeFactory sub_factory = factory.getFactory(part, this);
 				Part sub_part = ComposedPart.compose(part.tail().tail(), NthOutput.FIRST); // we remove nth-output + cell
 				PartNode sub_root = ((ExplanationQueryable) formula.m_formula).getExplanation(sub_part, sub_factory);
 				NestedNode nn = NestedNode.createFromTree(sub_root);

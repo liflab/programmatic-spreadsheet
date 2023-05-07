@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,6 @@ import java.util.Set;
 
 import ca.uqac.lif.dag.LeafCrawler;
 import ca.uqac.lif.dag.Node;
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.Part.Self;
 import ca.uqac.lif.petitpoucet.PartNode;
@@ -34,6 +33,7 @@ import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.petitpoucet.function.NthInput;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 
 /**
@@ -103,7 +103,7 @@ public class DrawChart extends AtomicFunction
 	}
 
 	@Override
-	public PartNode getExplanation(Part d, NodeFactory f)
+	public PartNode getExplanation(Part d, RelationNodeFactory f)
 	{
 		PartNode root = f.getPartNode(d, this);
 		Part new_p = NthOutput.replaceOutBy(d, Part.self);
@@ -148,14 +148,14 @@ public class DrawChart extends AtomicFunction
 		/**
 		 * The factory used to obtain node instances.
 		 */
-		private final NodeFactory m_factory;
+		private final RelationNodeFactory m_factory;
 
 		/**
 		 * Creates a new plot leaf crawler.
 		 * @param n The start node of the exploration
 		 * @param f The factory used to obtain node instances
 		 */
-		public PlotLeafCrawler(Node n, NodeFactory f)
+		public PlotLeafCrawler(Node n, RelationNodeFactory f)
 		{
 			super(n);
 			m_factory = f;

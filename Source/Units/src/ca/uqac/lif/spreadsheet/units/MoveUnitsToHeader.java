@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021-2022 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -24,13 +24,13 @@ import java.util.List;
 import ca.uqac.lif.dag.LabelledNode;
 import ca.uqac.lif.petitpoucet.AndNode;
 import ca.uqac.lif.petitpoucet.ComposedPart;
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.FunctionException;
 import ca.uqac.lif.petitpoucet.function.InvalidArgumentTypeException;
 import ca.uqac.lif.petitpoucet.function.InvalidNumberOfArgumentsException;
 import ca.uqac.lif.petitpoucet.function.NthOutput;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.petitpoucet.function.strings.Range;
 import ca.uqac.lif.petitpoucet.function.strings.RangeMapping;
 import ca.uqac.lif.spreadsheet.Cell;
@@ -167,7 +167,7 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 	}
 
 	@Override
-	public PartNode getExplanation(Part d, NodeFactory f)
+	public PartNode getExplanation(Part d, RelationNodeFactory f)
 	{
 		PartNode root = f.getPartNode(d, this);
 		if (NthOutput.mentionedOutput(d) != 0)
@@ -195,7 +195,7 @@ public class MoveUnitsToHeader extends SpreadsheetFunction
 		return root;
 	}
 
-	/*@ pure non_null @*/ protected LabelledNode explainPart(Cell c, Part d, Part original, NodeFactory f)
+	/*@ pure non_null @*/ protected LabelledNode explainPart(Cell c, Part d, Part original, RelationNodeFactory f)
 	{
 		Part head = d.head();
 		int row = c.getRow();

@@ -35,9 +35,6 @@ import ca.uqac.lif.petitpoucet.function.NthOutput;
 import ca.uqac.lif.petitpoucet.function.number.Addition;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
-import ca.uqac.lif.spreadsheet.functions.ApplyFormula;
-import ca.uqac.lif.spreadsheet.functions.CellFormula;
-import ca.uqac.lif.spreadsheet.functions.ValueOf;
 
 public class ApplyFormulaTest
 {

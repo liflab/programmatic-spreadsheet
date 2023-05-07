@@ -85,7 +85,7 @@ public class GralBoxPlot extends GralPlot implements BoxPlot
 	}
 
 	@Override
-	public PartNode getExplanation(Part part, NodeFactory factory)
+	public PartNode getExplanation(Part part, RelationNodeFactory factory)
 	{
 		// TODO Auto-generated method stub
 		return null;

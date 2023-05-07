@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +26,11 @@ import java.util.Vector;
 import ca.uqac.lif.dag.LabelledNode;
 import ca.uqac.lif.petitpoucet.AndNode;
 import ca.uqac.lif.petitpoucet.ComposedPart;
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.OrNode;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.Part.Nothing;
 import ca.uqac.lif.petitpoucet.PartNode;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.Cell;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.ChartFormat;
@@ -200,7 +200,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	}
 
 	@Override
-	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		Part head = to_explain.head();
 		if (head instanceof ChartAxis)
@@ -225,7 +225,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 		}
 	}
 
-	protected void explainDataSeries(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainDataSeries(Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		int height = m_lastSpreadsheet.getHeight(), width = m_lastSpreadsheet.getWidth();
 		if (to_explain == null || to_explain instanceof Nothing)
@@ -339,7 +339,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * @param root The root to which explanation nodes are to be appended
 	 * @param f A factory to get node instances
 	 */
-	protected void explainLegend(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainLegend(Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		int width = m_lastSpreadsheet.getWidth();
 		if (to_explain == null || to_explain instanceof Nothing)
@@ -416,7 +416,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * @param root The root to which explanation nodes are to be appended
 	 * @param f A factory to get node instances
 	 */
-	protected void explainPointAt(PointAt p, int col_index, Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainPointAt(PointAt p, int col_index, Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		double x = p.getX(), y = p.getY();
 		List<Cell[]> pairs = new ArrayList<Cell[]>();
@@ -512,7 +512,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * @param root The root to which explanation nodes are to be appended
 	 * @param f A factory to get node instances
 	 */
-	protected void explainNthElement(NumberedElement p, int col_index, Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainNthElement(NumberedElement p, int col_index, Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		int nb_to_look_for = p.getIndex(), current_nb = -1;
 		for (int i = 0; i < m_lastSpreadsheet.getHeight(); i++)
@@ -560,7 +560,7 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * @param root The root to which explanation nodes are to be appended
 	 * @param f A factory to get node instances
 	 */
-	protected void explainAxis(ChartAxis pa, Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainAxis(ChartAxis pa, Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		Axis a = pa.getAxis();
 		if (a == Axis.Z)

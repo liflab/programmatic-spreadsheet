@@ -173,11 +173,11 @@ public abstract class GralPlot implements Chart
 	@Override
 	public PartNode getExplanation(Part part)
 	{
-		return getExplanation(part, NodeFactory.getFactory());
+		return getExplanation(part, RelationNodeFactory.getFactory());
 	}
 
 	@Override
-	public abstract PartNode getExplanation(Part part, NodeFactory factory);
+	public abstract PartNode getExplanation(Part part, RelationNodeFactory factory);
 
 	@Override
 	public GralPlot setTitle(String title)

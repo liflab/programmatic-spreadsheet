@@ -175,7 +175,7 @@ public class GralScatterplot extends GralPlot implements Scatterplot
 	}
 
 	@Override
-	public PartNode getExplanation(Part part, NodeFactory factory)
+	public PartNode getExplanation(Part part, RelationNodeFactory factory)
 	{
 		// TODO Auto-generated method stub
 		return null;

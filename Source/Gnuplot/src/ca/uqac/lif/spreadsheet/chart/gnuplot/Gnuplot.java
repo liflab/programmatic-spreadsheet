@@ -23,10 +23,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import ca.uqac.lif.petitpoucet.ComposedPart;
-import ca.uqac.lif.petitpoucet.NodeFactory;
 import ca.uqac.lif.petitpoucet.Part;
 import ca.uqac.lif.petitpoucet.PartNode;
 import ca.uqac.lif.petitpoucet.function.ExplanationQueryable;
+import ca.uqac.lif.petitpoucet.function.RelationNodeFactory;
 import ca.uqac.lif.spreadsheet.AnsiSpreadsheetPrinter;
 import ca.uqac.lif.spreadsheet.Spreadsheet;
 import ca.uqac.lif.spreadsheet.chart.Palette;
@@ -549,11 +549,11 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 	@Override
 	public PartNode getExplanation(Part part)
 	{
-		return getExplanation(part, NodeFactory.getFactory());
+		return getExplanation(part, RelationNodeFactory.getFactory());
 	}
 
 	@Override
-	public PartNode getExplanation(Part d, NodeFactory f)
+	public PartNode getExplanation(Part d, RelationNodeFactory f)
 	{
 		PartNode root = f.getPartNode(d, this);
 		if (d instanceof Part.Self)
@@ -602,7 +602,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 		return root;
 	}
 
-	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, NodeFactory f)
+	protected void explainChartPart(Part to_explain, Part suffix, PartNode root, RelationNodeFactory f)
 	{
 		root.addChild(f.getUnknownNode());
 	}
