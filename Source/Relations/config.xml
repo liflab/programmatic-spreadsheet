@@ -26,7 +26,7 @@
   <name>Programmatic Spreadsheet - Relations</name>
 
   <!-- The project's version -->
-  <version>0.2</version>
+  <version>0.2.1</version>
 
   <!-- The project's package -->
   <package>ca/uqac/lif/spreadsheet/relation/</package>
