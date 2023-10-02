@@ -1,6 +1,6 @@
 /*
     A provenance-aware spreadsheet library
-    Copyright (C) 2021-2022 Sylvain Hallé
+    Copyright (C) 2021-2023 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -296,7 +296,7 @@ public abstract class Gnuplot implements Chart, ExplanationQueryable
 			}
 		}
 		image = runner.getBytes();
-		if (runner.getErrorCode() != 0 || image == null || image.length == 0)
+		if (image == null || image.length == 0)
 		{
 			// Gnuplot could not produce a picture; return the blank image
 			if (term.equals(ChartFormat.PDF))
