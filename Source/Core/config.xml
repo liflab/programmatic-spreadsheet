@@ -29,7 +29,7 @@
   <version>0.2.1</version>
 
   <!-- The project's package -->
-  <package>ca/uqac/lif/spreadsheet/units/</package>
+  <package>ca/uqac/lif/spreadsheet/</package>
 
   <!-- The target JDK -->
   <targetjdk>8</targetjdk>
