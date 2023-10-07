@@ -63,6 +63,11 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	 * Whether to draw each data series with marks for each data point
 	 */
 	protected boolean m_withPoints = true;
+	
+	/**
+	 * Whether the first line of the spreadsheet is a header
+	 */
+	protected boolean m_hasHeaders = true;
 
 	/**
 	 * Creates an empty scatterplot
@@ -96,6 +101,19 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 	{
 		m_withPoints = b;
 		return this;
+	}
+	
+	@Override
+	public GnuplotScatterplot hasHeaders(boolean b)
+	{
+		m_hasHeaders = b;
+		return this;
+	}
+	
+	@Override
+	public GnuplotScatterplot hasHeaders()
+	{
+		return hasHeaders(true);
 	}
 
 	@Override
@@ -137,6 +155,10 @@ public class GnuplotScatterplot extends Gnuplot implements Scatterplot
 		PrintStream p_baos = new PrintStream(baos);
 		s_printer.print(table, p_baos);
 		String csv_values = baos.toString();
+		if (m_hasHeaders)
+		{
+			csv_values = csv_values.substring(csv_values.indexOf(System.getProperty("line.separator")));
+		}
 		String point_string = " with points";
 		if (m_withLines)
 		{

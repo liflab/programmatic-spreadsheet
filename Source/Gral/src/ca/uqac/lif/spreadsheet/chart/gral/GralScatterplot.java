@@ -52,6 +52,11 @@ public class GralScatterplot extends GralPlot implements Scatterplot
 	 * Whether to draw each data series with marks for each data point
 	 */
 	protected boolean m_withPoints = true;
+	
+	/**
+	 * Whether the first line of the spreadsheet is a header
+	 */
+	protected boolean m_hasHeaders = false;
 
 	/**
 	 * Creates an empty scatterplot with default settings
@@ -87,6 +92,19 @@ public class GralScatterplot extends GralPlot implements Scatterplot
 	{
 		m_withPoints = true;
 		return this;
+	}
+	
+	@Override
+	public GralScatterplot hasHeaders(boolean b)
+	{
+		m_hasHeaders = b;
+		return this;
+	}
+	
+	@Override
+	public GralScatterplot hasHeaders()
+	{
+		return hasHeaders(true);
 	}
 	
 	@Override
