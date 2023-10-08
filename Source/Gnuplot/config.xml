@@ -26,7 +26,7 @@
   <name>Programmatic Spreadsheet - Gnuplot</name>
 
   <!-- The project's version -->
-  <version>0.2.1</version>
+  <version>0.2.2</version>
 
   <!-- The project's package -->
   <package>ca/uqac/lif/spreadsheet/chart/gnuplot/</package>
